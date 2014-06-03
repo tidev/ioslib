@@ -1,0 +1,38 @@
+{
+  "name": "ioslib",
+  "version": "0.1.0",
+  "description": "iOS Utility Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha ./specs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appcelerator/ioslib.git"
+  },
+  "bin": "./bin/ioslib",
+  "keywords": [
+    "ios",
+    "iphone",
+    "ipad",
+    "xcode",
+    "apple"
+  ],
+  "author": "Jeff Haynie",
+  "license": "Apache-2",
+  "bugs": {
+    "url": "https://github.com/appcelerator/ioslib/issues"
+  },
+  "dependencies": {
+    "minimatch": "~0.3.0",
+    "async": "~0.9.0",
+    "colors": "~0.6.2",
+    "commander": "~2.2.0",
+    "tiapp.xml": "~0.2.0",
+    "prompt": "~0.2.13"
+  },
+  "devDependencies": {
+    "mocha": "~1.20.0",
+    "should": "~4.0.0"
+  }
+}
