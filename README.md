@@ -55,6 +55,24 @@ var obj = {
 ioslib.simulator.launch(obj);
 ```
 
+### Force stop an application running on simulator
+
+```javascript
+var ioslib = require('ioslib');
+ioslib.simulator.stop(function(){
+	console.log('simulator has exited');
+});
+```
+
+### Force stop an application running on device
+
+```javascript
+var ioslib = require('ioslib');
+ioslib.device.stop(function(){
+	console.log('device app has exited');
+});
+```
+
 ### Find provisioning profiles and developer info
 
 ```javascript
@@ -62,6 +80,33 @@ var ioslib = require('ioslib');
 ioslib.profile.find('com.appcelerator.test',function(err,results){
 	console.log('profiles',results.profiles);
 	console.log('developer_name',results.developer_name);
+});
+```
+
+### Detect Xcode path
+
+```javascript
+var ioslib = require('ioslib');
+ioslib.xcode.detect(function(err,path){
+	console.log('xcode path',path);
+});
+```
+
+### Detect Xcode settings
+
+```javascript
+var ioslib = require('ioslib');
+ioslib.xcode.settings(function(err,settings){
+	console.log('xcode settings',settings);
+});
+```
+
+### Detect Xcode system frameworks
+
+```javascript
+var ioslib = require('ioslib');
+ioslib.xcode.systemFrameworks(function(err,frameworks,frameworkDir){
+	console.log('xcode frameworks',frameworks);
 });
 ```
 
