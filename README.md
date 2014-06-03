@@ -3,6 +3,11 @@ iOS Utility Library
 
 This is a library of utilities for dealing programmatically with iOS applications, used namely for tools like [Hyperloop](https://github.com/appcelerator/hyperloop) and [Titanium](https://github.com/appcelerator/titanium).
 
+## Current Status
+
+- currently in progress of porting various internal libraries into this library
+- [node-ios-device](https://github.com/appcelerator/node-ios-device) is currently the main library used by Titanium at the moment.  we will merge these two projects once this one is complete.
+
 Examples
 --------
 
