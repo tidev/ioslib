@@ -25,10 +25,10 @@ describe('simulator', function(){
 
 			process.chdir(test_project);
 			try {
-				var cmd = '/usr/bin/xcodebuild clean build -sdk iphonesimulator'+settings.version+' GCC_PREPROCESSOR_DEFINITIONS="'+flags.join(' ')+'"';
+				var cmd = '/usr/bin/xcodebuild clean build -configuration Debug -sdk iphonesimulator'+settings.version+' GCC_PREPROCESSOR_DEFINITIONS="'+flags.join(' ')+'"';
 				exec(cmd, function(err,stdout,stderr){
 					should(stdout).match(/BUILD SUCCEEDED/);
-					appPath = path.join(__dirname,'Test','build','Release-iphonesimulator','Test.app');
+					appPath = path.join(__dirname,'Test','build','Debug-iphonesimulator','Test.app');
 					fs.existsSync(appPath).should.be.true;
 					done(err);
 				}); 
@@ -50,7 +50,7 @@ describe('simulator', function(){
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log basic logs', function(done){
+	it('should be able to launch simulator and log basic logs', function(done){
 		this.timeout(30000);
 		build(['LOG1=1'],function() {
 			var logs = {};
@@ -74,7 +74,7 @@ describe('simulator', function(){
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log ti mocha results', function(done){
+	it('should be able to launch simulator and log ti mocha results', function(done){
 		this.timeout(30000);
 		build(['LOG2=1'], function() {
 			var logs = {};
@@ -100,7 +100,7 @@ describe('simulator', function(){
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log ti mocha results with multiple lines', function(done){
+	it('should be able to launch simulator and log ti mocha results with multiple lines', function(done){
 		this.timeout(30000);
 		build(['LOG3=1'], function() {
 			var logs = {};
@@ -126,7 +126,7 @@ describe('simulator', function(){
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and timeout', function(done){
+	it('should be able to launch simulator and timeout', function(done){
 		this.timeout(30000);
 		build(['LOG4=1'], function() {
 			function logger(label, message) {

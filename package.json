@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "iOS Utility Library",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,8 @@
     "colors": "~0.6.2",
     "commander": "~2.2.0",
     "tiapp.xml": "~0.2.0",
-    "prompt": "~0.2.13"
+    "prompt": "~0.2.13",
+    "wrench": "~1.5.8"
   },
   "devDependencies": {
     "mocha": "~1.20.0",
