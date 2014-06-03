@@ -1,7 +1,7 @@
 iOS Utility Library
 ===================
 
-This is a library of utilities for dealing programmatically with iOS applications, usually namely for tools like [Hyperloop](https://github.com/appcelerator/hyperloop) and [Titanium](https://github.com/appcelerator/titanium).
+This is a library of utilities for dealing programmatically with iOS applications, used namely for tools like [Hyperloop](https://github.com/appcelerator/hyperloop) and [Titanium](https://github.com/appcelerator/titanium).
 
 Examples
 --------
@@ -11,7 +11,7 @@ Examples
 ```javascript
 var ioslib = require('ioslib');
 
-ioslib.device.detech(function(err,devices){
+ioslib.device.detect(function(err,devices){
 	if (!err && devices.length) {
 		console.log('detected',devices);
 	}
@@ -88,5 +88,4 @@ The original source and design for this project was developed by [Jeff Haynie](h
 ## Legal
 
 Copyright (c) 2014 by [Appcelerator, Inc](http://www.appcelerator.com). All Rights Reserved.
-This project is licensed under the Apache Public License, version 2.  
-Please see details in the LICENSE file.
+This project is licensed under the Apache Public License, version 2.  Please see details in the LICENSE file.
