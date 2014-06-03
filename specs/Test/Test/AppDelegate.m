@@ -32,6 +32,10 @@
     NSLog(@"[DEBUG] TI_MOCHA_RESULT_STOP");
 #endif
 
+#ifdef LOG4
+    // do nothing, we want to time out explicitly here
+#endif
+
     // Override point for customization after application launch.
     return YES;
 }

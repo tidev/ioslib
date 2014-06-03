@@ -115,4 +115,26 @@ describe('simulator', function(){
 		});
 	});
 
+	it('should be able to launch simulator and timeout', function(done){
+		this.timeout(30000);
+		build(['LOG4=1'], function() {
+			function logger(label, message) {
+			}
+			function callback(err, result) {
+				should(err).be.ok;
+				err.should.equal('launch timed out');
+				done();
+			}
+			var obj = {
+				logger: logger,
+				build_dir: appPath,
+				callback: callback,
+				unit: true,
+				hide: true,
+				timeout: 3000
+			};
+			simulator.launch(obj);
+		});
+	});
+
 });
