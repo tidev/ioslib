@@ -1,4 +1,5 @@
 node_modules
 build
+_tmp
 out
 npm-debug.log

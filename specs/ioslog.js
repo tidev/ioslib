@@ -168,4 +168,12 @@ describe('ioslog', function(){
 		testStream.logs.error[0].should.equal('stdout\n\tline1\n\tline2');
 	});
 
+	it("should be able to log separate lines", function(){
+		var testStream = new TestStream('name','[DEBUG] line1\n[DEBUG] line2\n');
+		should(testStream.logs.debug).be.ok;
+		testStream.logs.debug.should.have.length(2);
+		testStream.logs.debug[0].should.equal('line1');
+		testStream.logs.debug[1].should.equal('line2');
+	});
+
 });
