@@ -23,7 +23,7 @@ ioslib.device.detect(function(err,devices){
 });
 ```
 
-### Install and then launch an application
+### Install and then launch an application on device
 
 ```javascript
 var ioslib = require('ioslib');
@@ -36,7 +36,23 @@ var obj = {
 		console.log('['+label+']',message);
 	}
 }
-ioslib.device.install(obj);
+ioslib.device.launch(obj);
+```
+
+### Install and then launch an application on simulator
+
+```javascript
+var ioslib = require('ioslib');
+var obj = {
+	build_dir: '/path/to/name.app',
+	callback: function(err) {
+		console.log('exited');
+	},
+	logger: function(label, message) {
+		console.log('['+label+']',message);
+	}
+}
+ioslib.simulator.launch(obj);
 ```
 
 ### Find provisioning profiles and developer info
