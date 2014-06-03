@@ -39,6 +39,17 @@ describe('simulator', function(){
 		});
 	}
 
+	it('should be able to load ios-sim binary', function(done){
+		this.timeout(10000);
+		var sim = path.join(__dirname,'..','support','ios-sim');
+		exec(sim+' --version',function(err,stdout,stderr){
+			should(err).not.be.ok;
+			should(stdout).be.ok;
+			stdout.trim().should.equal('2.0');
+			done();
+		});
+	});
+
 	it('should be able to launch simulator and log basic logs', function(done){
 		this.timeout(30000);
 		build(['LOG1=1'],function() {
