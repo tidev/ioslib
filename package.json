@@ -4,7 +4,7 @@
   "description": "iOS Utility Library",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha ./specs"
+    "test": "./node_modules/.bin/mocha --reporter list ./specs"
   },
   "repository": {
     "type": "git",
