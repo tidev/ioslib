@@ -36,6 +36,18 @@
     // do nothing, we want to time out explicitly here
 #endif
 
+#ifdef LOG5
+    // force a crash (unrecognized selector)
+    SEL selector = NSSelectorFromString(@"pleaseCrash");
+    [NSObject performSelector:selector];
+#endif
+
+#ifdef LOG6
+    // force a crash (divide by zero)
+    int *x = NULL; 
+    *x = 99;
+#endif
+
     // Override point for customization after application launch.
     return YES;
 }

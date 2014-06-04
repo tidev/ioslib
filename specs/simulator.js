@@ -50,7 +50,7 @@ describe('simulator', function(){
 		});
 	});
 
-	it('should be able to launch simulator and log basic logs', function(done){
+	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log basic logs', function(done){
 		this.timeout(30000);
 		build(['LOG1=1'],function() {
 			var logs = {};
@@ -74,7 +74,7 @@ describe('simulator', function(){
 		});
 	});
 
-	it('should be able to launch simulator and log ti mocha results', function(done){
+	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log ti mocha results', function(done){
 		this.timeout(30000);
 		build(['LOG2=1'], function() {
 			var logs = {};
@@ -100,7 +100,7 @@ describe('simulator', function(){
 		});
 	});
 
-	it('should be able to launch simulator and log ti mocha results with multiple lines', function(done){
+	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log ti mocha results with multiple lines', function(done){
 		this.timeout(30000);
 		build(['LOG3=1'], function() {
 			var logs = {};
@@ -126,7 +126,7 @@ describe('simulator', function(){
 		});
 	});
 
-	it('should be able to launch simulator and timeout', function(done){
+	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and timeout', function(done){
 		this.timeout(30000);
 		build(['LOG4=1'], function() {
 			function logger(label, message) {
@@ -143,6 +143,94 @@ describe('simulator', function(){
 				unit: true,
 				hide: true,
 				timeout: 3000
+			};
+			simulator.launch(obj);
+		});
+	});
+
+	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and detect crash with Objective-C exception', function(done){
+		this.timeout(30000);
+		build(['LOG5=1'], function() {
+			function logger(label, message) {
+			}
+			function callback(err, result) {
+				try {
+					should(err).be.ok;
+					err.should.equal('launch crashed');
+					should(result).be.an.object;
+					should(result.filename).be.a.string;
+					should(result.textFilename).be.a.string;
+					should(fs.existsSync(result.filename)).be.ok;
+					should(fs.existsSync(result.textFilename)).be.ok;
+					should(result.report).be.an.object;
+					should(result.report.threads).be.an.array;
+					should(result.report.crashing_thread_index).be.a.number;
+					var threadInfo = result.report.threads[result.report.crashing_thread_index];
+					should(threadInfo).be.an.object;
+					should(threadInfo.thread_name).be.a.string;
+					should(threadInfo.backtrace).be.an.array;
+				}
+				finally {
+					if (result && result.filename && fs.existsSync(result.filename)) {
+						fs.unlinkSync(result.filename);
+					}
+					if (result && result.textFilename && fs.existsSync(result.textFilename)) {
+						fs.unlinkSync(result.textFilename);
+					}
+				}
+				done();
+			}
+			var obj = {
+				logger: logger,
+				build_dir: appPath,
+				callback: callback,
+				unit: true,
+				hide: true,
+				timeout: 5000
+			};
+			simulator.launch(obj);
+		});
+	});
+
+	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and detect crash with C exception', function(done){
+		this.timeout(30000);
+		build(['LOG6=1'], function() {
+			function logger(label, message) {
+			}
+			function callback(err, result) {
+				try {
+					should(err).be.ok;
+					err.should.equal('launch crashed');
+					should(result).be.an.object;
+					should(result.filename).be.a.string;
+					should(result.textFilename).be.a.string;
+					should(fs.existsSync(result.filename)).be.ok;
+					should(fs.existsSync(result.textFilename)).be.ok;
+					should(result.report).be.an.object;
+					should(result.report.threads).be.an.array;
+					should(result.report.crashing_thread_index).be.a.number;
+					var threadInfo = result.report.threads[result.report.crashing_thread_index];
+					should(threadInfo).be.an.object;
+					should(threadInfo.thread_name).be.a.string;
+					should(threadInfo.backtrace).be.an.array;
+				}
+				finally {
+					if (result && result.filename && fs.existsSync(result.filename)) {
+						fs.unlinkSync(result.filename);
+					}
+					if (result && result.textFilename && fs.existsSync(result.textFilename)) {
+						fs.unlinkSync(result.textFilename);
+					}
+				}
+				done();
+			}
+			var obj = {
+				logger: logger,
+				build_dir: appPath,
+				callback: callback,
+				unit: true,
+				hide: true,
+				timeout: 5000
 			};
 			simulator.launch(obj);
 		});
