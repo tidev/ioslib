@@ -236,4 +236,33 @@ describe('simulator', function(){
 		});
 	});
 
+	['SIGHUP','SIGKILL','SIGTERM','SIGINT'].forEach(function(signal){
+		(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and survive a '+signal+' signal', function(done){
+			this.timeout(60000);
+			build(['LOG4=1'], function() {
+				function logger(label, message) {
+				}
+				function callback(err, result, sig) {
+					should(err).be.null;
+					should(result).be.undefined;
+					should(sig).be.equal(signal);
+					done();
+				}
+				var obj = {
+					logger: logger,
+					build_dir: appPath,
+					callback: callback,
+					unit: true,
+					hide: true,
+					timeout: 25000
+				};
+				simulator.launch(obj);
+				setTimeout(function(){
+					// send the signal
+					exec("ps -ef | grep ios-sim | grep -v grep | awk '{print $2}' | xargs kill -"+signal.replace(/^SIG/,''));
+				},1000);
+			});
+		});
+	});
+
 });
