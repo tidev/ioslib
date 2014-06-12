@@ -1,10 +1,10 @@
 {
   "name": "ioslib",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "iOS Utility Library",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter list ./specs"
+    "test": "./node_modules/.bin/mocha --reporter list --timeout 30000 ./specs"
   },
   "repository": {
     "type": "git",
