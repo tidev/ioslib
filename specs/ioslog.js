@@ -72,16 +72,18 @@ describe('ioslog', function(){
 		var testStream = new TestStream('name','stdout\nstdout');
 		should(testStream.logs.debug).be.ok;
 		should(testStream.logs.error).not.be.ok;
-		testStream.logs.debug.should.have.length(1);
-		testStream.logs.debug[0].should.equal('stdout\nstdout');
+		testStream.logs.debug.should.have.length(2);
+		testStream.logs.debug[0].should.equal('stdout');
+		testStream.logs.debug[1].should.equal('stdout');
 	});
 
 	it("should be able to log multiple lines with line ending", function(){
 		var testStream = new TestStream('name','stdout\nstdout\n');
 		should(testStream.logs.debug).be.ok;
 		should(testStream.logs.error).not.be.ok;
-		testStream.logs.debug.should.have.length(1);
-		testStream.logs.debug[0].should.equal('stdout\nstdout');
+		testStream.logs.debug.should.have.length(2);
+		testStream.logs.debug[0].should.equal('stdout');
+		testStream.logs.debug[1].should.equal('stdout');
 	});
 
 	it("should be able to log with debug label", function(){
@@ -129,8 +131,9 @@ describe('ioslog', function(){
 	it("should be able to log with app name", function(){
 		var testStream = new TestStream('name','name[09891:92abc0] stdout\nstdout');
 		should(testStream.logs.debug).be.ok;
-		testStream.logs.debug.should.have.length(1);
-		testStream.logs.debug[0].should.equal('stdout\nstdout');
+		testStream.logs.debug.should.have.length(2);
+		testStream.logs.debug[0].should.equal('stdout');
+		testStream.logs.debug[1].should.equal('stdout');
 	});
 
 	it("should be able to log with app name and debug label and line breaks and ending tab", function(){
