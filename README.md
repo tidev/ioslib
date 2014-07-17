@@ -110,6 +110,14 @@ ioslib.xcode.systemFrameworks(function(err,frameworks,frameworkDir){
 });
 ```
 
+### Detect thirdparty frameworks from given directory
+
+```javascript
+xcode.frameworksFromDir('/Thirdparty/Frameworks/',function(err,frameworks){
+	console.log(frameworks);
+});
+```
+
 ## Command line
 
 There is also a simple command line:
