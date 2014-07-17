@@ -36,4 +36,12 @@ describe("xcode", function(){
 			done();
 		});
 	});
+	it("should detect frameworks from directory", function(done){
+		xcode.frameworksFromDir('/System/Library/Frameworks/',function(err,frameworks){
+			should(err).not.be.ok;
+			should(frameworks).be.ok;
+			should(frameworks).be.an.array;
+			done();
+		});
+	});
 });
