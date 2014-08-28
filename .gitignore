@@ -1,5 +1,6 @@
-node_modules
-build
-_tmp
-out
+._*
+.DS_Store
 npm-debug.log
+node_modules
+test/TestApp/build
+test/TestApp/TestApp.xcodeproj/project.xcworkspace/xcuserdata

@@ -1,4 +1,4 @@
-iOS Utility Library 
+iOS Utility Library
 ===================
 
 This is a library of utilities for dealing programmatically with iOS applications, used namely for tools like [Hyperloop](https://github.com/appcelerator/hyperloop) and [Titanium](https://github.com/appcelerator/titanium).
@@ -110,14 +110,6 @@ ioslib.xcode.systemFrameworks(function(err,frameworks,frameworkDir){
 });
 ```
 
-### Detect thirdparty frameworks from given directory
-
-```javascript
-xcode.frameworksFromDir('/Thirdparty/Frameworks/',function(err,frameworks){
-	console.log(frameworks);
-});
-```
-
 ## Command line
 
 There is also a simple command line:
@@ -145,7 +137,7 @@ There is also a simple command line:
 
 ## Reporting Bugs or submitting fixes
 
-If you run into problems, and trust us, there are likely plenty of them at this point -- please create an [Issue](https://github.com/appcelerator/ioslib/issues) or, even better, send us a pull request. 
+If you run into problems, and trust us, there are likely plenty of them at this point -- please create an [Issue](https://github.com/appcelerator/ioslib/issues) or, even better, send us a pull request.
 
 ## Contributing
 
