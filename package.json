@@ -1,5 +1,6 @@
 {
 	"name": "ioslib",
+	"version": "0.2.0",
 	"description": "iOS Utility Library",
 	"keywords": [
 		"appcelerator",
@@ -9,7 +10,6 @@
 		"xcode",
 		"apple"
 	],
-	"version": "0.2.0",
 	"author": {
 		"name": "Appcelerator, Inc.",
 		"email": "npmjs@appcelerator.com"
@@ -22,6 +22,14 @@
 		"type": "git",
 		"url": "git://github.com/appcelerator/ioslib.git"
 	},
+	"license": "Apache Public License v2",
+	"main": "./index",
+	"bugs": {
+		"url": "https://github.com/appcelerator/ioslib/issues"
+	},
+	"directories": {
+		"lib": "./lib"
+	},
 	"dependencies": {
 		"always-tail": "~0.1.1",
 		"async": "~0.9.0",
@@ -33,13 +41,15 @@
 		"mocha": "~1.21.4",
 		"should": "~4.0.4"
 	},
-	"license": "Apache Public License v2",
-	"main": "./index",
-	"directories": {
-		"lib": "./lib"
-	},
 	"scripts": {
-		"test": "mocha --require test/init --reporter spec --check-leaks test/"
+		"test": "mocha --require test/init --reporter spec --check-leaks test/",
+		"test-certs": "mocha --require test/init --reporter spec --check-leaks test/test-certs",
+		"test-device": "mocha --require test/init --reporter spec --check-leaks test/test-device",
+		"test-env": "mocha --require test/init --reporter spec --check-leaks test/test-env",
+		"test-ioslib": "mocha --require test/init --reporter spec --check-leaks test/test-ioslib",
+		"test-provisioning": "mocha --require test/init --reporter spec --check-leaks test/test-provisioning",
+		"test-simulator": "mocha --require test/init --reporter spec --check-leaks test/test-simulator",
+		"test-xcode": "mocha --require test/init --reporter spec --check-leaks test/test-xcode"
 	},
 	"engines": {
 		"node": ">=0.8"
