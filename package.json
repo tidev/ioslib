@@ -35,7 +35,9 @@
 		"async": "~0.9.0",
 		"node-appc": "0.2.17",
 		"node-ios-device": "~0.3.1",
-		"simple-plist": "~0.0.2"
+		"simple-plist": "~0.0.2",
+		"bplist-parser": "0.0.5",
+		"tail": "0.4.0"
 	},
 	"devDependencies": {
 		"mocha": "~1.21.4",
