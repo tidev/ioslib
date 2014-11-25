@@ -10,29 +10,29 @@
 	<string>TestApp</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>F7824C89-D22F-40BF-89C0-92A85BEDE36A</key>
+		<key>9C50326F90F646EDC42FE99D2443DD4D712C2EF4</key>
 		<string>ssh://github.com/appcelerator/ioslib.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>test/TestApp/TestApp/TestApp.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>F7824C89-D22F-40BF-89C0-92A85BEDE36A</key>
+		<key>9C50326F90F646EDC42FE99D2443DD4D712C2EF4</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/appcelerator/ioslib.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>F7824C89-D22F-40BF-89C0-92A85BEDE36A</string>
+	<string>9C50326F90F646EDC42FE99D2443DD4D712C2EF4</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>F7824C89-D22F-40BF-89C0-92A85BEDE36A</string>
+			<string>9C50326F90F646EDC42FE99D2443DD4D712C2EF4</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ioslib</string>
 		</dict>
