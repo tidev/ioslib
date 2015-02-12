@@ -18,7 +18,7 @@ tail the simulator's system.log and extract the log messages.
 ## Prerequisites
 
 This library current depends on [node-ios-device](https://github.com/appcelerator/node-ios-device)
-and thus is currently compatible with Node.js version 0.8.0 through 0.11.13.
+and thus is currently compatible with Node.js version 0.8.0 through 0.12.0.
 
 ## Installation
 
