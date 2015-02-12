@@ -4,4 +4,11 @@ install:
 - npm install
 script:
 - npm test
-
+deploy:
+  provider: npm
+  email: npmjs@appcelerator.com
+  api_key:
+    secure: MEdXdhRAwNuZ9cLNLPobzxCigS3WbE+pQweMCt6Z+BBtoBK/zMqSxvt8ruAEIdijohrC5Ffct+RDPYipHJ5WYL7DgN6uhmlKR6x8KiEruVHBN51QvDMDekjbz//fa7SzYMx6szoNQmFI9iEApLkITeQXdNPpsdQmL8CVnLSS0mQ=
+  on:
+    tags: true
+    repo: appcelerator/ioslib
