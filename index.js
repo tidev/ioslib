@@ -110,11 +110,11 @@ function detect(options, callback) {
 		], function (err) {
 			if (err) {
 				emitter.emit('error', err);
-				callback(err);
+				return callback(err);
 			} else {
 				cache = results;
 				emitter.emit('detected', results);
-				callback(null, results);
+				return callback(null, results);
 			}
 		});
 	});
