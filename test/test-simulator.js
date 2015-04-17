@@ -447,4 +447,32 @@ describe('simulator', function () {
 			});
 		});
 	});
+
+	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchkit app', function (done) {
+		this.timeout(30000);
+		this.slow(30000);
+
+		build(['TEST_BASIC_LOGGING'], function (err, appPath) {
+			should(err).not.be.ok;
+			should(appPath).be.a.String;
+			should(fs.existsSync(appPath)).be.ok;
+
+			var counter = 0;
+
+			ioslib.simulator.launch(null, {
+				appPath: appPath,
+				launchWatchApp: true
+			}, function (err, simHandle) {
+				should(err).not.be.ok;
+			}).on('log-debug', function(line) {
+				if (line.indexOf('App launched successfully') !== -1) {
+					done();
+				}
+				if (line.indexOf('Error launching app') !== -1) {
+					should(false).be.true;
+				}
+			});
+		});
+	});
+	
 });
