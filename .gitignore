@@ -3,4 +3,5 @@
 npm-debug.log
 node_modules
 test/TestApp/build
+test/TestApp/TestApp.xcodeproj/xcuserdata
 test/TestApp/TestApp.xcodeproj/project.xcworkspace/xcuserdata
