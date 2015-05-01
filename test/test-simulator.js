@@ -20,7 +20,7 @@ function checkSims(sims) {
 	should(sims).be.an.Array;
 	sims.forEach(function (sim) {
 		should(sim).be.an.Object;
-		should(sim).have.keys('deviceType', 'udid', 'type', 'name', 'ios', 'retina', 'tall', '64bit', 'resizable', 'xcode', 'app', 'systemLog', 'logPaths', 'logFile', 'cmd');
+		should(sim).have.keys('deviceType', 'udid', 'type', 'name', 'ios', 'retina', 'tall', '64bit', 'resizable', 'supportsWatch', 'xcode', 'xcodePath', 'app', 'systemLog', 'logPaths');
 
 		should(sim.deviceType).be.a.String;
 		should(sim.deviceType).not.equal('');
@@ -48,6 +48,9 @@ function checkSims(sims) {
 		should(sim.xcode).be.a.String;
 		should(sim.xcode).not.equal('');
 
+		should(sim.xcodePath).be.a.String;
+		should(sim.xcodePath).not.equal('');
+
 		should(sim.app).be.a.String;
 		should(sim.app).not.equal('');
 		should(fs.existsSync(sim.app)).be.true;
@@ -57,18 +60,10 @@ function checkSims(sims) {
 
 		should(sim.logPaths).be.an.Array;
 		should(sim.logPaths).not.length(0);
-
-		if (sim.logFile !== null) {
-			should(sim.logFile).be.a.String;
-			should(sim.logFile).not.equal('');
-		}
-
-		should(sim.cmd).be.an.Array;
-		should(sim.cmd).not.length(0);
 	});
 }
 
-function build(defs, done){
+function build(app, defs, done){
 	if (typeof defs === 'function') {
 		done = defs;
 		defs = [];
@@ -92,10 +87,10 @@ function build(defs, done){
 			'ARCHS="i386"',
 			'GCC_PREPROCESSOR_DEFINITIONS="' + defs.join(' ') + '"'
 		].join(' '), {
-			cwd: path.join(__dirname, 'TestApp')
+			cwd: path.join(__dirname, app)
 		}, function (code, out, err) {
 			should(out).match(/BUILD SUCCEEDED/);
-			var appPath = path.join(__dirname, 'TestApp', 'build', 'Debug-iphonesimulator', 'TestApp.app');
+			var appPath = path.join(__dirname, app, 'build', 'Debug-iphonesimulator', app + '.app');
 			should(fs.existsSync(appPath)).be.true;
 			done(null, appPath);
 		});
@@ -202,7 +197,7 @@ describe('simulator', function () {
 		this.timeout(30000);
 		this.slow(30000);
 
-		build(['TEST_BASIC_LOGGING'], function (err, appPath) {
+		build('TestApp', ['TEST_BASIC_LOGGING'], function (err, appPath) {
 			should(err).not.be.ok;
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
@@ -227,7 +222,7 @@ describe('simulator', function () {
 		this.timeout(30000);
 		this.slow(30000);
 
-		build(['TEST_TIMOCHA'], function (err, appPath) {
+		build('TestApp', ['TEST_TIMOCHA'], function (err, appPath) {
 			should(err).not.be.ok;
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
@@ -265,7 +260,7 @@ describe('simulator', function () {
 		this.timeout(30000);
 		this.slow(30000);
 
-		build(['TEST_TIMOCHA_MULTIPLE_LINES'], function (err, appPath) {
+		build('TestApp', ['TEST_TIMOCHA_MULTIPLE_LINES'], function (err, appPath) {
 			should(err).not.be.ok;
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
@@ -303,7 +298,7 @@ describe('simulator', function () {
 		this.timeout(10000);
 		this.slow(10000);
 
-		build(['TEST_TIMEOUT'], function (err, appPath) {
+		build('TestApp', ['TEST_TIMEOUT'], function (err, appPath) {
 			should(err).not.be.ok;
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
@@ -340,7 +335,7 @@ describe('simulator', function () {
 		this.timeout(30000);
 		this.slow(30000);
 
-		build(['TEST_OBJC_CRASH'], function (err, appPath) {
+		build('TestApp', ['TEST_OBJC_CRASH'], function (err, appPath) {
 			should(err).not.be.ok;
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
@@ -382,7 +377,7 @@ describe('simulator', function () {
 		this.timeout(30000);
 		this.slow(30000);
 
-		build(['TEST_C_CRASH'], function (err, appPath) {
+		build('TestApp', ['TEST_C_CRASH'], function (err, appPath) {
 			should(err).not.be.ok;
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
@@ -420,11 +415,11 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it).only('should launch the default simulator and launch the watchkit app', function (done) {
+	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchkit app', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
-		build(['TEST_BASIC_LOGGING'], function (err, appPath) {
+		build('TestWatchApp', ['TEST_BASIC_LOGGING'], function (err, appPath) {
 			should(err).not.be.ok;
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
@@ -432,8 +427,10 @@ describe('simulator', function () {
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
 				launchWatchApp: true
-			}).on('launched', function (handle) {
-				done();
+			}).on('launched', function (simHandle) {
+				ioslib.simulator.stop(simHandle, function () {
+					done();
+				});
 			});
 		});
 	});
