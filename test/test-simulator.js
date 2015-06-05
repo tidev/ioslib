@@ -355,15 +355,16 @@ describe('simulator', function () {
 						should(crash).be.an.instanceOf(ioslib.simulator.SimulatorCrash);
 						should(crash.toString()).eql('SimulatorCrash: App crashed in the iOS Simulator');
 
-						should(crash).have.property('file');
-						should(crash.file).be.a.String;
-						should(fs.existsSync(crash.file)).be.ok;
-
-						should(crash).have.property('report');
-						should(crash.report).be.an.String;
+						should(crash).have.property('crashFiles');
+						should(crash.crashFiles).be.an.Array;
+						crash.crashFiles.forEach(function (file) {
+							should(fs.existsSync(file)).be.ok;
+						});
 					} finally {
-						if (crash && crash.file && fs.existsSync(crash.file)) {
-							fs.unlinkSync(crash.file);
+						if (crash && Array.isArray(crash.crashFiles)) {
+							crash.crashFiles.forEach(function (file) {
+								fs.existsSync(file) && fs.unlinkSync(file);
+							});
 						}
 					}
 
@@ -397,15 +398,16 @@ describe('simulator', function () {
 						should(crash).be.an.instanceOf(ioslib.simulator.SimulatorCrash);
 						should(crash.toString()).eql('SimulatorCrash: App crashed in the iOS Simulator');
 
-						should(crash).have.property('file');
-						should(crash.file).be.a.String;
-						should(fs.existsSync(crash.file)).be.ok;
-
-						should(crash).have.property('report');
-						should(crash.report).be.an.String;
+						should(crash).have.property('crashFiles');
+						should(crash.crashFiles).be.an.Array;
+						crash.crashFiles.forEach(function (file) {
+							should(fs.existsSync(file)).be.ok;
+						});
 					} finally {
-						if (crash && crash.file && fs.existsSync(crash.file)) {
-							fs.unlinkSync(crash.file);
+						if (crash && Array.isArray(crash.crashFiles)) {
+							crash.crashFiles.forEach(function (file) {
+								fs.existsSync(file) && fs.unlinkSync(file);
+							});
 						}
 					}
 
