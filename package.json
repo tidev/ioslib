@@ -32,7 +32,7 @@
 	},
 	"dependencies": {
 		"always-tail": "^0.1.1",
-		"async": "^0.9.2",
+		"async": "^1.2.1",
 		"node-appc": "0.2.26",
 		"node-ios-device": "0.4.1",
 		"simple-plist": "^0.0.4"
