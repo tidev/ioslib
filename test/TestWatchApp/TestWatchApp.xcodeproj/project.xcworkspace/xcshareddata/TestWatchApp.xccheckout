@@ -5,23 +5,23 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>35F6593E-3996-4B97-A189-366E0D8070C7</string>
+	<string>97013D51-4B77-4323-9ECE-DE1AD575E7B3</string>
 	<key>IDESourceControlProjectName</key>
-	<string>TestApp</string>
+	<string>TestWatchApp</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>9C50326F90F646EDC42FE99D2443DD4D712C2EF4</key>
-		<string>ssh://github.com/appcelerator/ioslib.git</string>
+		<string>github.com:appcelerator/ioslib.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>test/TestApp/TestApp/TestApp.xcodeproj/project.xcworkspace</string>
+	<string>test/TestWatchApp/TestWatchApp.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>9C50326F90F646EDC42FE99D2443DD4D712C2EF4</key>
-		<string>../../../../..</string>
+		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/appcelerator/ioslib.git</string>
+	<string>github.com:appcelerator/ioslib.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
