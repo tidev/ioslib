@@ -2,7 +2,7 @@
  * Tests ioslib's xcode module.
  *
  * @copyright
- * Copyright (c) 2014 by Appcelerator, Inc. All Rights Reserved.
+ * Copyright (c) 2014-2015 by Appcelerator, Inc. All Rights Reserved.
  *
  * @license
  * Licensed under the terms of the Apache Public License.
@@ -15,7 +15,7 @@ const
 
 function checkXcode(xcode) {
 	should(xcode).be.an.Object;
-	should(xcode).have.keys('xcodeapp', 'path', 'selected', 'version', 'build', 'supported', 'sdks', 'sims', 'executables');
+	should(xcode).have.keys('xcodeapp', 'path', 'selected', 'version', 'build', 'supported', 'sdks', 'sims', 'watchos', 'executables');
 
 	should(xcode.xcodeapp).be.a.String;
 	should(xcode.xcodeapp).not.equal('');
@@ -49,8 +49,22 @@ function checkXcode(xcode) {
 		should(s).not.equal('');
 	});
 
+	if (xcode.watchos !== null) {
+		should(xcode.watchos.sdks).be.an.Array;
+		xcode.watchos.sdks.forEach(function (s) {
+			should(s).be.a.String;
+			should(s).not.equal('');
+		});
+
+		should(xcode.watchos.sims).be.an.Array;
+		xcode.watchos.sims.forEach(function (s) {
+			should(s).be.a.String;
+			should(s).not.equal('');
+		});
+	}
+
 	should(xcode.executables).be.an.Object;
-	should(xcode.executables).have.keys('xcodebuild', 'clang', 'clang_xx', 'libtool', 'lipo', 'otool');
+	should(xcode.executables).have.keys('xcodebuild', 'clang', 'clang_xx', 'libtool', 'lipo', 'otool', 'pngcrush');
 
 	should(xcode.executables.xcodebuild).be.a.String;
 	should(xcode.executables.xcodebuild).not.equal('');
@@ -81,6 +95,11 @@ function checkXcode(xcode) {
 	should(xcode.executables.otool).not.equal('');
 	should(fs.existsSync(xcode.executables.otool)).be.true;
 	should(fs.statSync(xcode.executables.otool).isDirectory()).be.false;
+
+	should(xcode.executables.pngcrush).be.a.String;
+	should(xcode.executables.pngcrush).not.equal('');
+	should(fs.existsSync(xcode.executables.pngcrush)).be.true;
+	should(fs.statSync(xcode.executables.pngcrush).isDirectory()).be.false;
 }
 
 describe('xcode', function () {
