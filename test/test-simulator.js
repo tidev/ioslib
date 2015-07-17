@@ -2,7 +2,7 @@
  * Tests ioslib's simulator module.
  *
  * @copyright
- * Copyright (c) 2014 by Appcelerator, Inc. All Rights Reserved.
+ * Copyright (c) 2014-2015 by Appcelerator, Inc. All Rights Reserved.
  *
  * @license
  * Licensed under the terms of the Apache Public License.
@@ -20,7 +20,7 @@ function checkSims(sims) {
 	should(sims).be.an.Array;
 	sims.forEach(function (sim) {
 		should(sim).be.an.Object;
-		should(sim).have.keys('deviceType', 'udid', 'type', 'name', 'ios', 'retina', 'tall', '64bit', 'resizable', 'supportsWatch', 'xcode', 'xcodePath', 'app', 'systemLog', 'logPaths');
+		should(sim).have.keys('deviceType', 'udid', 'type', 'name', 'ios', 'retina', 'tall', '64bit', 'resizable', 'supportsWatch', 'xcode', 'xcodePath', 'simulator', 'simctl', 'systemLog', 'logPaths');
 
 		should(sim.deviceType).be.a.String;
 		should(sim.deviceType).not.equal('');
@@ -51,9 +51,13 @@ function checkSims(sims) {
 		should(sim.xcodePath).be.a.String;
 		should(sim.xcodePath).not.equal('');
 
-		should(sim.app).be.a.String;
-		should(sim.app).not.equal('');
-		should(fs.existsSync(sim.app)).be.true;
+		should(sim.simulator).be.a.String;
+		should(sim.simulator).not.equal('');
+		should(fs.existsSync(sim.simulator)).be.true;
+
+		should(sim.simctl).be.a.String;
+		should(sim.simctl).not.equal('');
+		should(fs.existsSync(sim.simctl)).be.true;
 
 		should(sim.systemLog).be.a.String;
 		should(sim.systemLog).not.equal('');
@@ -141,13 +145,7 @@ describe('simulator', function () {
 			}
 
 			should(results).be.an.Object;
-			should(results).have.keys('executables', 'simulators', 'crashDir', 'issues');
-
-			should(results.executables).be.an.Object;
-			should(results.executables).have.keys('ios-sim');
-			should(results.executables['ios-sim']).be.a.String;
-			should(results.executables['ios-sim']).not.equal('');
-			should(fs.existsSync(results.executables['ios-sim'])).be.true;
+			should(results).have.keys('simulators', 'crashDir', 'issues');
 
 			should(results.simulators).be.an.Object;
 			Object.keys(results.simulators).forEach(function (ver) {
@@ -184,7 +182,7 @@ describe('simulator', function () {
 					return done(err);
 				}
 
-				should(out.split('\n').filter(function (line) { return line.indexOf('ios-sim') !== -1 || line.indexOf(simHandle.app) !== -1; })).not.length(0);
+				should(out.split('\n').filter(function (line) { return line.indexOf(simHandle.simulator) !== -1; })).not.length(0);
 
 				ioslib.simulator.stop(simHandle, function () {
 					done();
@@ -202,7 +200,9 @@ describe('simulator', function () {
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
 
-			var counter = 0;
+			var counter = 0,
+				launched = false,
+				started = false;
 
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
@@ -210,8 +210,14 @@ describe('simulator', function () {
 				hide: true
 			}).on('log', function (line) {
 				counter++;
+			}).on('launched', function (simHandle) {
+				launched = true;
+			}).on('app-started', function (simHandle) {
+				started = true;
 			}).on('app-quit', function (err) {
 				should(err).not.be.ok;
+				should(launched).be.ok;
+				should(started).be.ok;
 				should(counter).not.equal(0);
 				done();
 			});
@@ -331,7 +337,7 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and detect crash with Objective-C exception', function (done) {
+	(process.env.TRAVIS ? it.skip : it.only)('should be able to launch simulator and detect crash with Objective-C exception', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
