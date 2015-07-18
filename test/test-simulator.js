@@ -337,7 +337,7 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it.only)('should be able to launch simulator and detect crash with Objective-C exception', function (done) {
+	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and detect crash with Objective-C exception', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
@@ -360,7 +360,6 @@ describe('simulator', function () {
 					try {
 						should(crash).be.an.instanceOf(ioslib.simulator.SimulatorCrash);
 						should(crash.toString()).eql('SimulatorCrash: App crashed in the iOS Simulator');
-
 						should(crash).have.property('crashFiles');
 						should(crash.crashFiles).be.an.Array;
 						crash.crashFiles.forEach(function (file) {

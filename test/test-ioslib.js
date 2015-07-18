@@ -151,16 +151,13 @@ describe('ioslib', function () {
 			checkProfiles(results.provisioning.adhoc);
 
 			should(results.executables).be.an.Object;
-			should(results.executables).have.keys('xcodeSelect', 'security', 'ios-sim');
+			should(results.executables).have.keys('xcodeSelect', 'security');
 
 			should(results.executables.xcodeSelect).be.a.String;
 			should(results.executables.xcodeSelect).not.equal('');
 
 			should(results.executables.security).be.a.String;
 			should(results.executables.security).not.equal('');
-
-			should(results.executables['ios-sim']).be.a.String;
-			should(results.executables['ios-sim']).not.equal('');
 
 			function checkXcode(xcode) {
 				should(xcode).be.an.Object;
