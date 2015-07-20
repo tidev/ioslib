@@ -63,14 +63,16 @@ function checkXcode(xcode) {
 		});
 	}
 
-	var keys = ['xcodebuild', 'clang', 'clang_xx', 'libtool', 'lipo', 'otool', 'pngcrush', 'simulator', 'simctl'];
+	var keys = ['xcodebuild', 'clang', 'clang_xx', 'libtool', 'lipo', 'otool', 'pngcrush', 'simulator', 'watchsimulator', 'simctl'];
 	should(xcode.executables).be.an.Object;
 	keys.forEach(function (key) {
 		should(xcode.executables).have.property(key);
-		should(xcode.executables[key]).be.a.String;
-		should(xcode.executables[key]).not.equal('');
-		should(fs.existsSync(xcode.executables[key])).be.true;
-		should(fs.statSync(xcode.executables[key]).isDirectory()).be.false;
+		if (xcode.executables[key] !== null) {
+			should(xcode.executables[key]).be.a.String;
+			should(xcode.executables[key]).not.equal('');
+			should(fs.existsSync(xcode.executables[key])).be.true;
+			should(fs.statSync(xcode.executables[key]).isDirectory()).be.false;
+		}
 	});
 }
 
