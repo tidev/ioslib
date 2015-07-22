@@ -67,7 +67,7 @@ function checkSims(sims) {
 	});
 }
 
-function build(app, target, type, desiredIOS, defs, done){
+function build(app, iosVersion, defs, done){
 	if (typeof defs === 'function') {
 		done = defs;
 		defs = [];
@@ -79,54 +79,37 @@ function build(app, target, type, desiredIOS, defs, done){
 		}
 
 		var xc = null,
-			appSDKVer = null,
-			watchSDKVer = null;
+			ios;
 
-		if (desiredIOS) {
-			// find an xcode
-			Object.keys(env.xcode).sort().reverse().some(function (ver) {
-				return env.xcode[ver].sdks.some(function (sdk) {
-					if (appc.version.satisfies(sdk, desiredIOS)) {
-						xc = env.xcode[ver];
-						appSDKVer = appc.version.format(sdk, 2, 2);
-						watchSDKVer = appc.version.format(xc.watchos.sims.sort().reverse()[0], 2, 2);
-						return true;
-					}
-				});
+		Object.keys(env.xcode).sort().reverse().some(function (ver) {
+			return env.xcode[ver].sdks.some(function (sdk) {
+				if (!iosVersion || appc.version.satisfies(sdk, iosVersion)) {
+					xc = env.xcode[ver];
+					iosVersion = sdk;
+					return true;
+				}
 			});
-		} else {
-			xc = env.selectedXcode;
-		}
+		});
 
 		if (xc === null) {
 			return done(new Error('No selected Xcode'));
-		}
-
-		if (!appSDKVer) {
-			appSDKVer = appc.version.format(xc.sdks.sort().reverse()[0], 2, 2);
-		}
-		if (!watchSDKVer) {
-			watchSDKVer = appc.version.format(xc.watch.sims.sort().reverse()[0], 2, 2);
 		}
 
 		var cmd = [
 			xc.executables.xcodebuild,
 			'clean', 'build',
 			'-configuration', 'Debug',
-			'-destination', 'platform=Simulator,name=iPhone,OS=' + appSDKVer,
-/*
-			'APP_SDKROOT="iphonesimulator' + appSDKVer + '"',
-			'WATCH_SDKROOT="watchsimulator' + watchSDKVer + '"',
-*/
-			'GCC_PREPROCESSOR_DEFINITIONS="' + defs.join(' ') + '"'
+			'-scheme', app,
+			'-destination', "platform='iOS Simulator',OS=" + appc.version.format(iosVersion, 2, 2) + ",name='iPhone 6'",
+			'GCC_PREPROCESSOR_DEFINITIONS="' + defs.join(' ') + '"',
+			'CONFIGURATION_BUILD_DIR="build/\\$(CONFIGURATION)\\$(EFFECTIVE_PLATFORM_NAME)"'
 		];
 
-		console.log(cmd.join(' '));
-
+		//console.log(cmd.join(' '));
 		exec(cmd.join(' '), {
 			cwd: path.join(__dirname, app)
 		}, function (code, out, err) {
-			console.log(out);
+			//console.log(out);
 			should(out).match(/BUILD SUCCEEDED/);
 			var appPath = path.join(__dirname, app, 'build', 'Debug-iphonesimulator', app + '.app');
 			should(fs.existsSync(appPath)).be.true;
@@ -464,7 +447,7 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchOS 1 app', function (done) {
+	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and launch the watchOS 1 app', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
@@ -473,8 +456,9 @@ describe('simulator', function () {
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
 
-			ioslib.simulator.detect(function (err, results) {
-				var udid = results.simulators[Object.keys(results.simulators).sort().pop()].filter(function (s) { return s.name === 'iPhone 6'; }).shift().udid;
+			ioslib.simulator.detect(function (err, simulators) {
+				var ver = Object.keys(simulators.ios).filter(function (ver) { return appc.version.gte(ver, '8.2') && appc.version.lt(ver, '9.0'); }).sort().pop(),
+					udid = simulators.ios[ver][simulators.ios[ver].length - 1].udid;
 
 				ioslib.simulator.launch(udid, {
 					appPath: appPath,
@@ -491,7 +475,7 @@ describe('simulator', function () {
 	});
 
 
-	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and launch the watchOS 2 app', function (done) {
+	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchOS 2 app', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
