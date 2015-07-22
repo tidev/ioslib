@@ -28,7 +28,7 @@ describe('ioslib', function () {
 			}
 
 			should(results).be.an.Object;
-			should(results).have.keys('detectVersion', 'issues', 'devices', 'provisioning', 'executables', 'selectedXcode', 'xcode', 'certs', 'simulators', 'crashDir');
+			should(results).have.keys('detectVersion', 'issues', 'devices', 'provisioning', 'executables', 'selectedXcode', 'xcode', 'certs', 'simulators', 'watchSimulators', 'devicePairs', 'crashDir');
 
 			should(results.detectVersion).be.a.String;
 

@@ -38,11 +38,10 @@
   },
   "dependencies": {
     "always-tail": "^0.1.1",
-    "async": "^1.3.0",
+    "async": "^1.4.0",
     "bplist-parser": "^0.1.0",
     "node-appc": "0.2.27",
-    "node-ios-device": "0.4.1",
-    "simple-plist": "^0.0.4"
+    "node-ios-device": "0.4.1"
   },
   "devDependencies": {
     "mocha": "^2.2.5",
