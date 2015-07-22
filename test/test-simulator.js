@@ -229,6 +229,8 @@ describe('simulator', function () {
 				counter++;
 			}).on('launched', function (simHandle) {
 				launched = true;
+			}).on('error', function (err) {
+				done(err);
 			}).on('app-started', function (simHandle) {
 				started = true;
 			}).on('app-quit', function (err) {
@@ -268,6 +270,8 @@ describe('simulator', function () {
 			emitter.on('launched', function (handle) {
 				simHandle = handle;
 				stop();
+			}).on('error', function (err) {
+				done(err);
 			});
 
 			timochaLogWatcher(emitter, function (err, results) {
@@ -319,45 +323,6 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and timeout', function (done) {
-		this.timeout(10000);
-		this.slow(10000);
-
-		build('TestApp', null, ['TEST_TIMEOUT'], function (err, appPath) {
-			should(err).not.be.ok;
-			should(appPath).be.a.String;
-			should(fs.existsSync(appPath)).be.ok;
-
-			var simHandle,
-				launchTime;
-
-			ioslib.simulator.launch(null, {
-				appPath: appPath,
-				hide: true,
-				timeout: 90
-			}).on('launched', function (handle) {
-				simHandle = handle;
-				launchTime = new Date;
-			}).on('error', function (err) {
-				done(err);
-			}).on('app-started', function (line) {
-				if (launchTime) {
-					var delta = (new Date) - launchTime;
-					if (delta < 90000) {
-						// computer is too fast, skip
-						ioslib.simulator.stop(simHandle, function () {
-							done();
-						});
-					}
-				}
-			}).on('timeout', function () {
-				ioslib.simulator.stop(simHandle, function () {
-					done();
-				});
-			});
-		});
-	});
-
 	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and detect crash with Objective-C exception', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
@@ -371,8 +336,7 @@ describe('simulator', function () {
 
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
-				hide: true,
-				timeout: 10000
+				hide: true
 			}).on('launched', function (handle) {
 				simHandle = handle;
 			}).on('error', function (err) {
@@ -415,8 +379,7 @@ describe('simulator', function () {
 
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
-				hide: true,
-				timeout: 10000
+				hide: true
 			}).on('launched', function (handle) {
 				simHandle = handle;
 			}).on('error', function (err) {
@@ -447,7 +410,7 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and launch the watchOS 1 app', function (done) {
+	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchOS 1 app', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
@@ -462,6 +425,7 @@ describe('simulator', function () {
 
 				ioslib.simulator.launch(udid, {
 					appPath: appPath,
+					hide: true,
 					launchWatchApp: true
 				}).on('launched', function (simHandle) {
 					ioslib.simulator.stop(simHandle, function () {
@@ -475,7 +439,7 @@ describe('simulator', function () {
 	});
 
 
-	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchOS 2 app', function (done) {
+	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and launch the watchOS 2 app', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
@@ -490,11 +454,14 @@ describe('simulator', function () {
 
 				ioslib.simulator.launch(udid, {
 					appPath: appPath,
+					//hide: true,
 					launchWatchApp: true
-				}).on('launched', function (simHandle) {
-					ioslib.simulator.stop(simHandle, function () {
+				}).on('log-debug', function (line) {
+					console.log(line);
+				}).on('launched', function (simHandle, watchSimHandle) {
+					//ioslib.simulator.stop(simHandle, function () {
 						done();
-					});
+					//});
 				}).on('error', function (err) {
 					done(err);
 				});
