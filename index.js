@@ -174,7 +174,7 @@ function findValidDeviceCertProfileCombos(options, callback) {
 				var combos = [];
 				profiles.forEach(function (profile) {
 					deviceResults.devices.forEach(function (device) {
-						if (profile.devices.indexOf(device.udid) !== -1) {
+						if (profile.devices && profile.devices.indexOf(device.udid) !== -1) {
 							certs.forEach(function (cert) {
 								var prefix = cert.pem.replace(/^-----BEGIN CERTIFICATE-----\n/, '').substring(0, 60);
 								profile.certs.forEach(function (pcert) {

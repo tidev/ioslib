@@ -254,7 +254,7 @@ describe('ioslib', function () {
 
 	(process.env.TRAVIS ? it.skip : it)('should find a device/cert/profile combination', function (done) {
 		this.timeout(10000);
-		this.slow(5000);
+		this.slow(10000);
 
 		ioslib.findValidDeviceCertProfileCombos({
 			appId: 'com.appcelerator.TestApp'

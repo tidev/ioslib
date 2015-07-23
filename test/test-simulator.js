@@ -213,9 +213,9 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and stop it', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and stop it', function (done) {
+		this.timeout(60000);
+		this.slow(60000);
 
 		ioslib.simulator.launch(null, null, function (err, simHandle) {
 			exec('ps -ef', function (code, out, err) {
@@ -233,8 +233,8 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log basic logs', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+		this.timeout(60000);
+		this.slow(60000);
 
 		build('TestApp', null, ['TEST_BASIC_LOGGING'], function (err, appPath) {
 			should(err).not.be.ok;
@@ -268,8 +268,8 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log ti mocha results', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+		this.timeout(60000);
+		this.slow(60000);
 
 		build('TestApp', null, ['TEST_TIMOCHA'], function (err, appPath) {
 			should(err).not.be.ok;
@@ -308,8 +308,8 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and log ti mocha results with multiple lines', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+		this.timeout(60000);
+		this.slow(60000);
 
 		build('TestApp', null, ['TEST_TIMOCHA_MULTIPLE_LINES'], function (err, appPath) {
 			should(err).not.be.ok;
@@ -348,8 +348,8 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and detect crash with Objective-C exception', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+		this.timeout(60000);
+		this.slow(60000);
 
 		build('TestApp', null, ['TEST_OBJC_CRASH'], function (err, appPath) {
 			should(err).not.be.ok;
@@ -391,8 +391,8 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS ? it.skip : it)('should be able to launch simulator and detect crash with C exception', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+		this.timeout(60000);
+		this.slow(60000);
 
 		build('TestApp', null, ['TEST_C_CRASH'], function (err, appPath) {
 			should(err).not.be.ok;
