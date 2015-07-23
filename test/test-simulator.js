@@ -259,8 +259,8 @@ describe('simulator', function () {
 				hide: true
 			}).on('log', function (line) {
 				counter++;
-			}).on('log-debug', function (line, simHandle) {
-				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+			//}).on('log-debug', function (line, simHandle) {
+			//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('launched', function (simHandle) {
 				launched = true;
 			}).on('error', function (err) {
@@ -304,8 +304,8 @@ describe('simulator', function () {
 			emitter.on('app-started', function (handle) {
 				simHandle = handle;
 				stop();
-			}).on('log-debug', function (line, simHandle) {
-				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+			//}).on('log-debug', function (line, simHandle) {
+			//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			});
@@ -346,8 +346,8 @@ describe('simulator', function () {
 			emitter.on('app-started', function (handle) {
 				simHandle = handle;
 				stop();
-			}).on('log-debug', function (line, simHandle) {
-				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+			//}).on('log-debug', function (line, simHandle) {
+			//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			});
@@ -377,8 +377,8 @@ describe('simulator', function () {
 				hide: true
 			}).on('app-started', function (handle) {
 				simHandle = handle;
-			}).on('log-debug', function (line, simHandle) {
-				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+			//}).on('log-debug', function (line, simHandle) {
+			//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			}).on('app-quit', function (crash) {
@@ -422,8 +422,8 @@ describe('simulator', function () {
 				hide: true
 			}).on('app-started', function (handle) {
 				simHandle = handle;
-			}).on('log-debug', function (line, simHandle) {
-				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+			//}).on('log-debug', function (line, simHandle) {
+			//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			}).on('app-quit', function (crash) {
@@ -469,8 +469,8 @@ describe('simulator', function () {
 					appPath: appPath,
 					hide: true,
 					launchWatchApp: true
-				}).on('log-debug', function (line, simHandle) {
-					console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+				//}).on('log-debug', function (line, simHandle) {
+				//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 				}).on('app-started', function (simHandle, watchSimHandle) {
 					ioslib.simulator.stop(simHandle, function () {
 						if (watchSimHandle) {
@@ -506,8 +506,8 @@ describe('simulator', function () {
 					appPath: appPath,
 					hide: true,
 					launchWatchApp: true
-				}).on('log-debug', function (line, simHandle) {
-					console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+				//}).on('log-debug', function (line, simHandle) {
+				//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 				}).on('app-started', function (simHandle, watchSimHandle) {
 					ioslib.simulator.stop(simHandle, function () {
 						if (watchSimHandle) {
