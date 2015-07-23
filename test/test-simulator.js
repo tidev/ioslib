@@ -74,7 +74,7 @@ function build(app, iosVersion, defs, done){
 			return done(new Error('No selected Xcode'));
 		}
 
-		var cmd = [
+		var args = [
 			xc.executables.xcodebuild,
 			'clean', 'build',
 			'-configuration', 'Debug',
@@ -84,11 +84,12 @@ function build(app, iosVersion, defs, done){
 			'CONFIGURATION_BUILD_DIR="build/\\$(CONFIGURATION)\\$(EFFECTIVE_PLATFORM_NAME)"'
 		];
 
-		//console.log(cmd.join(' '));
-		exec(cmd.join(' '), {
+		exec(args.join(' '), {
 			cwd: path.join(__dirname, app)
 		}, function (code, out, err) {
-			//console.log(out);
+			if (code) {
+				return done(new Error(out + '\n' + err));
+			}
 			should(out).match(/BUILD SUCCEEDED/);
 			var appPath = path.join(__dirname, app, 'build', 'Debug-iphonesimulator', app + '.app');
 			should(fs.existsSync(appPath)).be.true;
@@ -218,9 +219,13 @@ describe('simulator', function () {
 		this.slow(60000);
 
 		ioslib.simulator.launch(null, null, function (err, simHandle) {
-			exec('ps -ef', function (code, out, err) {
+			if (err) {
+				return done(err);
+			}
+
+			appc.subprocess.run('ps', '-ef', function (code, out, err) {
 				if (code) {
-					return done(err);
+					return done(new Error('Failed to get process list: ' + code));
 				}
 
 				should(out.split('\n').filter(function (line) { return line.indexOf(simHandle.simulator) !== -1; })).not.length(0);
@@ -237,7 +242,10 @@ describe('simulator', function () {
 		this.slow(60000);
 
 		build('TestApp', null, ['TEST_BASIC_LOGGING'], function (err, appPath) {
-			should(err).not.be.ok;
+			if (err !== null) {
+				console.log(err);
+				should(err).equal(null);
+			}
 			should(appPath).be.a.String;
 			should(fs.existsSync(appPath)).be.ok;
 
@@ -251,6 +259,8 @@ describe('simulator', function () {
 				hide: true
 			}).on('log', function (line) {
 				counter++;
+			}).on('log-debug', function (line, simHandle) {
+				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('launched', function (simHandle) {
 				launched = true;
 			}).on('error', function (err) {
@@ -294,6 +304,8 @@ describe('simulator', function () {
 			emitter.on('app-started', function (handle) {
 				simHandle = handle;
 				stop();
+			}).on('log-debug', function (line, simHandle) {
+				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			});
@@ -334,6 +346,8 @@ describe('simulator', function () {
 			emitter.on('app-started', function (handle) {
 				simHandle = handle;
 				stop();
+			}).on('log-debug', function (line, simHandle) {
+				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			});
@@ -363,6 +377,8 @@ describe('simulator', function () {
 				hide: true
 			}).on('app-started', function (handle) {
 				simHandle = handle;
+			}).on('log-debug', function (line, simHandle) {
+				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			}).on('app-quit', function (crash) {
@@ -406,6 +422,8 @@ describe('simulator', function () {
 				hide: true
 			}).on('app-started', function (handle) {
 				simHandle = handle;
+			}).on('log-debug', function (line, simHandle) {
+				console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 			}).on('error', function (err) {
 				done(err);
 			}).on('app-quit', function (crash) {
@@ -451,8 +469,8 @@ describe('simulator', function () {
 					appPath: appPath,
 					hide: true,
 					launchWatchApp: true
-				//}).on('log-debug', function (line, simHandle) {
-				//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+				}).on('log-debug', function (line, simHandle) {
+					console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 				}).on('app-started', function (simHandle, watchSimHandle) {
 					ioslib.simulator.stop(simHandle, function () {
 						if (watchSimHandle) {
@@ -488,8 +506,8 @@ describe('simulator', function () {
 					appPath: appPath,
 					hide: true,
 					launchWatchApp: true
-				//}).on('log-debug', function (line, simHandle) {
-				//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+				}).on('log-debug', function (line, simHandle) {
+					console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 				}).on('app-started', function (simHandle, watchSimHandle) {
 					ioslib.simulator.stop(simHandle, function () {
 						if (watchSimHandle) {
