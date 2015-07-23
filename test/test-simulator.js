@@ -462,8 +462,12 @@ describe('simulator', function () {
 			should(fs.existsSync(appPath)).be.ok;
 
 			ioslib.simulator.detect(function (err, simulators) {
-				var ver = Object.keys(simulators.ios).filter(function (ver) { return appc.version.gte(ver, '8.2') && appc.version.lt(ver, '9.0'); }).sort().pop(),
-					udid = simulators.ios[ver][simulators.ios[ver].length - 1].udid;
+				var ver = Object.keys(simulators.ios).filter(function (ver) { return appc.version.gte(ver, '8.2') && appc.version.lt(ver, '9.0'); }).sort().pop();
+				if (!ver) {
+					return done(new Error('iOS 8.2, 8.3, or 8.4 not installed'));
+				}
+
+				var udid = simulators.ios[ver][simulators.ios[ver].length - 1].udid;
 
 				ioslib.simulator.launch(null, {
 					appPath: appPath,
@@ -499,8 +503,12 @@ describe('simulator', function () {
 			should(fs.existsSync(appPath)).be.ok;
 
 			ioslib.simulator.detect(function (err, simulators) {
-				var ver = Object.keys(simulators.ios).filter(function (ver) { return appc.version.gte(ver, '9.0'); }).sort().pop(),
-					udid = simulators.ios[ver][simulators.ios[ver].length - 1].udid;
+				var ver = Object.keys(simulators.ios).filter(function (ver) { return appc.version.gte(ver, '9.0'); }).sort().pop();
+				if (!ver) {
+					return done(new Error('iOS 9 not installed'));
+				}
+
+				var udid = simulators.ios[ver][simulators.ios[ver].length - 1].udid;
 
 				ioslib.simulator.launch(udid, {
 					appPath: appPath,
