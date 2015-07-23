@@ -48,7 +48,7 @@ function detect(options, callback) {
 		}
 
 		var results = {
-			detectVersion: '3.0',
+			detectVersion: '4.0',
 			issues: []
 		};
 
