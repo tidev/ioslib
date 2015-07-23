@@ -20,50 +20,29 @@ function checkSims(sims) {
 	should(sims).be.an.Array;
 	sims.forEach(function (sim) {
 		should(sim).be.an.Object;
-		should(sim).have.keys('deviceType', 'udid', 'type', 'name', 'ios', 'retina', 'tall', '64bit', 'resizable', 'supportsWatch', 'xcode', 'xcodePath', 'simulator', 'simctl', 'systemLog', 'logPaths');
+		should(sim).have.keys('udid', 'name', 'version', 'state', 'deviceType', 'deviceName', 'deviceDir', 'model', 'family', 'supportsWatch', 'runtime', 'runtimeName', 'xcode', 'systemLog', 'logPaths');
 
-		should(sim.deviceType).be.a.String;
-		should(sim.deviceType).not.equal('');
+		['udid', 'name', 'version', 'state', 'deviceType', 'deviceName', 'deviceDir', 'model', 'family', 'runtime', 'runtimeName', 'xcode', 'systemLog'].forEach(function (key) {
+			if (sim[key] !== null) {
+				should(sim[key]).be.a.String;
+				should(sim[key]).not.equal('');
+			}
+		});
 
-		should(sim.udid).be.a.String;
-		should(sim.udid).not.equal('');
+		if (sim.supportsWatch !== null) {
+			should(sim.supportsWatch).be.an.Object;
+			Object.keys(sim.supportsWatch).forEach(function (xcodeId) {
+				should(sim.supportsWatch[xcodeId]).be.a.Boolean;
+			});
+		}
 
-		should(sim.type).be.a.String;
-		should(sim.type).not.equal('');
-
-		should(sim.name).be.a.String;
-		should(sim.name).not.equal('');
-
-		should(sim.ios).be.a.String;
-		should(sim.ios).not.equal('');
-
-		should(sim.retina).be.a.Boolean;
-
-		should(sim.tall).be.a.Boolean;
-
-		should(sim['64bit']).be.a.Boolean;
-
-		should(sim.resizable).be.a.Boolean;
-
-		should(sim.xcode).be.a.String;
-		should(sim.xcode).not.equal('');
-
-		should(sim.xcodePath).be.a.String;
-		should(sim.xcodePath).not.equal('');
-
-		should(sim.simulator).be.a.String;
-		should(sim.simulator).not.equal('');
-		should(fs.existsSync(sim.simulator)).be.true;
-
-		should(sim.simctl).be.a.String;
-		should(sim.simctl).not.equal('');
-		should(fs.existsSync(sim.simctl)).be.true;
-
-		should(sim.systemLog).be.a.String;
-		should(sim.systemLog).not.equal('');
-
-		should(sim.logPaths).be.an.Array;
-		should(sim.logPaths).not.length(0);
+		if (sim.logPaths !== null) {
+			should(sim.logPaths).be.an.Array;
+			sim.logPaths.forEach(function (p) {
+				should(p).be.a.String;
+				should(p).not.equal('');
+			});
+		}
 	});
 }
 
@@ -162,11 +141,56 @@ describe('simulator', function () {
 			}
 
 			should(results).be.an.Object;
-			should(results).have.keys('simulators', 'watchSimulators', 'devicePairs', 'crashDir', 'issues');
+			should(results).have.keys('deviceTypes', 'runtimes', 'ios', 'watchos', 'devicePairs', 'crashDir', 'issues');
 
-			should(results.simulators).be.an.Object;
-			Object.keys(results.simulators).forEach(function (ver) {
-				checkSims(results.simulators[ver]);
+			should(results.deviceTypes).be.an.Object;
+			Object.keys(results.deviceTypes).forEach(function (name) {
+				should(results.deviceTypes[name]).be.an.Object;
+				should(results.deviceTypes[name]).have.keys('name', 'model', 'supportsWatch', 'xcode');
+				should(results.deviceTypes[name].name).be.a.String;
+				should(results.deviceTypes[name].name).not.equal('');
+				should(results.deviceTypes[name].model).be.a.String;
+				should(results.deviceTypes[name].model).not.equal('');
+				should(results.deviceTypes[name].supportsWatch).be.a.Object;
+				Object.keys(results.deviceTypes[name].supportsWatch).forEach(function (ver) {
+					should(results.deviceTypes[name].supportsWatch[ver]).be.a.Boolean;
+				});
+				should(results.deviceTypes[name].xcode).be.a.String;
+				should(results.deviceTypes[name].xcode).not.equal('');
+			});
+
+			should(results.runtimes).be.an.Object;
+			Object.keys(results.runtimes).forEach(function (name) {
+				should(results.runtimes[name]).be.an.Object;
+				should(results.runtimes[name]).have.keys('name', 'version', 'xcode');
+				should(results.runtimes[name].name).be.a.String;
+				should(results.runtimes[name].name).not.equal('');
+				should(results.runtimes[name].version).be.a.String;
+				should(results.runtimes[name].version).not.equal('');
+				if (results.runtimes[name].xcode !== null) {
+					should(results.runtimes[name].xcode).be.a.String;
+					should(results.runtimes[name].xcode).not.equal('');
+				}
+			});
+
+			should(results.ios).be.an.Object;
+			Object.keys(results.ios).forEach(function (ver) {
+				checkSims(results.ios[ver]);
+			});
+
+			should(results.watchos).be.an.Object;
+			Object.keys(results.watchos).forEach(function (ver) {
+				checkSims(results.watchos[ver]);
+			});
+
+			should(results.devicePairs).be.an.Object;
+			Object.keys(results.devicePairs).forEach(function (udid) {
+				should(results.devicePairs[udid]).be.an.Object;
+				should(results.devicePairs[udid]).have.keys('phone', 'watch');
+				should(results.devicePairs[udid].phone).be.a.String;
+				should(results.devicePairs[udid].phone).not.equal('');
+				should(results.devicePairs[udid].watch).be.a.String;
+				should(results.devicePairs[udid].watch).not.equal('');
 			});
 
 			should(results.crashDir).be.a.String;
@@ -189,7 +213,7 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and stop it', function (done) {
+	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and stop it', function (done) {
 		this.timeout(30000);
 		this.slow(30000);
 
@@ -267,7 +291,7 @@ describe('simulator', function () {
 				}
 			}
 
-			emitter.on('launched', function (handle) {
+			emitter.on('app-started', function (handle) {
 				simHandle = handle;
 				stop();
 			}).on('error', function (err) {
@@ -307,7 +331,7 @@ describe('simulator', function () {
 				}
 			}
 
-			emitter.on('launched', function (handle) {
+			emitter.on('app-started', function (handle) {
 				simHandle = handle;
 				stop();
 			}).on('error', function (err) {
@@ -337,7 +361,7 @@ describe('simulator', function () {
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
 				hide: true
-			}).on('launched', function (handle) {
+			}).on('app-started', function (handle) {
 				simHandle = handle;
 			}).on('error', function (err) {
 				done(err);
@@ -380,7 +404,7 @@ describe('simulator', function () {
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
 				hide: true
-			}).on('launched', function (handle) {
+			}).on('app-started', function (handle) {
 				simHandle = handle;
 			}).on('error', function (err) {
 				done(err);
@@ -411,8 +435,8 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchOS 1 app', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+		this.timeout(60000);
+		this.slow(60000);
 
 		build('TestWatchApp', '>=8.2 <9.0', ['TEST_BASIC_LOGGING'], function (err, appPath) {
 			should(err).not.be.ok;
@@ -423,13 +447,21 @@ describe('simulator', function () {
 				var ver = Object.keys(simulators.ios).filter(function (ver) { return appc.version.gte(ver, '8.2') && appc.version.lt(ver, '9.0'); }).sort().pop(),
 					udid = simulators.ios[ver][simulators.ios[ver].length - 1].udid;
 
-				ioslib.simulator.launch(udid, {
+				ioslib.simulator.launch(null, {
 					appPath: appPath,
 					hide: true,
 					launchWatchApp: true
-				}).on('launched', function (simHandle) {
+				//}).on('log-debug', function (line, simHandle) {
+				//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+				}).on('app-started', function (simHandle, watchSimHandle) {
 					ioslib.simulator.stop(simHandle, function () {
-						done();
+						if (watchSimHandle) {
+							ioslib.simulator.stop(watchSimHandle, function () {
+								done();
+							});
+						} else {
+							done();
+						}
 					});
 				}).on('error', function (err) {
 					done(err);
@@ -439,9 +471,9 @@ describe('simulator', function () {
 	});
 
 
-	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and launch the watchOS 2 app', function (done) {
-		this.timeout(30000);
-		this.slow(30000);
+	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchOS 2 app', function (done) {
+		this.timeout(60000);
+		this.slow(60000);
 
 		build('TestWatchApp2', '9.x', ['TEST_BASIC_LOGGING'], function (err, appPath) {
 			should(err).not.be.ok;
@@ -454,14 +486,20 @@ describe('simulator', function () {
 
 				ioslib.simulator.launch(udid, {
 					appPath: appPath,
-					//hide: true,
+					hide: true,
 					launchWatchApp: true
-				}).on('log-debug', function (line) {
-					console.log(line);
-				}).on('launched', function (simHandle, watchSimHandle) {
-					//ioslib.simulator.stop(simHandle, function () {
-						done();
-					//});
+				//}).on('log-debug', function (line, simHandle) {
+				//	console.log((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
+				}).on('app-started', function (simHandle, watchSimHandle) {
+					ioslib.simulator.stop(simHandle, function () {
+						if (watchSimHandle) {
+							ioslib.simulator.stop(watchSimHandle, function () {
+								done();
+							});
+						} else {
+							done();
+						}
+					});
 				}).on('error', function (err) {
 					done(err);
 				});
