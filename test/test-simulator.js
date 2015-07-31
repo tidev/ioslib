@@ -219,7 +219,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: 'foo',
-			watchApp: false
+			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
 			should(err.message).equal('Unable to find an iOS Simulator with the UDID "foo".');
@@ -234,7 +234,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: '79D1EC85-352F-4D63-B92F-C397345934A6',
-			watchApp: false
+			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -256,7 +256,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: '79D1EC85-352F-4D63-B92F-C397345934A6',
-			watchApp: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: 'bar'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
@@ -272,7 +272,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: 'AE9CBDC9-3ED6-4CEE-9723-7F415ED1DD4C',
-			watchApp: false,
+			watchAppBeingInstalled: false,
 			watchHandleOrUDID: 'D5C1DA2F-7A74-49C8-809A-906E554021B0'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -295,7 +295,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: 'AE9CBDC9-3ED6-4CEE-9723-7F415ED1DD4C',
-			watchApp: false
+			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -317,7 +317,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: 'AE9CBDC9-3ED6-4CEE-9723-7F415ED1DD4C',
-			watchApp: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: 'D5C1DA2F-7A74-49C8-809A-906E554021B0'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -341,7 +341,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: 'AE9CBDC9-3ED6-4CEE-9723-7F415ED1DD4C',
-			watchApp: true
+			watchAppBeingInstalled: true
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -364,7 +364,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: 'AE9CBDC9-3ED6-4CEE-9723-7F415ED1DD4C',
-			watchApp: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: '68572BC8-791C-4F45-95E1-E317D6CC210B'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
@@ -381,7 +381,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: '79D1EC85-352F-4D63-B92F-C397345934A6',
-			watchApp: false,
+			watchAppBeingInstalled: false,
 			watchHandleOrUDID: '68572BC8-791C-4F45-95E1-E317D6CC210B'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -404,7 +404,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: '79D1EC85-352F-4D63-B92F-C397345934A6',
-			watchApp: false
+			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -426,7 +426,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: '79D1EC85-352F-4D63-B92F-C397345934A6',
-			watchApp: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: '68572BC8-791C-4F45-95E1-E317D6CC210B'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -450,7 +450,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: '79D1EC85-352F-4D63-B92F-C397345934A6',
-			watchApp: true
+			watchAppBeingInstalled: true
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -473,7 +473,7 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			simHandleOrUDID: '79D1EC85-352F-4D63-B92F-C397345934A6',
-			watchApp: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: 'D5C1DA2F-7A74-49C8-809A-906E554021B0'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
@@ -489,7 +489,7 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			watchApp: false,
+			watchAppBeingInstalled: false,
 			watchHandleOrUDID: 'D5C1DA2F-7A74-49C8-809A-906E554021B0'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -511,7 +511,7 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			watchApp: false
+			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -532,8 +532,8 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			appPath: true,
-			watchApp: false
+			appBeingInstalled: true,
+			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -554,8 +554,8 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			appPath: true,
-			watchApp: true,
+			appBeingInstalled: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: 'D5C1DA2F-7A74-49C8-809A-906E554021B0'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -578,8 +578,8 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			appPath: true,
-			watchApp: true
+			appBeingInstalled: true,
+			watchAppBeingInstalled: true
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
@@ -601,8 +601,8 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			appPath: true,
-			watchApp: true,
+			appBeingInstalled: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: '68572BC8-791C-4F45-95E1-E317D6CC210B'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -625,9 +625,9 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			appPath: true,
+			appBeingInstalled: true,
 			simHandleOrUDID: '5CC642EE-F31D-4EE3-9100-08AC3B132E9F',
-			watchApp: true,
+			watchAppBeingInstalled: true,
 			watchHandleOrUDID: '68572BC8-791C-4F45-95E1-E317D6CC210B'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
@@ -642,9 +642,9 @@ describe('simulator', function () {
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			appPath: true,
+			appBeingInstalled: true,
 			simHandleOrUDID: '5CC642EE-F31D-4EE3-9100-08AC3B132E9F',
-			watchApp: true
+			watchAppBeingInstalled: true
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
 			should(err.message).equal('Specified iOS Simulator "5CC642EE-F31D-4EE3-9100-08AC3B132E9F" does not support watch apps.');
