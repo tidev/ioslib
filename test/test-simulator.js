@@ -650,6 +650,31 @@ describe('simulator', function () {
 		});
 	});
 
+	(process.env.TRAVIS ? it.skip : it.only)('find a Xcode 7 iOS 9 iOS and Watch Sim', function (done) {
+		this.timeout(5000);
+		this.slow(2000);
+
+		ioslib.simulator.findSimulators({
+			logger: logger,
+			appBeingInstalled:      true,
+			simType:                'iphone',
+			watchAppBeingInstalled: true,
+			watchMinOSVersion:      '2.0'
+		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
+			if (err) {
+				return done(err);
+			}
+
+			should(simHandle).be.ok;
+			should(simHandle.udid).equal(xc7_ios9_iphone6);
+			should(watchSimHandle).be.ok;
+			should(watchSimHandle.udid).equal(xc7_watchos2_42mm);
+			should(selectedXcode).be.ok;
+			should(selectedXcode.version).equal('7.0');
+			done();
+		});
+	});
+
 	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and stop it', function (done) {
 		this.timeout(60000);
 		this.slow(60000);
@@ -952,7 +977,7 @@ describe('simulator', function () {
 	});
 
 
-	(process.env.TRAVIS ? it.skip : it.only)('should launch the default simulator and launch the watchOS 2 app', function (done) {
+	(process.env.TRAVIS ? it.skip : it)('should launch the default simulator and launch the watchOS 2 app', function (done) {
 		this.timeout(60000);
 		this.slow(60000);
 
