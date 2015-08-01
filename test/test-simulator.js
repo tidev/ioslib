@@ -650,7 +650,7 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS ? it.skip : it.only)('find a Xcode 7 iOS 9 iOS and Watch Sim', function (done) {
+	(process.env.TRAVIS ? it.skip : it)('find a Xcode 7 iOS 9 iOS and Watch Sim', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
