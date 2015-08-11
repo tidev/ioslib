@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "iOS Utility Library",
   "keywords": [
     "appcelerator",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "always-tail": "0.1.1",
-    "async": "1.4.1",
+    "async": "1.4.2",
     "bplist-parser": "0.1.0",
     "mkdirp": "0.5.1",
     "node-appc": "0.2.28",
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "mocha": "^2.2.5",
-    "should": "^7.0.2"
+    "should": "^7.0.3"
   },
   "scripts": {
     "test": "mocha --require test/init --reporter spec --check-leaks test/",
