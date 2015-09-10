@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "description": "iOS Utility Library",
   "keywords": [
     "appcelerator",
@@ -43,7 +43,7 @@
     "mkdirp": "0.5.1",
     "node-appc": "0.2.31",
     "node-ios-device": "0.5.2",
-    "sqlite3": "3.0.10"
+    "sqlite3": "3.1.0"
   },
   "devDependencies": {
     "mocha": "^2.3.2",
