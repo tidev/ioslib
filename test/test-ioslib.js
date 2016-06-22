@@ -29,7 +29,7 @@ describe('ioslib', function () {
 
 			should(results).be.an.Object;
 			should(results).have.keys('detectVersion', 'issues', 'devices', 'provisioning', 'executables', 'selectedXcode',
-				'xcode', 'certs', 'simulators');
+				'xcode', 'certs', 'teams', 'simulators');
 
 			should(results.detectVersion).be.a.String;
 
