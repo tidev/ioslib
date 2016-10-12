@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "iOS Utility Library",
   "keywords": [
     "appcelerator",
@@ -15,10 +15,6 @@
     "email": "npmjs@appcelerator.com"
   },
   "maintainers": [
-    {
-      "name": "Jeff Haynie",
-      "email": "jhaynie@appcelerator.com"
-    },
     {
       "name": "Chris Barber",
       "email": "cbarber@appcelerator.com"
