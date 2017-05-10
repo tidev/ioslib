@@ -43,10 +43,11 @@
   },
   "devDependencies": {
     "mocha": "^3.2.0",
+    "mocha-jenkins-reporter": "^0.3.7",
     "should": "^11.2.1"
   },
   "scripts": {
-    "test": "mocha --require test/init --reporter spec --check-leaks test/",
+    "test": "mocha --require test/init --reporter mocha-jenkins-reporter --check-leaks test/",
     "test-certs": "mocha --require test/init --reporter spec --check-leaks test/test-certs",
     "test-device": "mocha --require test/init --reporter spec --check-leaks test/test-device",
     "test-env": "mocha --require test/init --reporter spec --check-leaks test/test-env",
