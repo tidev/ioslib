@@ -25,7 +25,7 @@ timestamps {
         timeout(15) {
           stage('Build') {
             // Install yarn if not installed
-            if (sh(returnStatus: true, script: 'where yarn') != 0) {
+            if (sh(returnStatus: true, script: 'which yarn') != 0) {
               sh 'npm install -g yarn'
             }
             sh 'yarn install'
