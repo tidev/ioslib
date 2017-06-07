@@ -6,7 +6,7 @@
 /npm-debug.log
 /env.properties
 /junit_report.xml
-/JenkinsFile
+/Jenkinsfile
 
 test/TestApp/info.plist
 test/TestApp/build
