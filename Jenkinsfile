@@ -4,7 +4,7 @@ library 'pipeline-library'
 timestamps {
   node('osx && npm-publish') {
     def packageVersion = ''
-    def isPR = false
+    def isMaster = false
     stage('Checkout') {
       // checkout scm
       // Hack for JENKINS-37658 - see https://support.cloudbees.com/hc/en-us/articles/226122247-How-to-Customize-Checkout-for-Pipeline-Multibranch
@@ -15,7 +15,7 @@ timestamps {
         userRemoteConfigs: scm.userRemoteConfigs
       ])
 
-      isPR = env.BRANCH_NAME.startsWith('PR-')
+      isMaster = env.BRANCH_NAME.equals('master')
       packageVersion = jsonParse(readFile('package.json'))['version']
       currentBuild.displayName = "#${packageVersion}-${currentBuild.number}"
     }
@@ -39,8 +39,8 @@ timestamps {
               junit 'junit_report.xml'
             }
             fingerprint 'package.json'
-            // Don't tag PRs
-            if (!isPR) {
+            // Only tag master
+            if (isMaster) {
               pushGitTag(name: packageVersion, message: "See ${env.BUILD_URL} for more information.", force: true)
             }
           } // stage
@@ -63,7 +63,8 @@ timestamps {
         } // stage
 
         stage('Publish') {
-          if (!isPR) {
+		  // only publish master and trigger downstream
+          if (isMaster) {
             sh 'npm publish'
             // Trigger appc-cli-wrapper job
             build job: 'appc-cli-wrapper', wait: false
@@ -71,7 +72,7 @@ timestamps {
         } // stage
 
         stage('JIRA') {
-          if (!isPR) {
+          if (isMaster) {
             // update affected tickets, create and release version
             updateJIRA('TIMOB', "ioslib ${packageVersion}", scm)
           } // if
