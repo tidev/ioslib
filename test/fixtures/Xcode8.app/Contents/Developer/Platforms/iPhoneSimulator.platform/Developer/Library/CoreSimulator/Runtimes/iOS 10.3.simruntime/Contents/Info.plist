@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DTPlatformVersion</key>
+	<string>GM</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.CoreSimulator.SimRuntime.iOS-10-3</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>DTCompiler</key>
+	<string>com.apple.compilers.llvm.clang.1_0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>DTPlatformBuild</key>
+	<string>8V109d</string>
+	<key>CFBundleExecutable</key>
+	<string>iOS 10.3</string>
+	<key>DTXcodeBuild</key>
+	<string>8V109d</string>
+	<key>DTSDKName</key>
+	<string>macosx10.11internal</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>DTXcode</key>
+	<string>0830</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>BuildMachineOSBuild</key>
+	<string>15A284</string>
+	<key>DTSDKBuild</key>
+	<string>15A284</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2013-2017 Apple Inc. All rights reserved.</string>
+	<key>CFBundleName</key>
+	<string>iOS 10.3</string>
+</dict>
+</plist>

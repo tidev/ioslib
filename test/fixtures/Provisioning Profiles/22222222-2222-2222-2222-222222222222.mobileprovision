@@ -1,0 +1,63 @@
+XXXXXXXXXX<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AppIDName</key>
+	<string>Test App</string>
+	<key>ApplicationIdentifierPrefix</key>
+	<array>
+	<string>WP12345678</string>
+	</array>
+	<key>CreationDate</key>
+	<date>2016-09-20T22:33:39Z</date>
+	<key>Platform</key>
+	<array>
+		<string>iOS</string>
+	</array>
+	<key>DeveloperCertificates</key>
+	<array>
+		<data>REVWRUxPUEVSX0NFUlRfR09FU19IRVJF</data>
+	</array>
+	<key>Entitlements</key>
+	<dict>
+		<key>keychain-access-groups</key>
+		<array>
+			<string>WP12345678.*</string>
+		</array>
+		<key>get-task-allow</key>
+		<true/>
+		<key>application-identifier</key>
+		<string>WP12345678.com.test</string>
+		<key>com.apple.security.application-groups</key>
+		<array>
+			<string>group.com.test</string>
+		</array>
+		<key>com.apple.developer.team-identifier</key>
+		<string>WP12345678</string>
+		<key>aps-environment</key>
+		<string>production</string>
+		<key>beta-reports-active</key>
+		<true/>
+	</dict>
+	<key>ExpirationDate</key>
+	<date>2018-09-20T22:06:04Z</date>
+	<key>Name</key>
+	<string>Test App</string>
+	<key>ProvisionedDevices</key>
+	<array>
+		<string>UDID_GOES_HERE</string>
+	</array>
+	<key>TeamIdentifier</key>
+	<array>
+		<string>WP12345678</string>
+	</array>
+	<key>TeamName</key>
+	<string>Testco</string>
+	<key>TimeToLive</key>
+	<integer>364</integer>
+	<key>UUID</key>
+	<string>22222222-2222-2222-2222-222222222222</string>
+	<key>Version</key>
+	<integer>1</integer>
+</dict>
+</plist>XXXXXXXXXX

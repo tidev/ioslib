@@ -1,0 +1,52 @@
+{
+  "name": "ioslib2",
+  "version": "2.0.0-beta.1",
+  "description": "iOS Utility Library",
+  "main": "./dist/index",
+  "author": "Axway, Inc. <npmjs@appcelerator.com>",
+  "maintainers": [
+    "Chris Barber <cbarber@axway.com>"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "appcelerator",
+    "ios",
+    "iphone",
+    "ipad",
+    "xcode",
+    "apple"
+  ],
+  "scripts": {
+    "build": "gulp build",
+    "coverage": "gulp coverage",
+    "docs": "gulp docs",
+    "prepare": "gulp build",
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "always-tail": "0.2.0",
+    "appcd-fs": "^0.1.4",
+    "appcd-path": "^0.1.4",
+    "appcd-subprocess": "^0.1.4",
+    "appcd-util": "^0.1.4",
+    "eslint-plugin-mocha": "^4.11.0",
+    "node-forge": "^0.7.1",
+    "node-ios-device": "1.4.0",
+    "promise-limit": "^2.5.0",
+    "simple-plist": "^0.2.1",
+    "source-map-support": "^0.5.0"
+  },
+  "devDependencies": {
+    "appcd-gulp": "^0.1.4",
+    "gulp": "^3.9.1"
+  },
+  "homepage": "https://github.com/appcelerator/ioslib",
+  "bugs": "https://github.com/appcelerator/ioslib/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/appcelerator/ioslib.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

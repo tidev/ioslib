@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>mainScreenHeight</key>
+	<integer>1334</integer>
+	<key>supportedProductFamilyIDs</key>
+	<array>
+		<integer>1</integer>
+	</array>
+	<key>modelIdentifier</key>
+	<string>iPhone9,1</string>
+	<key>productClass</key>
+	<string>D10</string>
+	<key>mainScreenHeightDPI</key>
+	<integer>326</integer>
+	<key>minRuntimeVersion</key>
+	<string>10.0</string>
+	<key>mainScreenScale</key>
+	<real>2</real>
+	<key>mainScreenWidth</key>
+	<integer>750</integer>
+	<key>mainScreenWidthDPI</key>
+	<integer>326</integer>
+	<key>supportedArchs</key>
+	<array>
+		<string>x86_64</string>
+		<string>i386</string>
+	</array>
+	<key>springBoardConfigName</key>
+	<string>iPhone4Simulator</string>
+	<key>environment</key>
+	<dict>
+		<key>SIMULATOR_LEGACY_ASSET_SUFFIX</key>
+		<string>iphone</string>
+	</dict>
+	<key>supportedFeatures</key>
+	<dict>
+		<key>com.apple.hid.keyboard</key>
+		<true/>
+		<key>com.apple.display.integrated</key>
+		<true/>
+		<key>com.apple.display.supports-external</key>
+		<true/>
+		<key>com.apple.hid.touch-screen</key>
+		<true/>
+	</dict>
+	<key>supportedFeaturesConditionalOnRuntime</key>
+	<dict>
+		<key>com.apple.hid.applepay.authorize</key>
+		<true/>
+		<key>com.apple.carplay</key>
+		<true/>
+		<key>com.apple.watch.pairing.qws</key>
+		<true/>
+		<key>com.apple.touch-id</key>
+		<true/>
+		<key>com.apple.watch.pairing.companion</key>
+		<true/>
+		<key>com.apple.hid.touch-pressure</key>
+		<true/>
+		<key>com.apple.CoreSimulator.pairing</key>
+		<true/>
+	</dict>
+</dict>
+</plist>

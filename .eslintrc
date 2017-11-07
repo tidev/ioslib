@@ -1,0 +1,9 @@
+{
+    "extends": [
+        "axway/env-node",
+        "axway/+babel"
+    ],
+    "rules": {
+        "security/detect-non-literal-regexp": "off"
+    }
+}
