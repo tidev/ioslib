@@ -2,26 +2,13 @@ import fs from 'fs';
 import options from './options';
 import path from 'path';
 import plist from 'simple-plist';
+import version from './version';
 
+import { cache } from 'appcd-util';
 import { expandPath } from 'appcd-path';
 import { isDir, isFile } from 'appcd-fs';
+import { run, which } from 'appcd-subprocess';
 import { spawnSync } from 'child_process';
-
-const version = {
-	gte(a, b) {
-		a = [ ...String(a).split('.'), 0, 0, 0 ].slice(0, 3).map(n => parseInt(n));
-		b = [ ...String(b).split('.'), 0, 0, 0 ].slice(0, 3).map(n => parseInt(n));
-		return a[0] > b[0] || (a[0] === b[0] && (a[1] > b[1] || (a[1] === b[1] && a[2] >= b[2])));
-	},
-
-	lt(a, b) {
-		return !version.gte(a, b);
-	},
-
-	rcompare(a, b) {
-		return a === b ? 0 : a < b ? 1 : -1;
-	}
-};
 
 /**
  * Directories to scan for Xcode installations.
@@ -32,7 +19,71 @@ export const xcodeLocations = [
 	'~/Applications'
 ];
 
+/**
+ * The path to the global directory containing the device types and runtimes. This is mostly for
+ * legacy Xcode versions. Newer versions install runtimes in Xcode app directory.
+ * @type {String}
+ */
 export const globalSimProfilesPath = '/Library/Developer/CoreSimulator/Profiles';
+
+/**
+ * A lookup table of valid iOS Simulator -> Watch Simulator pairings.
+ *
+ * This table MUST be maintained!
+ *
+ * The actual device pairing is done by the CoreSimulator private framework and thus there's no way
+ * to know definitively what the valid device pairs are.
+ *
+ * @type {Object}
+ */
+const simulatorDevicePairCompatibility = {
+	'>=6.2 <7.0': {        // Xcode 6.2, 6.3, 6.4
+		'>=8.2 <9.0': {    // iOS 8.2, 8.3, 8.4
+			'1.x': true    // watchOS 1.0
+		}
+	},
+	'7.x': {               // Xcode 7.x
+		'>=8.2 <9.0': {    // iOS 8.2, 8.3, 8.4
+			'1.x': true    // watchOS 1.0
+		},
+		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
+			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
+		},
+		'>=9.3': {         // iOS 9.x
+			'2.2': true    // watchOS 2.2
+		}
+	},
+	'8.x': {               // Xcode 8.x
+		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
+			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
+		},
+		'>=9.3': {         // iOS 9.x
+			'2.2': true,   // watchOS 2.2
+			'3.x': true    // watchOS 3.x
+		},
+		'10.x': {          // iOS 10.x
+			'2.2': true,   // watchOS 2.2
+			'3.x': true    // watchOS 3.x
+		}
+	},
+	'9.x': {               // Xcode 9.x
+		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
+			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
+		},
+		'>=9.3': {         // iOS 9.x
+			'2.2': true,   // watchOS 2.2
+			'3.x': true    // watchOS 3.x
+		},
+		'10.x': {          // iOS 10.x
+			'2.2': true,   // watchOS 2.2
+			'3.x': true    // watchOS 3.x
+		},
+		'11.x': {
+			'>=3.2': true, // watchOS 3.2
+			'4.x': true    // watchOS 4.x
+		}
+	}
+};
 
 /**
  * Xcode information object.
@@ -79,12 +130,13 @@ export class Xcode {
 		}
 
 		this.path         = dir;
-		this.xcodeapp     = path.resolve(this.path, '../..');
+		this.xcodeapp     = path.resolve(dir, '../..');
 		this.version      = versionPlist.CFBundleShortVersionString;
 		this.build        = versionPlist.ProductBuildVersion;
 		this.id           = `${this.version}:${this.build}`;
 		this.executables = {
-			simulator: null,
+			simctl:         path.join(dir, 'usr/bin/simctl'),
+			simulator:      null,
 			watchsimulator: null,
 			xcodebuild
 		};
@@ -94,7 +146,15 @@ export class Xcode {
 			watchos: this.findSDKs('WatchOS')
 		};
 		this.simDeviceTypes = {};
-		this.simRuntimes = {};
+		this.simRuntimes    = {};
+		this.simDevicePairs = {};
+
+		for (const xcodeRange of Object.keys(simulatorDevicePairCompatibility)) {
+			if (version.satisfies(this.version, xcodeRange)) {
+				this.simDevicePairs = simulatorDevicePairCompatibility[xcodeRange];
+				break;
+			}
+		}
 
 		// loop over the names and scan the derived path for simulator device types and runtimes
 		// note: Xcode 9 moved CoreSimulator into the "xxxxOS" directory instead of the "xxxxSimulator" directory
@@ -233,5 +293,52 @@ export class Xcode {
 				}
 			}
 		}
+	}
+}
+
+/**
+ * Detects all installed Xcodes, then caches and returns the results.
+ *
+ * @param {Boolean} [force] - When `true`, bypasses the cache and rescans for Xcodes.
+ * @returns {Promise<Array.<Xcode>>}
+ */
+export function getXcodes(force) {
+	return cache('xcode', force, () => {
+		const results = {};
+		for (let dir of xcodeLocations) {
+			dir = expandPath(dir);
+			for (const name of fs.readdirSync(dir)) {
+				try {
+					const xcode = new Xcode(path.join(dir, name));
+					results[xcode.id] = xcode;
+				} catch (e) {
+					// not an Xcode
+				}
+			}
+		}
+		return results;
+	});
+}
+
+/**
+ * Determines the default Xcode path by running `xcode-select`.
+ *
+ * @param {String} [xcodeselect] - The preferred path to the `xcode-select` executable to run.
+ * @returns {Promise<String>}
+ */
+export async function getDefaultXcodePath(xcodeselect) {
+	try {
+		const candidates = [ 'xcode-select' ];
+		if (xcodeselect) {
+			xcodeselect = options.executables.xcodeselect;
+		}
+		if (xcodeselect !== 'xcode-select') {
+			candidates.unshift(xcodeselect);
+		}
+		const bin = await which(candidates);
+		const { stdout } = await run(bin, [ '--print-path' ]);
+		return path.resolve(stdout.trim(), '../..');
+	} catch (e) {
+		return null;
 	}
 }

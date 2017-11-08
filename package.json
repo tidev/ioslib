@@ -1,6 +1,6 @@
 {
   "name": "ioslib2",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "iOS Utility Library",
   "main": "./dist/index",
   "author": "Axway, Inc. <npmjs@appcelerator.com>",
@@ -33,6 +33,7 @@
     "node-forge": "^0.7.1",
     "node-ios-device": "1.4.0",
     "promise-limit": "^2.5.0",
+    "semver": "^5.4.1",
     "simple-plist": "^0.2.1",
     "source-map-support": "^0.5.0"
   },

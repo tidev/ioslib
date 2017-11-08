@@ -1,0 +1,1738 @@
+#!/bin/sh
+
+echo '{
+  "devicetypes" : [
+    {
+      "name" : "iPhone 4s",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-4s"
+    },
+    {
+      "name" : "iPhone 5",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-5"
+    },
+    {
+      "name" : "iPhone 5s",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-5s"
+    },
+    {
+      "name" : "iPhone 6",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-6"
+    },
+    {
+      "name" : "iPhone 6 Plus",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-6-Plus"
+    },
+    {
+      "name" : "iPhone 6s",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-6s"
+    },
+    {
+      "name" : "iPhone 6s Plus",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-6s-Plus"
+    },
+    {
+      "name" : "iPhone 7",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-7"
+    },
+    {
+      "name" : "iPhone 7 Plus",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-7-Plus"
+    },
+    {
+      "name" : "iPhone SE",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-SE"
+    },
+    {
+      "name" : "iPhone2017-A",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-8"
+    },
+    {
+      "name" : "iPhone2017-B",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-8-Plus"
+    },
+    {
+      "name" : "iPhone2017-C",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPhone-X"
+    },
+    {
+      "name" : "iPad 2",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-2"
+    },
+    {
+      "name" : "iPad Retina",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-Retina"
+    },
+    {
+      "name" : "iPad Air",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-Air"
+    },
+    {
+      "name" : "iPad Air 2",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-Air-2"
+    },
+    {
+      "name" : "iPad (5th generation)",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad--5th-generation-"
+    },
+    {
+      "name" : "iPad Pro (9.7-inch)",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--9-7-inch-"
+    },
+    {
+      "name" : "iPad Pro (12.9-inch)",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-Pro"
+    },
+    {
+      "name" : "iPad Pro (12.9-inch) (2nd generation)",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---2nd-generation-"
+    },
+    {
+      "name" : "iPad Pro (10.5-inch)",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--10-5-inch-"
+    },
+    {
+      "name" : "Apple TV",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-TV-1080p"
+    },
+    {
+      "name" : "Apple TV 4K",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-TV-4K-4K"
+    },
+    {
+      "name" : "Apple TV 4K (at 1080p)",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-TV-4K-1080p"
+    },
+    {
+      "name" : "Apple Watch - 38mm",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-38mm"
+    },
+    {
+      "name" : "Apple Watch - 42mm",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-42mm"
+    },
+    {
+      "name" : "Apple Watch Series 2 - 38mm",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-Series-2-38mm"
+    },
+    {
+      "name" : "Apple Watch Series 2 - 42mm",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-Series-2-42mm"
+    },
+    {
+      "name" : "Watch2017 - 38mm",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-Series-3-38mm"
+    },
+    {
+      "name" : "Watch2017 - 42mm",
+      "identifier" : "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-Series-3-42mm"
+    }
+  ],
+  "runtimes" : [
+    {
+      "buildversion" : "12B411",
+      "availability" : "(available)",
+      "name" : "iOS 8.1",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-8-1",
+      "version" : "8.1"
+    },
+    {
+      "buildversion" : "12D508",
+      "availability" : "(available)",
+      "name" : "iOS 8.2",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-8-2",
+      "version" : "8.2"
+    },
+    {
+      "buildversion" : "12F70",
+      "availability" : "(available)",
+      "name" : "iOS 8.3",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-8-3",
+      "version" : "8.3"
+    },
+    {
+      "buildversion" : "12H141",
+      "availability" : "(available)",
+      "name" : "iOS 8.4",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-8-4",
+      "version" : "8.4"
+    },
+    {
+      "buildversion" : "13A344",
+      "availability" : "(available)",
+      "name" : "iOS 9.0",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-9-0",
+      "version" : "9.0"
+    },
+    {
+      "buildversion" : "13B143",
+      "availability" : "(available)",
+      "name" : "iOS 9.1",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-9-1",
+      "version" : "9.1"
+    },
+    {
+      "buildversion" : "13C75",
+      "availability" : "(available)",
+      "name" : "iOS 9.2",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-9-2",
+      "version" : "9.2"
+    },
+    {
+      "buildversion" : "13E233",
+      "availability" : "(available)",
+      "name" : "iOS 9.3",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-9-3",
+      "version" : "9.3"
+    },
+    {
+      "buildversion" : "14A345",
+      "availability" : "(available)",
+      "name" : "iOS 10.0",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-10-0",
+      "version" : "10.0"
+    },
+    {
+      "buildversion" : "14B72",
+      "availability" : "(available)",
+      "name" : "iOS 10.1",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-10-1",
+      "version" : "10.1"
+    },
+    {
+      "buildversion" : "14C89",
+      "availability" : "(available)",
+      "name" : "iOS 10.2",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-10-2",
+      "version" : "10.2"
+    },
+    {
+      "buildversion" : "14E8301",
+      "availability" : "(available)",
+      "name" : "iOS 10.3",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-10-3",
+      "version" : "10.3.1"
+    },
+    {
+      "buildversion" : "15A372",
+      "availability" : "(available)",
+      "name" : "iOS 11.0",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.iOS-11-0",
+      "version" : "11.0"
+    },
+    {
+      "buildversion" : "15J380",
+      "availability" : "(available)",
+      "name" : "tvOS 11.0",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.tvOS-11-0",
+      "version" : "11.0"
+    },
+    {
+      "buildversion" : "13S343",
+      "availability" : "(available)",
+      "name" : "watchOS 2.0",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-2-0",
+      "version" : "2.0"
+    },
+    {
+      "buildversion" : "13S661",
+      "availability" : "(available)",
+      "name" : "watchOS 2.1",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-2-1",
+      "version" : "2.1"
+    },
+    {
+      "buildversion" : "13V144",
+      "availability" : "(available)",
+      "name" : "watchOS 2.2",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-2-2",
+      "version" : "2.2"
+    },
+    {
+      "buildversion" : "14S471a",
+      "availability" : "(available)",
+      "name" : "watchOS 3.1",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-3-1",
+      "version" : "3.1"
+    },
+    {
+      "buildversion" : "14V243",
+      "availability" : "(available)",
+      "name" : "watchOS 3.2",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-3-2",
+      "version" : "3.2"
+    },
+    {
+      "buildversion" : "15R372",
+      "availability" : "(available)",
+      "name" : "watchOS 4.0",
+      "identifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-4-0",
+      "version" : "4.0"
+    }
+  ],
+  "devices" : {
+    "iOS 8.2" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "602D7BFD-35E0-4E83-BEA7-6002BA0F4D5E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "5EB5F6ED-1345-47BD-A38E-666E4863240A"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "E2693FD7-E671-4753-A438-038B83573D5E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "D42DA841-250C-4DAE-AC2D-5EEBED5E79ED"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "85B1F870-73FA-4822-98EF-0F51C374A520"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "CF9F197F-8B2A-4788-8B31-B59008D33D8E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "DB28283A-D837-482F-AB90-91B3665470D0"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "28A98C9B-610E-4082-824C-754DEC0348A5"
+      }
+    ],
+    "watchOS 2.0" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 38mm",
+        "udid" : "EA660137-200A-49BD-8096-2771A75CD555"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 42mm",
+        "udid" : "294502AF-6DD2-44AB-BD2D-2462237835A0"
+      }
+    ],
+    "watchOS 4.0" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 38mm",
+        "udid" : "894DD68F-AF3E-49A5-AB14-151303208531"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "E2D564D4-C8EF-4D00-9127-AC104FB5E973"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "8A91C961-6862-4AE4-B721-91D07B22A0F5"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "6395E605-1519-4E36-97AB-0EAEAD988DF9"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "E55F590C-F3F2-4182-AA69-B17683EF9FA4"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 42mm",
+        "udid" : "DDF101D2-1393-49CC-8C32-98FAA0DD3527"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "B8E6757D-4FB0-4799-8443-1A3282F288F0"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 42mm",
+        "udid" : "12C94717-40CC-4DD2-890D-A0C92A827881"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 3 - 38mm",
+        "udid" : "DD65A7D5-02B8-4B31-A969-1F74E4699505"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 3 - 42mm",
+        "udid" : "985D823F-A66B-4D3C-9E67-42EF760DC32D"
+      }
+    ],
+    "watchOS 2.1" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 38mm",
+        "udid" : "4EC5A8AF-49A7-4EBA-894F-55F2E9A99A8E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "77358FDB-A9EB-4D69-BE96-83C5635C1038"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 42mm",
+        "udid" : "3A3230B9-9ADA-4FB3-AB00-FCA272FB483D"
+      }
+    ],
+    "iOS 8.3" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "AF2D5410-A49C-4791-ADBE-504F2CEA7C21"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "AD2BB11C-61B1-4547-914C-99E8EAE478C5"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "C5950B80-0986-4009-9A5F-46C70372BDB9"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "B45DE89F-AA37-4C60-9117-89FD7B9846CD"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "A40401A7-AB0B-4336-A7CF-9C0CE4A8CDF9"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "4C810BDE-7B4D-45FD-ACFE-4F61A0DE8C60"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "B88124DA-91C2-47BB-8FA0-768D446F8EA9"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "6C348D70-5BC3-4E1A-A42B-835DE7AB517D"
+      }
+    ],
+    "iOS 10.3" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "8EC1813C-82A2-408F-BB74-93F13BD8280F"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "4A2E8159-3A59-4B48-B38D-8E6CEEFA44A7"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "3BF8D87C-5583-4356-8639-51C00C81D925"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "BCB2B8F9-65F9-4AC1-B371-F98569B78EE6"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "FD7D58EF-59FC-4555-8202-59AE10F27860"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "asdf",
+        "udid" : "EB55D699-40BF-40AA-934B-AEADFE9CCF02"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "159B396D-D61D-4196-BD30-027AE27D2285"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7",
+        "udid" : "A5C83EA9-897C-4A16-A80D-E383E4B153CA"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7 Plus",
+        "udid" : "068C81B5-63C9-466B-BE58-D44C527736FF"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone SE",
+        "udid" : "C5057256-5EB4-479F-B00C-9E9E6E6F10CD"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, device type not supported by runtime)",
+        "name" : "iPad Retina",
+        "udid" : "392C0559-F808-4204-A9A9-C71F97715259"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "3347E41C-DB69-432A-9F87-C195FE3CE63B"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "BA0BEF0A-168B-4054-BEF7-7878A1936578"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad (5th generation)",
+        "udid" : "E0E205B5-49BB-4CC2-B775-C0D4363DFE96"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (9.7 inch)",
+        "udid" : "C3972EDD-9AD7-4A8D-A03B-EBF7EA904C3E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (12.9 inch)",
+        "udid" : "3F50EE7B-5FA3-4550-B5B1-3ED93ADF5DD2"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (12.9-inch) (2nd generation)",
+        "udid" : "9924F372-9CC9-4331-B348-6EA0B62170DE"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (10.5-inch)",
+        "udid" : "A978600A-1BAD-45B4-840D-D9D00820E136"
+      }
+    ],
+    "iOS 8.4" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "4BB61B8A-8A90-4D86-8463-1FC06678FA30"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "EF5AE97B-122C-44E6-A432-1A4B1BCA20EB"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "EFF4FA45-6C84-42BE-BE4E-A00946967EB4"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "A621FD08-D9E1-461C-9179-F6A8273389BA"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "A9FFE7BB-2903-4D82-A53F-2418512640A8"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "E6E2D7FF-A5C4-4515-A27A-692D92C5A011"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "71759027-1AC1-4EFB-881E-51BD92C56D87"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "0DC73028-1ED5-4173-9BDC-03426B01D309"
+      }
+    ],
+    "iOS 10.0" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "1F17E923-8204-4E01-A533-6440F0594358"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "7DB88AAC-0257-4EA3-9561-CCF1938A5A0B"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "D2928C8B-C70D-47B0-BE78-18B39556FE32"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "787D25C9-37F8-4A50-883E-46A9D3A8DE20"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "E4F2429C-2F8C-49FB-8E44-210AFB9FBA8A"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "D99CA8B4-852E-48D5-A7C1-4446A52716EE"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone SE",
+        "udid" : "63D926F7-1D0F-4BCD-8FDB-5E55C731673C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, device type not supported by runtime)",
+        "name" : "iPad Retina",
+        "udid" : "60DDBF0F-5D95-452B-9DEE-E9D58FAF2D77"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "5338FB07-5B7F-4703-B2A9-DF6225E41FF1"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "0F804774-FD0C-4FB4-9ACF-246F869428EC"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (9.7 inch)",
+        "udid" : "B9149367-BBE9-4E74-B2DD-8EB544DE04B3"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (12.9 inch)",
+        "udid" : "EBE3692C-D0F8-4E9F-BA1E-19F7B5827D57"
+      }
+    ],
+    "iOS 9.0" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "4AC3B95D-7F5C-456B-9F8D-6DB82B38278B"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "196A0004-0619-496C-A1DB-CAAFEC8E16AC"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "FD19CDCE-6AB8-4956-B64C-5BC7669F4F72"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "62E48B91-6D2A-423A-9C9F-E90508AA9FCE"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "883F4526-2800-4864-BB0B-D64CEAE2626A"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "0369B028-09EA-40B0-A54E-73A4D88A6563"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "A4F669ED-81B9-48CA-BB0E-E967A2E85B61"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "81F12EAA-0F9E-46AF-82D6-46904280A759"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "0BD1F4FE-6FB9-4C91-A5A7-3D87DB5337CF"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "A797F5DA-8F44-4A50-A806-B786294EAA81"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "94D87EF4-9BAB-453C-AAD0-54EC678410AF"
+      }
+    ],
+    "iOS 9.1" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "61459108-4C89-4A8A-AC16-B1306E52B9F1"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "0C5C35E7-237A-470D-9B9E-9F3D9426BC15"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "CF17DD3F-FD3A-4824-90BD-3ACA2F25E981"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "A465611C-C7C1-4EEB-9214-E068BC20CA26"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "56E7D0C9-E7BE-49E9-BD22-033C87C966AD"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "FF25A247-1811-47AF-A8B5-19354F2932FE"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "712C1CD6-9929-4344-8A9E-EBBBB67DCD67"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "E069DD83-3821-4212-8141-E541FC2A0753"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "733EE770-4BF7-4191-B9E9-E683CE64AE99"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "339D86EB-CC09-4DAB-A37B-7BFA3EB3CC51"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "8345F0DE-245D-4120-9895-C89FF907E3AE"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro",
+        "udid" : "2527D580-0311-4CFD-9640-CC4E42FA3038"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.tvOS-10-2" : [
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, runtime profile not found)",
+        "name" : "Apple TV 1080p",
+        "udid" : "D6FAFAE6-E4DF-41D1-A553-5FDF7FC7BDEF"
+      }
+    ],
+    "iOS 10.1" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "EC865657-ED69-425C-9E10-90BA935A5176"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "DC5D470D-D31C-44E4-B16C-10676862C5F5"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "6C00D239-9CF0-495F-A1C6-72FEDCE410BD"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "A1835E96-FE4A-49AA-BB74-D9216AD0E857"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "31B472C4-C5CF-4CA7-A6C9-8857E5F90525"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "808B033A-6E1F-4AB9-A450-E00ADB975C6C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7",
+        "udid" : "55E5B6C4-3610-45F0-A47B-49138BB6661C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7 Plus",
+        "udid" : "62DA6248-7F72-456F-853A-EBC05554840C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone SE",
+        "udid" : "357B5BD2-A691-49A0-B217-3D99AB0C9181"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, device type not supported by runtime)",
+        "name" : "iPad Retina",
+        "udid" : "EF42ADDA-FC5C-4FF9-B677-783035233F0F"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "CEC0C409-FA88-46DD-A102-F60D9FCE20E4"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "681C11CE-8A05-4CD3-9768-75609550275F"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (9.7-inch)",
+        "udid" : "D468A10E-D13A-418C-AC23-222158CD5A2A"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (12.9-inch)",
+        "udid" : "BB1F78A3-8459-41C6-B7C1-2EF4531074C5"
+      }
+    ],
+    "tvOS 11.0" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple TV 1080p",
+        "udid" : "96387811-0A88-4BCB-BA78-328109EA4F8F"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple TV 4K",
+        "udid" : "420D484F-4487-4FD3-AC3C-62476C823CA7"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple TV 4K (at 1080p)",
+        "udid" : "9CC2EFB1-1BF2-4B2C-B36E-79DD46049A79"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.tvOS-10-1" : [
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, runtime profile not found)",
+        "name" : "Apple TV 1080p",
+        "udid" : "69AF1B4F-B6A5-41F2-A2E4-896F7C40FA97"
+      }
+    ],
+    "iOS 9.2" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "86A9575C-F90D-476C-AEEF-322832FF2685"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "202DBB9D-A5DD-4C09-96DC-693F659A3680"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "C7595416-5472-42C2-BDB3-5D9EB9BE8FED"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "91A3ED67-AD7B-48F6-8D1A-48EDB1AEA4A2"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "590FAFCF-CCAE-4495-B58C-FBF6731996B0"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "74DC131E-C062-453F-844B-4A6EB5DD1F89"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "72575A2F-F57E-4646-9453-624D42445D2E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "D7E92ACD-AB7F-4FDC-BA79-A73DA2A16035"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "2C1A14EA-EBB1-49A2-ABC5-773673258C6F"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "7CCB9AF9-42A8-47D3-A0C1-F07625162DBB"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "83C6CAD4-6966-4CAD-AF4E-5DDC6A075969"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro",
+        "udid" : "99E89AF7-B82D-44ED-B093-76F80193A6D4"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.tvOS-10-0" : [
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, runtime profile not found)",
+        "name" : "Apple TV 1080p",
+        "udid" : "D57C6B4C-E855-4566-AC78-947E6DA8026E"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.tvOS-9-2" : [
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, runtime profile not found)",
+        "name" : "Apple TV 1080p",
+        "udid" : "D81E4502-0BE4-4738-88D7-11E466BCB529"
+      }
+    ],
+    "iOS 11.0" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "18E43F32-5E3C-4017-AD30-643D9B1B1170"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "98DB2248-F444-4062-AF65-3B177BAADB2B"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "B207E003-7A63-4159-A730-E4C591CA63DB"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "EC223176-FCBC-4C16-BC6F-E519DC2C305C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "C1E83595-4222-43E7-9A6F-5F3A3D3A5E3C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "foo",
+        "udid" : "EBF60C97-C4EE-43BF-BC70-896080BFF7C8"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7",
+        "udid" : "428DC5AD-5539-4896-A7CC-9900CD53248A"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7 Plus",
+        "udid" : "F645F686-D0FE-48E9-82FF-7E486FA49986"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone SE",
+        "udid" : "4CBA12D8-B011-4FA7-A56C-8FC177861997"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 8",
+        "udid" : "DF7989D2-12CF-48C9-921E-9E5F2A446CCD"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 8 Plus",
+        "udid" : "47F4B1D4-9610-4520-A6B1-F155557A89EB"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone X",
+        "udid" : "B184EA2B-0B67-4343-9091-C916B94F038E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "79EC4979-E862-409B-8606-7227219B3F91"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "EC10C053-0894-46A9-9494-A98F666A3890"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad (5th generation)",
+        "udid" : "55C9796D-850B-4FEA-821C-754E2F687D51"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (9.7 inch)",
+        "udid" : "22FB5213-E4C1-4023-916B-05F751E5FEF8"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (12.9 inch)",
+        "udid" : "20F90912-5BD3-4FD7-A390-89AF18C4472B"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (12.9-inch) (2nd generation)",
+        "udid" : "9AFA069C-1337-4C85-9892-4F89A8B0DA34"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (10.5-inch)",
+        "udid" : "5E5076B1-7C61-415A-A330-34FC971DD308"
+      }
+    ],
+    "iOS 8.1" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "15EF0847-F4EC-4026-B1BF-B24639BF06A3"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "C9C8EB05-E129-4ED2-BE6A-D1A324C6B307"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "389F62E9-72BA-478F-9028-D23C0119D3F4"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "69E72023-FE03-4651-A912-17FD77051A13"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "7A7C4FDB-7B23-40C2-B85B-0C22C3225EA4"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "7CAD91FC-7851-469D-9B2E-537D5E805E1B"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "BEB7A278-0288-48EA-A192-2B85258DD05D"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "6025AD0E-7347-4113-ABE3-7DA5B3C2FCC9"
+      }
+    ],
+    "iOS 9.3" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 4s",
+        "udid" : "C65BF923-9D7F-4809-9DE5-8F57D9E2B499"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "B46677BC-5D56-4F0F-A7C9-391FC741FDD3"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "3D7A6CA5-E8A3-4CCF-911C-32FEDB651ADB"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "9B32555B-3FD5-4B90-81ED-C796782921F1"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "1C20388A-F192-466A-B43A-AA5EF50E49BB"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "3072B555-6E30-48C9-8CA2-97645EC17FFE"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "BCF6A918-B520-4F09-8602-FDDD78E39D13"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad 2",
+        "udid" : "25D8C01D-9584-435B-B762-DA1839486BA8"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Retina",
+        "udid" : "6B035ED4-56A8-4B1D-96A9-F342F15765F8"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "7CB98A40-8061-486C-99E7-36AC5B97F363"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "4CF5981A-1C94-4925-85C5-70AF1F8B2E07"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro",
+        "udid" : "5577EC0A-0BAE-44FF-8B2A-92613E04430C"
+      }
+    ],
+    "watchOS 2.2" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 38mm",
+        "udid" : "8EEA5302-BF03-4B21-BFA9-54876468FF7D"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "4AAC051C-821E-4688-BF96-E7A480B83EBE"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "6C6CA684-7F33-4242-B970-4B9F14ACE9ED"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "4724C566-9A17-4C45-A0C1-EA728DFD1086"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 42mm",
+        "udid" : "2CB10B36-3D2D-4324-80EF-8FE7DD045984"
+      }
+    ],
+    "iOS 10.2" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5",
+        "udid" : "27E6DA8D-E9A4-4200-9BCD-57553780D323"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 5s",
+        "udid" : "C1993314-1546-45F6-B8EF-164295B293FF"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6",
+        "udid" : "2802C22F-7C35-4BFC-A87B-A58F4FFDC966"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6 Plus",
+        "udid" : "B0BD38E7-B2BB-4845-93B1-631CA299788D"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s",
+        "udid" : "2373B6FA-3212-48A1-9CA4-AB827D67F966"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 6s Plus",
+        "udid" : "601BFAE5-B77A-48B2-8CAF-6268D75B1ADB"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7",
+        "udid" : "3EA8DF8C-9196-43B2-BCF4-09FB2DFC0E28"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone 7 Plus",
+        "udid" : "7A165B3B-9706-40C0-A4CE-5C13287B1A96"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPhone SE",
+        "udid" : "B7D6D8FE-DC3D-44F6-93C1-527B52AFFBC3"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : " (unavailable, device type not supported by runtime)",
+        "name" : "iPad Retina",
+        "udid" : "366FBEED-A353-4566-BC7A-1EC951E95D0F"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air",
+        "udid" : "7EE6E1AA-DD65-4264-B7F2-3008FED2DA7E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Air 2",
+        "udid" : "47CB3EB9-882A-46AD-AD17-1A5074F5D2B1"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (9.7-inch)",
+        "udid" : "10D41027-3CAA-406E-AA8C-258670F125AF"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "iPad Pro (12.9-inch)",
+        "udid" : "E6B6A797-6F01-4FEB-A471-D9C3920AA01C"
+      }
+    ],
+    "watchOS 3.2" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 38mm",
+        "udid" : "1BF0C27A-029F-4E65-8158-E82953BBF687"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "2AF2AB04-4C4E-4699-A980-492C6342DFF4"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "ECFB70F1-132D-47C6-A6CD-2B54A15316F7"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "169E93D8-78A1-4C32-A2D3-E6848B6930B7"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 42mm",
+        "udid" : "6DDC9D8B-EFA3-4DE7-A1D2-A73E2EDD1385"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "C2C0366D-1E3E-4BBC-9343-E724FA6D581E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 42mm",
+        "udid" : "693A7800-C04D-4358-8BE2-F418C3DB3BF0"
+      }
+    ],
+    "watchOS 3.1" : [
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 38mm",
+        "udid" : "C841D536-25FD-429E-823A-1F1C8D10B40C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 38mm",
+        "udid" : "22CE8BD7-5B38-41AF-975A-CEFB4F7AFEC7"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "bar",
+        "udid" : "0D4596D9-6AF8-4991-B5C0-2CE8CBE8AB88"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 42mm",
+        "udid" : "C06F85C1-277B-473F-AC01-896985CD8C54"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch - 42mm",
+        "udid" : "B5A0DFBB-3518-4E92-8255-7A982DE8C0D8"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "3F5B4265-9CFF-471C-9337-FDB583D4E13C"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "39FCCD77-7FFA-4566-A7E9-C3E09EEB1173"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "879F7D42-DE97-4DD3-9F08-75723A8B14E4"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 42mm",
+        "udid" : "41642CA8-A26D-4A0F-98D9-48B69E9E932D"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 42mm",
+        "udid" : "1BA5D988-F8FD-43C8-B441-CBDEA19A105E"
+      },
+      {
+        "state" : "Shutdown",
+        "availability" : "(available)",
+        "name" : "Apple Watch Series 2 - 42mm [Titanium]",
+        "udid" : "F298DFB0-0ACB-48E1-AED0-6E1CB05EF9CB"
+      }
+    ]
+  },
+  "pairs" : {
+    "CA0C766D-EBEE-4F7D-84A9-9B443A32ADE5" : {
+      "watch" : {
+        "name" : "Apple Watch Series 2 - 42mm",
+        "udid" : "1BA5D988-F8FD-43C8-B441-CBDEA19A105E",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 7 Plus",
+        "udid" : "7A165B3B-9706-40C0-A4CE-5C13287B1A96",
+        "state" : "Shutdown"
+      },
+      "state" : "(inactive, disconnected)"
+    },
+    "0C48C036-4CB3-4EE4-8EAC-24C5C5678DA5" : {
+      "watch" : {
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "C2C0366D-1E3E-4BBC-9343-E724FA6D581E",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 7",
+        "udid" : "A5C83EA9-897C-4A16-A80D-E383E4B153CA",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "D90F7B93-409D-43E7-93E8-E58B1E60AF6C" : {
+      "watch" : {
+        "name" : "Apple Watch - 38mm",
+        "udid" : "8EEA5302-BF03-4B21-BFA9-54876468FF7D",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 6s",
+        "udid" : "3072B555-6E30-48C9-8CA2-97645EC17FFE",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "3A66DB1E-F4F8-45C6-8478-12DFF45E1FCB" : {
+      "watch" : {
+        "name" : "Apple Watch Series 2 - 42mm [Titanium]",
+        "udid" : "F298DFB0-0ACB-48E1-AED0-6E1CB05EF9CB",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 7 Plus",
+        "udid" : "7A165B3B-9706-40C0-A4CE-5C13287B1A96",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "87981DB0-3CBD-4A21-96CA-79548CC69AF9" : {
+      "watch" : {
+        "name" : "Apple Watch - 42mm",
+        "udid" : "DDF101D2-1393-49CC-8C32-98FAA0DD3527",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 6s Plus",
+        "udid" : "C1E83595-4222-43E7-9A6F-5F3A3D3A5E3C",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "79B46C59-F6B7-4841-AE52-DBD90264A181" : {
+      "watch" : {
+        "name" : "Apple Watch Series 2 - 42mm",
+        "udid" : "693A7800-C04D-4358-8BE2-F418C3DB3BF0",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 7 Plus",
+        "udid" : "068C81B5-63C9-466B-BE58-D44C527736FF",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "099446B1-948E-4C08-A9F2-EEFF29D6B92B" : {
+      "watch" : {
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "879F7D42-DE97-4DD3-9F08-75723A8B14E4",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 7",
+        "udid" : "3EA8DF8C-9196-43B2-BCF4-09FB2DFC0E28",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "F652E50B-5B44-4CBC-83E3-1780977E1993" : {
+      "watch" : {
+        "name" : "Apple Watch Series 3 - 42mm",
+        "udid" : "985D823F-A66B-4D3C-9E67-42EF760DC32D",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 8 Plus",
+        "udid" : "47F4B1D4-9610-4520-A6B1-F155557A89EB",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "0C30FE01-678C-4D75-A0C4-62B541D4A486" : {
+      "watch" : {
+        "name" : "Apple Watch - 38mm",
+        "udid" : "894DD68F-AF3E-49A5-AB14-151303208531",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 6s",
+        "udid" : "EC223176-FCBC-4C16-BC6F-E519DC2C305C",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "9D136B73-1BDF-4C78-B0DB-E7C425EFDC37" : {
+      "watch" : {
+        "name" : "Apple Watch Series 2 - 38mm",
+        "udid" : "B8E6757D-4FB0-4799-8443-1A3282F288F0",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 7",
+        "udid" : "428DC5AD-5539-4896-A7CC-9900CD53248A",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "BE42E223-3DAF-4186-8315-B0697CDA463B" : {
+      "watch" : {
+        "name" : "Apple Watch Series 3 - 38mm",
+        "udid" : "DD65A7D5-02B8-4B31-A969-1F74E4699505",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 8",
+        "udid" : "DF7989D2-12CF-48C9-921E-9E5F2A446CCD",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "8ACDD025-872A-4FCE-9414-61FF15986991" : {
+      "watch" : {
+        "name" : "Apple Watch - 38mm",
+        "udid" : "1BF0C27A-029F-4E65-8158-E82953BBF687",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 6s",
+        "udid" : "FD7D58EF-59FC-4555-8202-59AE10F27860",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "B826FADC-8607-419E-B5B4-05506F65B5D7" : {
+      "watch" : {
+        "name" : "bar",
+        "udid" : "6395E605-1519-4E36-97AB-0EAEAD988DF9",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "foo",
+        "udid" : "EBF60C97-C4EE-43BF-BC70-896080BFF7C8",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "A1EEF25B-1958-4CC7-8A6C-7A0B0AB837DE" : {
+      "watch" : {
+        "name" : "Apple Watch Series 2 - 42mm",
+        "udid" : "12C94717-40CC-4DD2-890D-A0C92A827881",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 7 Plus",
+        "udid" : "F645F686-D0FE-48E9-82FF-7E486FA49986",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "4E64AD6A-CB5A-4388-A3F6-3788016902AC" : {
+      "watch" : {
+        "name" : "Apple Watch - 42mm",
+        "udid" : "6DDC9D8B-EFA3-4DE7-A1D2-A73E2EDD1385",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 6s Plus",
+        "udid" : "159B396D-D61D-4196-BD30-027AE27D2285",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    },
+    "A87F0119-B2EC-4800-8A09-1ADDC9C2E863" : {
+      "watch" : {
+        "name" : "Apple Watch - 42mm",
+        "udid" : "2CB10B36-3D2D-4324-80EF-8FE7DD045984",
+        "state" : "Shutdown"
+      },
+      "phone" : {
+        "name" : "iPhone 6s Plus",
+        "udid" : "BCF6A918-B520-4F09-8602-FDDD78E39D13",
+        "state" : "Shutdown"
+      },
+      "state" : "(active, disconnected)"
+    }
+  }
+}'

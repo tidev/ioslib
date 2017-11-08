@@ -50,6 +50,7 @@ describe('Xcode', () => {
 		const { simDeviceTypes, simRuntimes } = xcode;
 		xcode.simDeviceTypes = {};
 		xcode.simRuntimes = {};
+		xcode.simDevicePairs = {};
 
 		expect(xcode).to.deep.equal({
 			path: path.join(dir, 'Contents/Developer'),
@@ -58,6 +59,7 @@ describe('Xcode', () => {
 			build: '8E3004b',
 			id: '8.3.3:8E3004b',
 			executables: {
+				simctl: path.join(dir, 'Contents/Developer/usr/bin/simctl'),
 				simulator: simapp,
 				watchsimulator: simwatchapp,
 				xcodebuild: path.join(dir, 'Contents/Developer/usr/bin/xcodebuild')
@@ -68,7 +70,8 @@ describe('Xcode', () => {
 				watchos: []
 			},
 			simDeviceTypes: {},
-			simRuntimes: {}
+			simRuntimes: {},
+			simDevicePairs: {}
 		});
 
 		expect(simDeviceTypes).to.be.an('object');
@@ -96,6 +99,7 @@ describe('Xcode', () => {
 		const { simDeviceTypes, simRuntimes } = xcode;
 		xcode.simDeviceTypes = {};
 		xcode.simRuntimes = {};
+		xcode.simDevicePairs = {};
 
 		expect(xcode).to.deep.equal({
 			path: path.join(dir, 'Contents/Developer'),
@@ -104,6 +108,7 @@ describe('Xcode', () => {
 			build: '9A235',
 			id: '9.0:9A235',
 			executables: {
+				simctl: path.join(dir, 'Contents/Developer/usr/bin/simctl'),
 				simulator: simapp,
 				watchsimulator: simapp,
 				xcodebuild: path.join(dir, 'Contents/Developer/usr/bin/xcodebuild')
@@ -114,7 +119,8 @@ describe('Xcode', () => {
 				watchos: []
 			},
 			simDeviceTypes: {},
-			simRuntimes: {}
+			simRuntimes: {},
+			simDevicePairs: {}
 		});
 
 		expect(simDeviceTypes).to.be.an('object');

@@ -4,6 +4,8 @@
         "axway/+babel"
     ],
     "rules": {
+        "max-depth": "off",
+        "quote-props": "off",
         "security/detect-non-literal-regexp": "off"
     }
 }
