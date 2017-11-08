@@ -24,7 +24,6 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "always-tail": "0.2.0",
     "appcd-fs": "^0.1.4",
     "appcd-path": "^0.1.4",
     "appcd-subprocess": "^0.1.4",
