@@ -1,8 +1,4 @@
 {
-    "extends": [
-        "axway/env-node",
-        "axway/+babel"
-    ],
     "rules": {
         "max-depth": "off",
         "quote-props": "off",
