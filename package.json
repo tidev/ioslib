@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "description": "iOS Utility Library",
   "main": "./dist/index",
   "author": "Axway, Inc. <npmjs@appcelerator.com>",
@@ -29,7 +29,6 @@
     "appcd-path": "^0.1.4",
     "appcd-subprocess": "^0.1.4",
     "appcd-util": "^0.1.4",
-    "eslint-plugin-mocha": "^4.11.0",
     "node-forge": "^0.7.1",
     "node-ios-device": "1.4.0",
     "promise-limit": "^2.5.0",
