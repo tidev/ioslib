@@ -1,5 +1,5 @@
 {
-  "name": "ioslib2",
+  "name": "ioslib",
   "version": "2.0.0-beta.2",
   "description": "iOS Utility Library",
   "main": "./dist/index",
