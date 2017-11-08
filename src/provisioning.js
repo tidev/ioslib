@@ -32,7 +32,6 @@ export function getProvisioningProfileDir() {
  */
 export async function getProvisioningProfiles(dir) {
 	return mutex('ioslib/provisioning', async () => {
-		const files = await findProvisioningProfileFiles(dir);
 		const profiles = {
 			adhoc:        [],
 			development:  [],
@@ -40,16 +39,22 @@ export async function getProvisioningProfiles(dir) {
 			enterprise:   []
 		};
 
-		return Promise
-			.all(files.map(async (file) => {
+		try {
+			const files = await findProvisioningProfileFiles(dir);
+
+			await Promise.all(files.map(async (file) => {
 				try {
 					const profile = await parseProvisioningProfileFile(file);
 					profiles[profile.type].push(profile);
 				} catch (e) {
 					// ignore
 				}
-			}))
-			.then(() => profiles);
+			}));
+		} catch (e) {
+			// squelch
+		}
+
+		return profiles;
 	});
 }
 

@@ -7,7 +7,8 @@ const options = {
 		security:    'security',
 		xcodeSelect: 'xcode-select'
 	},
-	provisioningProfileDir: null
+	provisioningProfileDir: null,
+	coreSimulatorDevicesDir: null
 };
 
 export default options;

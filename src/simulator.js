@@ -1,3 +1,4 @@
+import options from './options';
 import path from 'path';
 import plist from 'simple-plist';
 import Simctl from './simctl';
@@ -10,7 +11,16 @@ import { getDefaultXcodePath, getXcodes } from './xcode';
  * The path to the directory containing the simulator instances.
  * @type {String}
  */
-export const simulatorPath = '~/Library/Developer/CoreSimulator/Devices';
+const defaultCoreSimulatorDevicesDir = '~/Library/Developer/CoreSimulator/Devices';
+
+/**
+ * Returns the path to the provisioning profiles directory.
+ *
+ * @returns {String}
+ */
+export function getCoreSimulatorDevicesDir() {
+	return options.coreSimulatorDevicesDir || defaultCoreSimulatorDevicesDir;
+}
 
 /**
  * The path to the directory containing the simulator crash logs.
@@ -108,7 +118,7 @@ export async function getSimulators(xcodeInfo) {
 		simctlRuntimes[runtime.identifier] = runtime;
 	}
 
-	const simPath = expandPath(simulatorPath);
+	const simPath = expandPath(getCoreSimulatorDevicesDir());
 
 	for (const devices of Object.values(simctlInfo.devices)) {
 		for (const { udid } of devices) {
