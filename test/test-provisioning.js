@@ -6,7 +6,14 @@ import * as ioslib from '../dist/index';
 
 describe('Provisioning Profiles', () => {
 	it('should find provisioning profile files in default path', async () => {
-		const files = await ioslib.provisioning.findProvisioningProfileFiles();
+		let files;
+		try {
+			files = await ioslib.provisioning.findProvisioningProfileFiles();
+		} catch (e) {
+			if (e.message.startsWith('Provisioning profile directory does not exist:')) {
+				return;
+			}
+		}
 
 		expect(files).to.be.an('array');
 

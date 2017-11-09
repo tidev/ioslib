@@ -306,13 +306,14 @@ export function getXcodes(force) {
 	return cache('xcode', force, () => {
 		const results = {};
 		for (let dir of xcodeLocations) {
-			dir = expandPath(dir);
-			for (const name of fs.readdirSync(dir)) {
-				try {
-					const xcode = new Xcode(path.join(dir, name));
-					results[xcode.id] = xcode;
-				} catch (e) {
-					// not an Xcode
+			if (isDir(dir = expandPath(dir))) {
+				for (const name of fs.readdirSync(dir)) {
+					try {
+						const xcode = new Xcode(path.join(dir, name));
+						results[xcode.id] = xcode;
+					} catch (e) {
+						// not an Xcode
+					}
 				}
 			}
 		}
