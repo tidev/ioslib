@@ -2,8 +2,8 @@ import * as ioslib from '../dist/index';
 
 describe('Simulators', () => {
 	it('should get simualators', async function () {
-		this.timeout(10000);
-		this.slow(9000);
+		this.timeout(60000);
+		this.slow(10000);
 
 		const simulators = await ioslib.simulator.getSimulators();
 		expect(simulators).to.be.an('object');
