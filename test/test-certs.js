@@ -2,7 +2,7 @@ import * as ioslib from '../dist/index';
 
 describe('Certificates', () => {
 	it('should get all development and distribution certs', async () => {
-		const certs = await ioslib.certs.getCerts();
+		const certs = await ioslib.certs.getCerts(true);
 
 		expect(certs).to.be.an('object');
 		expect(certs).to.have.keys('developer', 'distribution', 'wwdr');

@@ -1,15 +1,16 @@
 import { getProvisioningProfiles } from './provisioning';
-import { mutex } from 'appcd-util';
+import { cache } from 'appcd-util';
 
 /**
  * Aggregates all teams found in the provisioning profiles.
  *
+ * @param {Boolean} [force=false] - When `true`, bypasses cache and forces redetection.
  * @param {String} [dir] - The directory to scan for provisioning profiles.
  * @returns {Promise<Object>}
  */
-export function getTeams(dir) {
-	return mutex('ioslib/teams', async () => {
-		const profiles = await getProvisioningProfiles(dir);
+export function getTeams(force, dir) {
+	return cache('ioslib:teams', force, async () => {
+		const profiles = await getProvisioningProfiles(force, dir);
 		return buildTeamsFromProvisioningProfiles(profiles);
 	});
 }

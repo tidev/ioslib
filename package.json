@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-4",
   "description": "iOS Utility Library",
   "main": "./dist/index",
   "author": "Axway, Inc. <npmjs@appcelerator.com>",
@@ -24,7 +24,7 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "appcd-fs": "^0.1.4",
+    "appcd-fs": "^0.1.5",
     "appcd-path": "^0.1.4",
     "appcd-subprocess": "^0.1.4",
     "appcd-util": "^0.1.5",

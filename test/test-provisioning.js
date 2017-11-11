@@ -118,7 +118,7 @@ describe('Provisioning Profiles', () => {
 
 	it('should get all provisioning profiles', async () => {
 		const dir = path.join(__dirname, 'fixtures', 'Provisioning Profiles');
-		const profiles = await ioslib.provisioning.getProvisioningProfiles(dir);
+		const profiles = await ioslib.provisioning.getProvisioningProfiles(true, dir);
 
 		expect(profiles).to.be.an('object');
 

@@ -5,7 +5,7 @@ import plist from 'plist';
 
 import { expandPath } from 'appcd-path';
 import { isFile } from 'appcd-fs';
-import { mutex, sha1 } from 'appcd-util';
+import { cache, sha1 } from 'appcd-util';
 
 const ppRegExp = /\.mobileprovision$/;
 
@@ -27,11 +27,12 @@ export function getProvisioningProfileDir() {
 /**
  * Detects all provisioning profiles and sorts them into an object by type.
  *
+ * @param {Boolean} [force=false] - When `true`, bypasses cache and forces redetection.
  * @param {String} [dir] - The directory to scan for provisioning profiles.
  * @returns {Promise<Object>}
  */
-export async function getProvisioningProfiles(dir) {
-	return mutex('ioslib/provisioning', async () => {
+export async function getProvisioningProfiles(force, dir) {
+	return cache('ioslib:provisioning', force, async () => {
 		const profiles = {
 			adhoc:        [],
 			development:  [],

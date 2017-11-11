@@ -3,7 +3,7 @@ import options from './options';
 import promiseLimit from 'promise-limit';
 
 import { certificateFromPem } from 'node-forge/lib/pki';
-import { decodeOctalUTF8, mutex, sha1 } from 'appcd-util';
+import { cache, decodeOctalUTF8, sha1 } from 'appcd-util';
 import { run } from 'appcd-subprocess';
 
 const BEGIN = '-----BEGIN CERTIFICATE-----';
@@ -16,10 +16,11 @@ const certRegExp = /^(?:(iOS Development|iPhone Developer)|((?:iOS|iPhone) Distr
  * or iOS Distribution list. It also detects if a valid Apple Worldwide Developer Relations
  * certificate is found.
  *
+ * @param {Boolean} [force=false] - When `true`, bypasses cache and forces redetection.
  * @returns {Promise}
  */
-export function getCerts() {
-	return mutex('ioslib/certs', async () => {
+export function getCerts(force) {
+	return cache('ioslib:certs', force, async () => {
 		const keychains = await getKeychains();
 		const limit = promiseLimit(3);
 		const certs = {

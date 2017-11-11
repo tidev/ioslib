@@ -4,7 +4,7 @@ import path from 'path';
 import plist from 'simple-plist';
 import version from './version';
 
-import { cache } from 'appcd-util';
+import { arrayify, cache, get } from 'appcd-util';
 import { expandPath } from 'appcd-path';
 import { isDir, isFile } from 'appcd-fs';
 import { run, which } from 'appcd-subprocess';
@@ -297,26 +297,38 @@ export class Xcode {
 }
 
 /**
- * Detects all installed Xcodes, then caches and returns the results.
+ * Detects installed Xcodes, then caches and returns the results.
  *
- * @param {Boolean} [force] - When `true`, bypasses the cache and rescans for Xcodes.
+ * @param {Boolean} [force=false] - When `true`, bypasses cache and forces redetection.
  * @returns {Promise<Array.<Xcode>>}
  */
 export function getXcodes(force) {
-	return cache('xcode', force, () => {
+	return cache('ioslib:xcode', force, () => {
 		const results = {};
-		for (let dir of xcodeLocations) {
-			if (isDir(dir = expandPath(dir))) {
-				for (const name of fs.readdirSync(dir)) {
-					try {
-						const xcode = new Xcode(path.join(dir, name));
-						results[xcode.id] = xcode;
-					} catch (e) {
-						// not an Xcode
+		let searchPaths = arrayify(get(options, 'xcode.searchPaths'), true);
+		if (!searchPaths) {
+			searchPaths = xcodeLocations;
+		}
+
+		for (let dir of searchPaths) {
+			try {
+				const xcode = new Xcode(dir);
+				results[xcode.id] = xcode;
+			} catch (e) {
+				// not an Xcode, check subdirectories
+				if (isDir(dir = expandPath(dir))) {
+					for (const name of fs.readdirSync(dir)) {
+						try {
+							const xcode = new Xcode(path.join(dir, name));
+							results[xcode.id] = xcode;
+						} catch (e2) {
+							// not an Xcode
+						}
 					}
 				}
 			}
 		}
+
 		return results;
 	});
 }
@@ -336,7 +348,9 @@ export async function getDefaultXcodePath(xcodeselect) {
 		if (xcodeselect !== 'xcode-select') {
 			candidates.unshift(xcodeselect);
 		}
-		const bin = await which(candidates);
+		const bin = await which(candidates, {
+			path: get(options, 'env.path')
+		});
 		const { stdout } = await run(bin, [ '--print-path' ]);
 		return path.resolve(stdout.trim(), '../..');
 	} catch (e) {

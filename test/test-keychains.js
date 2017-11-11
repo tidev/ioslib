@@ -2,7 +2,7 @@ import * as ioslib from '../dist/index';
 
 describe('Keychains', () => {
 	it('should get all keychains', async () => {
-		const keychains = await ioslib.keychains.getKeychains();
+		const keychains = await ioslib.keychains.getKeychains(true);
 		expect(keychains).to.be.an('array');
 
 		for (const keychain of keychains) {

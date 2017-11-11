@@ -4,7 +4,7 @@ import * as ioslib from '../dist/index';
 
 describe('Teams', () => {
 	it('should get all teams from the system provisioning profiles', async () => {
-		const teams = await ioslib.teams.getTeams();
+		const teams = await ioslib.teams.getTeams(true);
 
 		expect(teams).to.be.an('object');
 		for (const id of Object.keys(teams)) {
@@ -14,7 +14,7 @@ describe('Teams', () => {
 
 	it('should get all teams from the mock provisioning profiles', async () => {
 		const dir = path.join(__dirname, 'fixtures', 'Provisioning Profiles');
-		const teams = await ioslib.teams.getTeams(dir);
+		const teams = await ioslib.teams.getTeams(true, dir);
 
 		expect(teams).to.deep.equal({
 			WP12345678: 'Testco'
