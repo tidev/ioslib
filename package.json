@@ -24,10 +24,10 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "appcd-fs": "^0.1.5",
-    "appcd-path": "^0.1.4",
-    "appcd-subprocess": "^0.1.4",
-    "appcd-util": "^0.1.5",
+    "appcd-fs": "^1.0.0-0",
+    "appcd-path": "^1.0.0-0",
+    "appcd-subprocess": "^1.0.0-0",
+    "appcd-util": "^1.0.0-0",
     "node-forge": "^0.7.1",
     "node-ios-device": "1.4.0",
     "promise-limit": "^2.5.0",
@@ -36,7 +36,7 @@
     "source-map-support": "^0.5.0"
   },
   "devDependencies": {
-    "appcd-gulp": "^0.1.5",
+    "appcd-gulp": "^1.0.0-0",
     "gulp": "^3.9.1"
   },
   "homepage": "https://github.com/appcelerator/ioslib",
