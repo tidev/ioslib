@@ -232,11 +232,9 @@ export async function getSimulators(xcodeInfo) {
 								for (const watchSim of results.watchos[watchosSDK]) {
 									if (version.satisfies(watchSim.version, watchosRange)) {
 										if (!sim.watchCompanion[xcodeId]) {
-											sim.watchCompanion[xcodeId] = [];
+											sim.watchCompanion[xcodeId] = {};
 										}
-										if (!sim.watchCompanion[xcodeId].includes(watchSim.udid)) {
-											sim.watchCompanion[xcodeId].push(watchSim.udid);
-										}
+										sim.watchCompanion[xcodeId][watchSim.udid] = watchSim;
 									}
 								}
 							}
