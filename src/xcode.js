@@ -36,7 +36,7 @@ export const globalSimProfilesPath = '/Library/Developer/CoreSimulator/Profiles'
  *
  * @type {Object}
  */
-const simulatorDevicePairCompatibility = {
+export const simulatorDevicePairCompatibility = {
 	'>=6.2 <7.0': {        // Xcode 6.2, 6.3, 6.4
 		'>=8.2 <9.0': {    // iOS 8.2, 8.3, 8.4
 			'1.x': true    // watchOS 1.0
@@ -341,14 +341,7 @@ export function getXcodes(force) {
  */
 export async function getDefaultXcodePath(xcodeselect) {
 	try {
-		const candidates = [ 'xcode-select' ];
-		if (xcodeselect) {
-			xcodeselect = options.executables.xcodeselect;
-		}
-		if (xcodeselect !== 'xcode-select') {
-			candidates.unshift(xcodeselect);
-		}
-		const bin = await which(candidates, {
+		const bin = await which([ xcodeselect, options.executables.xcodeselect ], {
 			path: get(options, 'env.path')
 		});
 		const { stdout } = await run(bin, [ '--print-path' ]);

@@ -178,6 +178,8 @@ export async function getSimulators(xcodeInfo) {
 					}
 
 					if (!sim) {
+						const deviceDir = path.join(simPath, udid);
+
 						sim = new Simulator({
 							udid:           deviceInfo.UDID,
 							name:           deviceInfo.name,
@@ -186,7 +188,6 @@ export async function getSimulators(xcodeInfo) {
 
 							deviceType:     deviceInfo.deviceType,
 							deviceName:     deviceType.name,
-							deviceDir:      path.join(simPath, udid),
 							model:          deviceType.model,
 							family:         family,
 							supportsXcode:  {},
@@ -196,8 +197,9 @@ export async function getSimulators(xcodeInfo) {
 							runtime:        deviceInfo.runtime,
 							runtimeName:    runtime.name,
 
-							systemLog:      expandPath(`~/Library/Logs/CoreSimulator/${udid}/system.log`),
-							dataDir:        path.join(simPath, udid, 'data')
+							deviceDir,
+							systemLog:      'system.log',
+							dataDir:        'data'
 						});
 
 						list.push(sim);
@@ -230,9 +232,11 @@ export async function getSimulators(xcodeInfo) {
 								for (const watchSim of results.watchos[watchosSDK]) {
 									if (version.satisfies(watchSim.version, watchosRange)) {
 										if (!sim.watchCompanion[xcodeId]) {
-											sim.watchCompanion[xcodeId] = {};
+											sim.watchCompanion[xcodeId] = [];
 										}
-										sim.watchCompanion[xcodeId][watchSim.udid] = watchSim;
+										if (!sim.watchCompanion[xcodeId].includes(watchSim.udid)) {
+											sim.watchCompanion[xcodeId].push(watchSim.udid);
+										}
 									}
 								}
 							}
