@@ -110,7 +110,7 @@ describe('Provisioning Profiles', () => {
 			})
 			.catch(err => {
 				expect(err).to.be.instanceof(Error);
-				expect(err.message).to.equal('Unable to parse provisioning profile: Cannot read property \'nodeName\' of null');
+				expect(err.message).to.equal('Unable to parse provisioning profile: bad_plist.mobileprovision has errors');
 				done();
 			})
 			.catch(done);

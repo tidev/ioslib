@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "2.0.0-9",
+  "version": "2.0.0-10",
   "description": "iOS Utility Library",
   "main": "./dist/index",
   "author": "Axway, Inc. <npmjs@appcelerator.com>",
