@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "2.0.0-7",
+  "version": "2.0.0-8",
   "description": "iOS Utility Library",
   "main": "./dist/index",
   "author": "Axway, Inc. <npmjs@appcelerator.com>",
@@ -24,10 +24,10 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "appcd-fs": "^1.0.0-5",
-    "appcd-path": "^1.0.0-5",
-    "appcd-subprocess": "^1.0.0-5",
-    "appcd-util": "^1.0.0-5",
+    "appcd-fs": "^1.0.0-7",
+    "appcd-path": "^1.0.0-7",
+    "appcd-subprocess": "^1.0.0-7",
+    "appcd-util": "^1.0.0-7",
     "node-forge": "^0.7.1",
     "node-ios-device": "1.4.0",
     "promise-limit": "^2.5.0",
@@ -36,7 +36,7 @@
     "source-map-support": "^0.5.0"
   },
   "devDependencies": {
-    "appcd-gulp": "^1.0.0-5",
+    "appcd-gulp": "^1.0.0-7",
     "gulp": "^3.9.1"
   },
   "homepage": "https://github.com/appcelerator/ioslib",
