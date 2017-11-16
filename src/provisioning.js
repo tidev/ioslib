@@ -1,7 +1,7 @@
 import fs from 'fs';
 import options from './options';
 import path from 'path';
-import plist from 'plist';
+import plist from 'simple-plist';
 
 import { expandPath } from 'appcd-path';
 import { isFile } from 'appcd-fs';
