@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+const ioslib = require('../dist/index');
+const CLI = require('cli-kit').CLI;
+
+new CLI({
+	commands: {
+		devices: {
+			desc: 'lists connected devices',
+			async action() {
+				const devices = await ioslib.devices.getDevices();
+				console.log(JSON.stringify(devices, null, '  '));
+			}
+		},
+		'track-devices': {
+			desc: 'listens for devices to be connected/disconnected',
+			async action() {
+				const handle = ioslib.devices.trackDevices();
+				handle.on('devices', devices => {
+					console.log(JSON.stringify(devices, null, '  '));
+					console.log();
+				});
+			}
+		}
+	}
+}).exec()
+	.catch(err => {
+		console.error(err.message);
+		process.exit(err.exitCode || 1);
+	});

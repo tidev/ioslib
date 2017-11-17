@@ -3,7 +3,7 @@ import options from './options';
 import promiseLimit from 'promise-limit';
 
 import { certificateFromPem } from 'node-forge/lib/pki';
-import { cache, decodeOctalUTF8, sha1 } from 'appcd-util';
+import { cache, decodeOctalUTF8, get, sha1 } from 'appcd-util';
 import { run } from 'appcd-subprocess';
 
 const BEGIN = '-----BEGIN CERTIFICATE-----';
@@ -31,7 +31,7 @@ export function getCerts(force) {
 
 		return Promise
 			.all(keychains.map(keychain => limit(() => {
-				return run(options.executables.security, [ 'find-certificate', '-a', '-p', keychain.path ])
+				return run(get(options, 'executables.security') || 'security', [ 'find-certificate', '-a', '-p', keychain.path ])
 					.then(({ stdout }) => {
 						const now = new Date();
 						let p = stdout.indexOf(BEGIN);

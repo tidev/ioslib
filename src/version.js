@@ -37,6 +37,10 @@ function lt(v1, v2) {
 	return semver.lt(format(v1, 3, 3), format(v2, 3, 3));
 }
 
+function compare(v1, v2) {
+	return eq(v1, v2) ? 0 : lt(v1, v2) ? -1 : 1;
+}
+
 function rcompare(v1, v2) {
 	return eq(v1, v2) ? 0 : lt(v1, v2) ? 1 : -1;
 }
@@ -67,6 +71,7 @@ export default {
 	gt,
 	lte,
 	lt,
+	compare,
 	rcompare,
 	satisfies
 };

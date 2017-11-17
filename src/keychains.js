@@ -1,7 +1,7 @@
 import options from './options';
 import path from 'path';
 
-import { cache } from 'appcd-util';
+import { cache, get } from 'appcd-util';
 import { run } from 'appcd-subprocess';
 
 export const keychainMetaFile = '~/Library/Preferences/com.apple.security.plist';
@@ -14,7 +14,7 @@ export const keychainMetaFile = '~/Library/Preferences/com.apple.security.plist'
  */
 export function getKeychains(force) {
 	return cache('ioslib:keychains', force, async () => {
-		const { stdout } = await run(options.executables.security, [ 'list-keychains' ]);
+		const { stdout } = await run(get(options, 'executables.security') || 'security', [ 'list-keychains' ]);
 		const keychains = [];
 
 		for (const line of stdout.split('\n')) {

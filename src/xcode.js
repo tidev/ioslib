@@ -2,9 +2,11 @@ import fs from 'fs';
 import options from './options';
 import path from 'path';
 import plist from 'simple-plist';
+import Simctl from './simctl';
 import version from './version';
 
 import { arrayify, cache, get } from 'appcd-util';
+import { devicePairCompatibility } from './simulator';
 import { expandPath } from 'appcd-path';
 import { isDir, isFile } from 'appcd-fs';
 import { run, which } from 'appcd-subprocess';
@@ -25,65 +27,6 @@ export const xcodeLocations = [
  * @type {String}
  */
 export const globalSimProfilesPath = '/Library/Developer/CoreSimulator/Profiles';
-
-/**
- * A lookup table of valid iOS Simulator -> Watch Simulator pairings.
- *
- * This table MUST be maintained!
- *
- * The actual device pairing is done by the CoreSimulator private framework and thus there's no way
- * to know definitively what the valid device pairs are.
- *
- * @type {Object}
- */
-export const simulatorDevicePairCompatibility = {
-	'>=6.2 <7.0': {        // Xcode 6.2, 6.3, 6.4
-		'>=8.2 <9.0': {    // iOS 8.2, 8.3, 8.4
-			'1.x': true    // watchOS 1.0
-		}
-	},
-	'7.x': {               // Xcode 7.x
-		'>=8.2 <9.0': {    // iOS 8.2, 8.3, 8.4
-			'1.x': true    // watchOS 1.0
-		},
-		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
-			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
-		},
-		'>=9.3': {         // iOS 9.x
-			'2.2': true    // watchOS 2.2
-		}
-	},
-	'8.x': {               // Xcode 8.x
-		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
-			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
-		},
-		'>=9.3': {         // iOS 9.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
-		},
-		'10.x': {          // iOS 10.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
-		}
-	},
-	'9.x': {               // Xcode 9.x
-		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
-			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
-		},
-		'>=9.3': {         // iOS 9.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
-		},
-		'10.x': {          // iOS 10.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
-		},
-		'11.x': {
-			'>=3.2': true, // watchOS 3.2
-			'4.x': true    // watchOS 4.x
-		}
-	}
-};
 
 /**
  * Xcode information object.
@@ -135,7 +78,6 @@ export class Xcode {
 		this.build        = versionPlist.ProductBuildVersion;
 		this.id           = `${this.version}:${this.build}`;
 		this.executables = {
-			simctl:         path.join(dir, 'usr/bin/simctl'),
 			simulator:      null,
 			watchsimulator: null,
 			xcodebuild
@@ -145,13 +87,14 @@ export class Xcode {
 			ios:     this.findSDKs('iPhoneOS'),
 			watchos: this.findSDKs('WatchOS')
 		};
+		this.simctl = new Simctl(path.join(dir, 'usr/bin/simctl'));
 		this.simDeviceTypes = {};
 		this.simRuntimes    = {};
 		this.simDevicePairs = {};
 
-		for (const xcodeRange of Object.keys(simulatorDevicePairCompatibility)) {
+		for (const xcodeRange of Object.keys(devicePairCompatibility)) {
 			if (version.satisfies(this.version, xcodeRange)) {
-				this.simDevicePairs = simulatorDevicePairCompatibility[xcodeRange];
+				this.simDevicePairs = devicePairCompatibility[xcodeRange];
 				break;
 			}
 		}
@@ -190,14 +133,14 @@ export class Xcode {
 	 * @access private
 	 */
 	findSDKs(sdkTypeName) {
-		const results = [];
 		const dir = path.join(this.path, `Platforms/${sdkTypeName}.platform/Developer/SDKs`);
 
 		if (!isDir(dir)) {
-			return results;
+			return [];
 		}
 
 		const nameRegExp = new RegExp(`^${sdkTypeName}(.*).sdk$`);
+		const results = new Set();
 
 		for (const name of fs.readdirSync(dir)) {
 			const m = name.match(nameRegExp);
@@ -215,10 +158,10 @@ export class Xcode {
 			} catch (e) {
 				// squelch
 			}
-			results.push(ver);
+			results.add(ver);
 		}
 
-		return results.sort(version.rcompare);
+		return Array.from(results).sort(version.rcompare);
 	}
 
 	/**
@@ -296,19 +239,21 @@ export class Xcode {
 	}
 }
 
+export default Xcode;
+
 /**
  * Detects installed Xcodes, then caches and returns the results.
  *
- * @param {Boolean} [force=false] - When `true`, bypasses cache and forces redetection.
+ * @param {Object} [opts] - Various options.
+ * @param {Boolean} [opts.force=false] - When `true`, bypasses cache and forces redetection.
  * @returns {Promise<Array.<Xcode>>}
  */
-export function getXcodes(force) {
+export function getXcodes({ force } = {}) {
 	return cache('ioslib:xcode', force, () => {
 		const results = {};
-		let searchPaths = arrayify(get(options, 'xcode.searchPaths'), true);
-		if (!searchPaths) {
-			searchPaths = xcodeLocations;
-		}
+		const searchPaths = arrayify(get(options, 'xcode.searchPaths') || xcodeLocations, true);
+
+		searchPaths.push('/Users/chris/Desktop/Xcode-8.3.3.app');
 
 		for (let dir of searchPaths) {
 			try {
@@ -336,12 +281,11 @@ export function getXcodes(force) {
 /**
  * Determines the default Xcode path by running `xcode-select`.
  *
- * @param {String} [xcodeselect] - The preferred path to the `xcode-select` executable to run.
  * @returns {Promise<String>}
  */
-export async function getDefaultXcodePath(xcodeselect) {
+export async function getDefaultXcodePath() {
 	try {
-		const bin = await which([ xcodeselect, options.executables.xcodeselect ], {
+		const bin = await which(get(options, 'executables.xcodeselect') || 'xcode-select', {
 			path: get(options, 'env.path')
 		});
 		const { stdout } = await run(bin, [ '--print-path' ]);

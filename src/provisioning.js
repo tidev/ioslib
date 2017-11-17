@@ -3,9 +3,9 @@ import options from './options';
 import path from 'path';
 import plist from 'simple-plist';
 
+import { cache, get, sha1 } from 'appcd-util';
 import { expandPath } from 'appcd-path';
 import { isFile } from 'appcd-fs';
-import { cache, sha1 } from 'appcd-util';
 
 const ppRegExp = /\.mobileprovision$/;
 
@@ -21,7 +21,7 @@ const defaultProvisioningProfileDir = '~/Library/MobileDevice/Provisioning Profi
  * @returns {String}
  */
 export function getProvisioningProfileDir() {
-	return options.provisioningProfileDir || defaultProvisioningProfileDir;
+	return get(options, 'provisioning.path') || defaultProvisioningProfileDir;
 }
 
 /**

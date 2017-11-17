@@ -3,7 +3,6 @@
  * @type {Object}
  */
 const options = {
-	coreSimulatorDevicesDir: null,
 	env: {
 		path: null
 	},
@@ -11,7 +10,12 @@ const options = {
 		security:    'security',
 		xcodeSelect: 'xcode-select'
 	},
-	provisioningProfileDir: null,
+	provisioning: {
+		path: null
+	},
+	simulator: {
+		devicesDir: null
+	},
 	xcode: {
 		searchPaths: null
 	}
