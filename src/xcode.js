@@ -253,8 +253,6 @@ export function getXcodes({ force } = {}) {
 		const results = {};
 		const searchPaths = arrayify(get(options, 'xcode.searchPaths') || xcodeLocations, true);
 
-		searchPaths.push('/Users/chris/Desktop/Xcode-8.3.3.app');
-
 		for (let dir of searchPaths) {
 			try {
 				const xcode = new Xcode(dir);
