@@ -41,34 +41,38 @@ export function getCerts(force) {
 							q = stdout.indexOf(END, p);
 
 							if (q !== -1) {
-								const pem = stdout.substring(p, q + END.length);
-								const certObj = certificateFromPem(pem);
-								const commonName = certObj.subject.getField('CN');
+								try {
+									const pem = stdout.substring(p, q + END.length);
+									const certObj = certificateFromPem(pem);
+									const commonName = certObj.subject.getField('CN');
 
-								if (commonName) {
-									const fullname = decodeOctalUTF8(commonName.value);
-									const { notBefore, notAfter } = certObj.validity;
-									const expired = notAfter < now;
+									if (commonName) {
+										const fullname = decodeOctalUTF8(commonName.value);
+										const { notBefore, notAfter } = certObj.validity;
+										const expired = notAfter < now;
 
-									if (fullname !== wwdrName) {
-										const m = fullname.match(certRegExp);
-										if (m) {
-											const cert = stdout.substring(p + BEGIN.length, q).replace(/\n/g, '');
-											certs[m[1] ? 'developer' : 'distribution'].push({
-												name: m[3],
-												fullname,
-												cert,
-												hash: sha1(cert),
-												before: notBefore,
-												after: notAfter,
-												expired,
-												invalid: expired || notBefore > now,
-												keychain: keychain.path
-											});
+										if (fullname !== wwdrName) {
+											const m = fullname.match(certRegExp);
+											if (m) {
+												const cert = stdout.substring(p + BEGIN.length, q).replace(/\n/g, '');
+												certs[m[1] ? 'developer' : 'distribution'].push({
+													name: m[3],
+													fullname,
+													cert,
+													hash: sha1(cert),
+													before: notBefore,
+													after: notAfter,
+													expired,
+													invalid: expired || notBefore > now,
+													keychain: keychain.path
+												});
+											}
+										} else if (!expired) {
+											certs.wwdr = true;
 										}
-									} else if (!expired) {
-										certs.wwdr = true;
 									}
+								} catch (e) {
+									// skip
 								}
 							}
 
