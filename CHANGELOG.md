@@ -1,3 +1,7 @@
+# v2.0.5 (Dec 12, 2017)
+
+ - Updated to node-ios-device@1.5.0 which added support for Node.js 9.
+
 # v2.0.4 (Dec 11, 2017)
 
  - Fixed bug where a failure to parse a cert name would cause no certs to be found and an error to
