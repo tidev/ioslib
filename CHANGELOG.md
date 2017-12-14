@@ -1,3 +1,8 @@
+# v2.0.6 (Dec 14, 2017)
+
+ - Fixed bug where extract teams from provisioning profiles would fail if any provisioning profiles
+   didn't have any associated teams [DAEMON-209].
+
 # v2.0.5 (Dec 12, 2017)
 
  - Updated to node-ios-device@1.5.0 which added support for Node.js 9.
