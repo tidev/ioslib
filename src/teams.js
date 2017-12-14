@@ -31,9 +31,11 @@ export function buildTeamsFromProvisioningProfiles(profiles) {
 	for (const type of Object.keys(profiles)) {
 		if (Array.isArray(profiles[type])) {
 			for (const profile of profiles[type]) {
-				for (const id of profile.teamIds) {
-					if (id) {
-						teams[id] = id;
+				if (Array.isArray(profile.teamIds)) {
+					for (const id of profile.teamIds) {
+						if (id) {
+							teams[id] = id;
+						}
 					}
 				}
 				if (profile.teamId) {
