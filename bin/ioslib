@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const ioslib = require('../dist/index');
 const CLI = require('cli-kit').CLI;
+const ioslib = require('../dist/index');
+const pkgJson = require('../package.json');
 
 new CLI({
 	commands: {
@@ -12,7 +13,8 @@ new CLI({
 				console.log(JSON.stringify(devices, null, '  '));
 			}
 		},
-		'track-devices': {
+		track: {
+			aliases: [ 'trackdevices', 'track-devices' ],
 			desc: 'listens for devices to be connected/disconnected',
 			async action() {
 				const handle = ioslib.devices.trackDevices();
@@ -22,7 +24,10 @@ new CLI({
 				});
 			}
 		}
-	}
+	},
+	help: true,
+	name: pkgJson.name,
+	version: pkgJson.version
 }).exec()
 	.catch(err => {
 		console.error(err.message);

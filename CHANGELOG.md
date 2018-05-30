@@ -1,3 +1,9 @@
+# v2.1.0 (May 30, 2018)
+
+ * Updated npm dependencies.
+   - Update node-ios-device to 1.6.1 which includes Node 10 support.
+ * Updated `ioslib` bin to use `cli-kit`'s help, version, and aliases.
+
 # v2.0.7 (Apr 9, 2018)
 
  * Updated npm dependencies.
