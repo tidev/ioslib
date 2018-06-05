@@ -1,6 +1,7 @@
 #! groovy
 library 'pipeline-library'
 
+def nodeVersion = '8.9.1'
 timestamps {
   node('osx && npm-publish') {
     def packageVersion = ''
@@ -20,7 +21,7 @@ timestamps {
       currentBuild.displayName = "#${packageVersion}-${currentBuild.number}"
     }
 
-    nodejs(nodeJSInstallationName: 'node 4.7.3') {
+    nodejs(nodeJSInstallationName: "node ${nodeVersion}") {
       ansiColor('xterm') {
         timeout(15) {
           stage('Build') {
@@ -66,8 +67,6 @@ timestamps {
 		  // only publish master and trigger downstream
           if (isMaster) {
             sh 'npm publish'
-            // Trigger appc-cli-wrapper job
-            build job: 'appc-cli-wrapper', wait: false
           }
         } // stage
 
