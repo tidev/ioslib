@@ -2,10 +2,11 @@
 library 'pipeline-library'
 
 def nodeVersion = '8.9.1'
+def MAINLINE_BRANCH_REGEXP = /master|\d_\d_(X|\d)/ // a branch is considered mainline if 'master' or like: 1_7_X
+def isPublishable = false // used to determine if we should publish
 timestamps {
   node('osx && npm-publish') {
     def packageVersion = ''
-    def isMaster = false
     stage('Checkout') {
       // checkout scm
       // Hack for JENKINS-37658 - see https://support.cloudbees.com/hc/en-us/articles/226122247-How-to-Customize-Checkout-for-Pipeline-Multibranch
@@ -16,8 +17,8 @@ timestamps {
         userRemoteConfigs: scm.userRemoteConfigs
       ])
 
-      isMaster = env.BRANCH_NAME.equals('master')
       packageVersion = jsonParse(readFile('package.json'))['version']
+      isPublishable = (env.BRANCH_NAME ==~ MAINLINE_BRANCH_REGEXP)
       currentBuild.displayName = "#${packageVersion}-${currentBuild.number}"
     }
 
@@ -40,8 +41,8 @@ timestamps {
               junit 'junit_report.xml'
             }
             fingerprint 'package.json'
-            // Only tag master
-            if (isMaster) {
+            // Only tag publishable branches
+            if (isPublishable) {
               pushGitTag(name: packageVersion, message: "See ${env.BUILD_URL} for more information.", force: true)
             }
           } // stage
@@ -64,14 +65,14 @@ timestamps {
         } // stage
 
         stage('Publish') {
-		  // only publish master and trigger downstream
-          if (isMaster) {
+          // only publish master and trigger downstream
+          if (isPublishable) {
             sh 'npm publish'
           }
         } // stage
 
         stage('JIRA') {
-          if (isMaster) {
+          if (isPublishable) {
             // update affected tickets, create and release version
             updateJIRA('TIMOB', "ioslib ${packageVersion}", scm)
           } // if
