@@ -1,3 +1,8 @@
+# v2.2.0 (Jun 5, 2018)
+
+ * Added Xcode 10 to device pair lookup
+   [(TIMOB-26089)](https://jira.appcelerator.org/browse/TIMOB-26089).
+
 # v2.1.0 (May 30, 2018)
 
  * Updated npm dependencies.
