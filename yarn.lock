@@ -3959,9 +3959,9 @@ node-forge@^0.7.5:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.7.5.tgz#6c152c345ce11c52f465c2abd957e8639cd674df"
 
-node-ios-device@1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/node-ios-device/-/node-ios-device-1.6.1.tgz#89c77f5e09f0be0b8543918e5959552a0c4d1d3b"
+node-ios-device@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/node-ios-device/-/node-ios-device-1.6.2.tgz#db2f37d87da8494bfe8153e62731eb58357dcff8"
   dependencies:
     debug "^3.1.0"
     nan "^2.10.0"
