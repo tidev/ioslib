@@ -5,6 +5,7 @@ const ioslib = require('../dist/index');
 const pkgJson = require('../package.json');
 
 new CLI({
+	banner: `${pkgJson.name}, version ${pkgJson.version}`,
 	commands: {
 		devices: {
 			desc: 'lists connected devices',
@@ -23,6 +24,16 @@ new CLI({
 					console.log();
 				});
 			}
+		},
+		'detect-device-pairs': {
+			action: detectDevicePairs,
+			args: [
+				{
+					name: 'xcode-path',
+					desc: 'the path to Xcode to use'
+				}
+			],
+			desc: 'detects all valid iOS and watchOS simulator pairs'
 		}
 	},
 	help: true,
@@ -33,3 +44,176 @@ new CLI({
 		console.error(err.message);
 		process.exit(err.exitCode || 1);
 	});
+
+function detectDevicePairs({ argv }) {
+	const { existsSync } = require('fs');
+	const path = require('path');
+	const { spawnSync } = require('child_process');
+
+	let last;
+	let simctl;
+	let { xcodePath } = argv;
+
+	if (xcodePath) {
+		xcodePath = path.join(xcodePath, 'Contents');
+	} else {
+		xcodePath = spawnSync('xcode-select', [ '-p' ]).stdout.toString();
+	}
+
+	while (last !== xcodePath) {
+		if (existsSync(path.join(xcodePath, 'version.plist'))) {
+			simctl = path.join(xcodePath, 'Developer', 'usr', 'bin', 'simctl');
+			break;
+		}
+		last = xcodePath;
+		xcodePath = path.dirname(xcodePath);
+	}
+
+	if (!simctl) {
+		throw new Error('Unable to locate simctl');
+	}
+
+	const testSimName = "ioslib_test_sim";
+	const startTime = Date.now();
+
+	const getInfo = () => {
+		return JSON.parse(spawnSync(simctl, [ 'list', '--json' ]).stdout.toString());
+	};
+
+	const createSim = (name, deviceTypeId, runtimeId) => {
+		console.log(`Creating ${name} (${deviceTypeId} - ${runtimeId})`);
+		const child = spawnSync(simctl, [ 'create', name, deviceTypeId, runtimeId ]);
+		return child.status === 0 ? child.stdout.toString().trim() : null;
+	};
+
+	const deleteSim = udid => {
+		console.log(`Deleting ${udid}`);
+		return spawnSync(simctl, [ 'delete', udid ]).status === 0;
+	};
+
+	const pair = (watchUdid, phoneUdid) => {
+		process.stdout.write(`Pairing ${watchUdid} -> ${phoneUdid}... `);
+		const child = spawnSync(simctl, [ 'pair', watchUdid, phoneUdid ]);
+		if (child.status === 0) {
+			process.stdout.write('success\n');
+			return child.stdout.toString().trim();
+		}
+		process.stdout.write('failed\n');
+		return null;
+	};
+
+	const unpair = (pairUdid) => {
+		console.log(`Unpairing ${pairUdid}`);
+		return spawnSync(simctl, [ 'unpair', pairUdid ]).status === 0;
+	};
+
+	const cleanup = info => {
+		let deleteCount = 0;
+		for (const ver of Object.keys(info.devices)) {
+			for (const device of info.devices[ver]) {
+				if (device.name.startsWith(testSimName) && deleteSim(device.udid)) {
+					deleteCount++;
+				}
+			}
+		}
+		deleteCount && console.log();
+	};
+
+	const info = getInfo();
+	cleanup(info);
+
+	const iPhoneDeviceTypeRegExp = /\.iPhone-.+$/;
+	const iosSimRuntimeRegExp    = /\.iOS-.+$/;
+	const watchDeviceTypeRegExp  = /Apple-Watch.+42mm/;
+	const watchSimRuntimeRegExp  = /\.watchOS-.+$/;
+
+	const iphoneDeviceTypes = info.devicetypes.filter(s => iPhoneDeviceTypeRegExp.test(s.identifier));
+	const iosRuntimes       = info.runtimes.filter(r => iosSimRuntimeRegExp.test(r.identifier));
+	const watchDeviceTypes  = info.devicetypes.filter(s => watchDeviceTypeRegExp.test(s.identifier));
+	const watchRuntimes     = info.runtimes.filter(r => watchSimRuntimeRegExp.test(r.identifier));
+
+	const watchDevices = [];
+	let results = {};
+
+	const stats = {
+		iPhoneSimsCreated: 0,
+		watchSimsCreated: 0,
+		pairings: 0,
+		pairSuccess: 0
+	};
+
+	// create the watch sims
+	for (const deviceType of watchDeviceTypes) {
+		for (const runtime of watchRuntimes) {
+			const udid = createSim(`${testSimName}_${stats.watchSimsCreated++}`, deviceType.identifier, runtime.identifier);
+			if (udid) {
+				console.log(`Created watch sim ${deviceType.name} + ${runtime.name} (${udid})`);
+				watchDevices.push({
+					udid,
+					deviceType,
+					runtime
+				});
+			}
+		}
+	}
+
+	watchDevices.length && console.log();
+
+	for (const iPhoneDeviceType of iphoneDeviceTypes) {
+		for (const iosRuntime of iosRuntimes) {
+			stats.iPhoneSimsCreated++;
+			const udid = createSim(testSimName, iPhoneDeviceType.identifier, iosRuntime.identifier);
+
+			if (udid) {
+				for (const watch of watchDevices) {
+					stats.pairings++;
+					const pairUdid = pair(watch.udid, udid);
+
+					if (pairUdid) {
+						stats.pairSuccess++;
+						unpair(pairUdid);
+
+						// console.log({
+						// 	iPhoneDeviceType,
+						// 	iosRuntime,
+						// 	watchDeviceType: watch.deviceType,
+						// 	watchRuntime: watch.runtime
+						// });
+
+						if (!results[iosRuntime.version]) {
+							results[iosRuntime.version] = [];
+						}
+						if (!results[iosRuntime.version].includes(watch.runtime.version)) {
+							results[iosRuntime.version].push(watch.runtime.version);
+						}
+					}
+				}
+
+				deleteSim(udid);
+			}
+		}
+	}
+
+	console.log();
+	cleanup(getInfo());
+
+	// sort the results
+	results = (function (src) {
+		const dest = {};
+		for (const key of Object.keys(src).sort()) {
+			dest[key] = src[key].sort();
+		}
+		return dest;
+	})(results);
+
+	const delta = Date.now() - startTime;
+	const minutes = Math.floor(delta / 60000);
+	const seconds = (delta % 60000) / 1000;
+	console.log(`Completed in ${minutes}m ${seconds}s\n`);
+	console.log(`iPhone Sims Created: ${stats.iPhoneSimsCreated}`);
+	console.log(`Watch Sims Created:  ${stats.watchSimsCreated}`);
+	console.log(`Pairings:            ${stats.pairings}`);
+	console.log(`Successful Pairings: ${stats.pairSuccess}`);
+	console.log();
+	console.log(results);
+}
