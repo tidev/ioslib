@@ -31,7 +31,7 @@
     "appcd-path": "^1.1.1",
     "appcd-subprocess": "^1.1.1",
     "appcd-util": "^1.1.1",
-    "cli-kit": "^0.1.2",
+    "cli-kit": "^0.3.0",
     "node-forge": "^0.7.5",
     "node-ios-device": "^1.6.2",
     "promise-limit": "^2.6.0",
