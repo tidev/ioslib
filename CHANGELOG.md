@@ -1,3 +1,9 @@
+# v2.2.1 (Jun 11, 2018)
+
+ * Added the `ioslib detect-device-pairs` command.
+ * Updated the device pair compatibility table.
+ * Updated npm dependencies
+
 # v2.2.0 (Jun 5, 2018)
 
  * Added Xcode 10 to device pair lookup
