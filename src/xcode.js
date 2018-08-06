@@ -29,6 +29,13 @@ export const xcodeLocations = [
 export const globalSimProfilesPath = '/Library/Developer/CoreSimulator/Profiles';
 
 /**
+ * The path to the global Xcode license file. It tracks the license acceptance for GM (golden
+ * master) and beta releases.
+ * @type {String}
+ */
+export const globalLicenseFile = '/Library/Preferences/com.apple.dt.Xcode.plist';
+
+/**
  * Xcode information object.
  */
 export class Xcode {

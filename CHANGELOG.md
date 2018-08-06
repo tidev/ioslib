@@ -1,8 +1,13 @@
+# v2.2.2 (Aug 6, 2018)
+
+ * Added path to global Xcode license file.
+ * Updated npm dependencies.
+
 # v2.2.1 (Jun 11, 2018)
 
  * Added the `ioslib detect-device-pairs` command.
  * Updated the device pair compatibility table.
- * Updated npm dependencies
+ * Updated npm dependencies.
 
 # v2.2.0 (Jun 5, 2018)
 

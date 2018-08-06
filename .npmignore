@@ -11,6 +11,7 @@ gulpfile.js
 junit.xml
 node_modules
 npm-debug.log
+yarn.lock
 yarn-error.log
 /src
 /test
