@@ -1,3 +1,9 @@
+# v2.2.3 (Aug 6, 2018)
+
+ * Workaround for sim runtimes that have a bad version number in the runtime's `profile.plist`
+   [(DAEMON-259)](https://jira.appcelerator.org/browse/DAEMON-259).
+ * Moved simctl path into executables under xcode info.
+
 # v2.2.2 (Aug 6, 2018)
 
  * Added path to global Xcode license file.

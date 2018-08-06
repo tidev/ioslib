@@ -79,12 +79,18 @@ export class Xcode {
 			throw new Error(`Found Xcode ${versionPlist.CFBundleShortVersionString}, but it is too old and unsupported`);
 		}
 
+		Object.defineProperty(this, 'simctl', {
+			configurable: true,
+			value: new Simctl(path.join(dir, 'usr/bin/simctl'))
+		});
+
 		this.path         = dir;
 		this.xcodeapp     = path.resolve(dir, '../..');
 		this.version      = versionPlist.CFBundleShortVersionString;
 		this.build        = versionPlist.ProductBuildVersion;
 		this.id           = `${this.version}:${this.build}`;
 		this.executables = {
+			simctl:         this.simctl.bin,
 			simulator:      null,
 			watchsimulator: null,
 			xcodebuild
@@ -94,7 +100,6 @@ export class Xcode {
 			ios:     this.findSDKs('iPhoneOS'),
 			watchos: this.findSDKs('WatchOS')
 		};
-		this.simctl = new Simctl(path.join(dir, 'usr/bin/simctl'));
 		this.simDeviceTypes = {};
 		this.simRuntimes    = {};
 		this.simDevicePairs = {};
@@ -221,6 +226,9 @@ export class Xcode {
 		// runtimes
 		const runtimesDir = path.join(dir, 'Runtimes');
 		if (isDir(runtimesDir)) {
+			// regex to extract the version from the runtime name
+			const runtimeNameRegExp = /\s(\d+(?:\.\d+(?:\.\d+)?)?)$/;
+
 			for (const name of fs.readdirSync(runtimesDir)) {
 				try {
 					let info = plist.readFileSync(path.join(runtimesDir, name, 'Contents/Info.plist'));
@@ -229,10 +237,16 @@ export class Xcode {
 						version: null
 					};
 					const id = info.CFBundleIdentifier;
+					const m = info.CFBundleName.match(runtimeNameRegExp);
+					if (m) {
+						runtime.version = m[1];
+					}
 
 					try {
 						info = plist.readFileSync(path.join(runtimesDir, name, 'Contents/Resources/profile.plist'));
-						runtime.version = info.defaultVersionString;
+						if (!runtime.version || info.defaultVersionString.startsWith(runtime.version)) {
+							runtime.version = info.defaultVersionString;
+						}
 					} catch (e) {
 						// squelch
 					}
