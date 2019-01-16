@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "publishConfig": {
     "tag": "next"
   },
@@ -27,21 +27,20 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "appcd-fs": "^1.1.2",
-    "appcd-path": "^1.1.1",
-    "appcd-subprocess": "^1.1.1",
-    "appcd-util": "^1.1.1",
-    "cli-kit": "^0.3.0",
-    "node-forge": "^0.7.5",
-    "node-ios-device": "^1.6.2",
+    "appcd-fs": "^1.1.5",
+    "appcd-path": "^1.1.4",
+    "appcd-subprocess": "^1.1.4",
+    "appcd-util": "^1.1.5",
+    "cli-kit": "^0.6.1",
+    "node-forge": "^0.7.6",
+    "node-ios-device": "^1.6.3",
     "promise-limit": "^2.7.0",
-    "semver": "^5.5.0",
-    "simple-plist": "^0.3.0",
-    "source-map-support": "^0.5.6"
+    "semver": "^5.6.0",
+    "simple-plist": "^1.0.0",
+    "source-map-support": "^0.5.10"
   },
   "devDependencies": {
-    "appcd-gulp": "^1.1.5",
-    "gulp": "^3.9.1"
+    "appcd-gulp": "^2.0.0"
   },
   "homepage": "https://github.com/appcelerator/ioslib",
   "bugs": "https://github.com/appcelerator/ioslib/issues",

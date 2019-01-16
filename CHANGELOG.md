@@ -1,3 +1,10 @@
+# v2.3.0 (Jan 16, 2019)
+
+ * Upgraded to Gulp 4.
+ * Refactored promises to use async/await.
+ * Added pluralize dependency since it was removed from snooplogg 2.
+ * Updated dependencies.
+
 # v2.2.3 (Aug 6, 2018)
 
  * Workaround for sim runtimes that have a bad version number in the runtime's `profile.plist`

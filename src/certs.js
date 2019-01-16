@@ -29,58 +29,56 @@ export function getCerts(force) {
 			wwdr:         false
 		};
 
-		return Promise
-			.all(keychains.map(keychain => limit(() => {
-				return run(get(options, 'executables.security') || 'security', [ 'find-certificate', '-a', '-p', keychain.path ])
-					.then(({ stdout }) => {
-						const now = new Date();
-						let p = stdout.indexOf(BEGIN);
-						let q;
+		await Promise.all(keychains.map(keychain => limit(async () => {
+			const { stdout } = await run(get(options, 'executables.security') || 'security', [ 'find-certificate', '-a', '-p', keychain.path ]);
+			const now = new Date();
+			let p = stdout.indexOf(BEGIN);
+			let q;
 
-						while (p !== -1) {
-							q = stdout.indexOf(END, p);
+			while (p !== -1) {
+				q = stdout.indexOf(END, p);
 
-							if (q !== -1) {
-								try {
-									const pem = stdout.substring(p, q + END.length);
-									const certObj = certificateFromPem(pem);
-									const commonName = certObj.subject.getField('CN');
+				if (q !== -1) {
+					try {
+						const pem = stdout.substring(p, q + END.length);
+						const certObj = certificateFromPem(pem);
+						const commonName = certObj.subject.getField('CN');
 
-									if (commonName) {
-										const fullname = decodeOctalUTF8(commonName.value);
-										const { notBefore, notAfter } = certObj.validity;
-										const expired = notAfter < now;
+						if (commonName) {
+							const fullname = decodeOctalUTF8(commonName.value);
+							const { notBefore, notAfter } = certObj.validity;
+							const expired = notAfter < now;
 
-										if (fullname !== wwdrName) {
-											const m = fullname.match(certRegExp);
-											if (m) {
-												const cert = stdout.substring(p + BEGIN.length, q).replace(/\n/g, '');
-												certs[m[1] ? 'developer' : 'distribution'].push({
-													name: m[3],
-													fullname,
-													cert,
-													hash: sha1(cert),
-													before: notBefore,
-													after: notAfter,
-													expired,
-													invalid: expired || notBefore > now,
-													keychain: keychain.path
-												});
-											}
-										} else if (!expired) {
-											certs.wwdr = true;
-										}
-									}
-								} catch (e) {
-									// skip
+							if (fullname !== wwdrName) {
+								const m = fullname.match(certRegExp);
+								if (m) {
+									const cert = stdout.substring(p + BEGIN.length, q).replace(/\n/g, '');
+									certs[m[1] ? 'developer' : 'distribution'].push({
+										name: m[3],
+										fullname,
+										cert,
+										hash: sha1(cert),
+										before: notBefore,
+										after: notAfter,
+										expired,
+										invalid: expired || notBefore > now,
+										keychain: keychain.path
+									});
 								}
+							} else if (!expired) {
+								certs.wwdr = true;
 							}
-
-							p = stdout.indexOf(BEGIN, q + END.length);
 						}
-					});
-			})))
-			.then(() => certs);
+					} catch (e) {
+						// skip
+					}
+				}
+
+				p = stdout.indexOf(BEGIN, q + END.length);
+			}
+		})));
+
+		return certs;
 	});
 }
 

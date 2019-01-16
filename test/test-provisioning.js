@@ -34,18 +34,18 @@ describe('Provisioning Profiles', () => {
 		}
 	});
 
-	it('should fail if provisioning profile director does not exist', done => {
+	it('should fail if provisioning profile director does not exist', async () => {
 		const dir = path.join(__dirname, 'fixtures', 'does_not_exist');
-		ioslib.provisioning.findProvisioningProfileFiles(dir)
-			.then(() => {
-				done(new Error('Expected error'));
-			})
-			.catch(err => {
-				expect(err).to.be.instanceof(Error);
-				expect(err.message).to.equal(`Provisioning profile directory does not exist: ${dir}`);
-				done();
-			})
-			.catch(done);
+
+		try {
+			await ioslib.provisioning.findProvisioningProfileFiles(dir);
+		} catch (err) {
+			expect(err).to.be.instanceof(Error);
+			expect(err.message).to.equal(`Provisioning profile directory does not exist: ${dir}`);
+			return;
+		}
+
+		throw new Error('Expected error');
 	});
 
 	it('should read a provisioning profile file', async () => {
@@ -66,7 +66,7 @@ describe('Provisioning Profiles', () => {
 		}
 		expect(profile.expired).to.be.a('boolean');
 		expect(profile.managed).to.equal(false);
-		expect(profile.certs).to.have.property('6bf1be1240bbc6ceb7d43f9560235e6053aa6f3a', new Buffer('DEVELOPER_CERT_GOES_HERE').toString('base64'));
+		expect(profile.certs).to.have.property('6bf1be1240bbc6ceb7d43f9560235e6053aa6f3a', Buffer.from('DEVELOPER_CERT_GOES_HERE').toString('base64'));
 		expect(profile.devices).to.be.null;
 		expect(profile.entitlements).to.be.an('object');
 		expect(profile.teamIds).to.deep.equal([ 'WP12345678' ]);
@@ -74,46 +74,46 @@ describe('Provisioning Profiles', () => {
 		expect(profile.teamName).to.be.equal('Testco');
 	});
 
-	it('should fail if provisioning profile does not exist', done => {
+	it('should fail if provisioning profile does not exist', async () => {
 		const file = path.join(__dirname, 'fixtures', 'does_not_exist');
-		ioslib.provisioning.parseProvisioningProfileFile(file)
-			.then(() => {
-				done(new Error('Expected error'));
-			})
-			.catch(err => {
-				expect(err).to.be.instanceof(Error);
-				expect(err.message).to.equal(`Provisioning profile does not exist: ${file}`);
-				done();
-			})
-			.catch(done);
+
+		try {
+			await ioslib.provisioning.parseProvisioningProfileFile(file);
+		} catch (err) {
+			expect(err).to.be.instanceof(Error);
+			expect(err.message).to.equal(`Provisioning profile does not exist: ${file}`);
+			return;
+		}
+
+		throw new Error('Expected error');
 	});
 
-	it('should fail if provisioning profile does not contain a plist', done => {
+	it('should fail if provisioning profile does not contain a plist', async () => {
 		const file = path.join(__dirname, 'fixtures', 'Bad Provisioning Profiles', 'no_plist.mobileprovision');
-		ioslib.provisioning.parseProvisioningProfileFile(file)
-			.then(() => {
-				done(new Error('Expected error'));
-			})
-			.catch(err => {
-				expect(err).to.be.instanceof(Error);
-				expect(err.message).to.equal('Failed to parse provisioning profile: no plist found');
-				done();
-			})
-			.catch(done);
+
+		try {
+			await ioslib.provisioning.parseProvisioningProfileFile(file);
+		} catch (err) {
+			expect(err).to.be.instanceof(Error);
+			expect(err.message).to.equal('Failed to parse provisioning profile: no plist found');
+			return;
+		}
+
+		throw new Error('Expected error');
 	});
 
-	it('should fail if provisioning profile contains a bad plist', done => {
+	it('should fail if provisioning profile contains a bad plist', async () => {
 		const file = path.join(__dirname, 'fixtures', 'Bad Provisioning Profiles', 'bad_plist.mobileprovision');
-		ioslib.provisioning.parseProvisioningProfileFile(file)
-			.then(() => {
-				done(new Error('Expected error'));
-			})
-			.catch(err => {
-				expect(err).to.be.instanceof(Error);
-				expect(err.message).to.equal('Unable to parse provisioning profile: bad_plist.mobileprovision has errors');
-				done();
-			})
-			.catch(done);
+
+		try {
+			await ioslib.provisioning.parseProvisioningProfileFile(file);
+		} catch (err) {
+			expect(err).to.be.instanceof(Error);
+			expect(err.message).to.equal('Unable to parse provisioning profile: bad_plist.mobileprovision has errors');
+			return;
+		}
+
+		throw new Error('Expected error');
 	});
 
 	it('should get all provisioning profiles', async () => {
@@ -149,7 +149,7 @@ describe('Provisioning Profiles', () => {
 		}
 		expect(profile.expired).to.be.a('boolean');
 		expect(profile.managed).to.equal(false);
-		expect(profile.certs).to.have.property('6bf1be1240bbc6ceb7d43f9560235e6053aa6f3a', new Buffer('DEVELOPER_CERT_GOES_HERE').toString('base64'));
+		expect(profile.certs).to.have.property('6bf1be1240bbc6ceb7d43f9560235e6053aa6f3a', Buffer.from('DEVELOPER_CERT_GOES_HERE').toString('base64'));
 		expect(profile.devices).to.be.null;
 		expect(profile.entitlements).to.be.an('object');
 		expect(profile.teamIds).to.deep.equal([ 'WP12345678' ]);
@@ -173,7 +173,7 @@ describe('Provisioning Profiles', () => {
 		}
 		expect(profile.expired).to.be.a('boolean');
 		expect(profile.managed).to.equal(false);
-		expect(profile.certs).to.have.property('6bf1be1240bbc6ceb7d43f9560235e6053aa6f3a', new Buffer('DEVELOPER_CERT_GOES_HERE').toString('base64'));
+		expect(profile.certs).to.have.property('6bf1be1240bbc6ceb7d43f9560235e6053aa6f3a', Buffer.from('DEVELOPER_CERT_GOES_HERE').toString('base64'));
 		expect(profile.devices).to.be.an('array');
 		expect(profile.devices).to.have.lengthOf(1);
 		expect(profile.devices[0]).to.equal('UDID_GOES_HERE');
