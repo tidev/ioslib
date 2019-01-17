@@ -1,7 +1,7 @@
 'use strict';
 
 require('appcd-gulp')({
-	gulp:     require('gulp'),
+	exports,
 	pkgJson:  require('./package.json'),
 	template: 'standard',
 	babel:    'node8'
