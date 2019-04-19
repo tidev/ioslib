@@ -300,9 +300,10 @@ export function generateSimulatorRegistry({ simulators, xcodes }) {
 								for (const watchSim of unsorted.watchos[watchVersion]) {
 									if (version.satisfies(watchSim.version, watchosRange)) {
 										if (!sim.watchCompanion[xcodeId]) {
-											sim.watchCompanion[xcodeId] = {};
+											sim.watchCompanion[xcodeId] = [ watchSim.udid ];
+										} else if (!sim.watchCompanion[xcodeId].includes(watchSim.udid)) {
+											sim.watchCompanion[xcodeId].push(watchSim.udid);
 										}
-										sim.watchCompanion[xcodeId][watchSim.udid] = watchSim;
 									}
 								}
 							}

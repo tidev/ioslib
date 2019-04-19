@@ -42,11 +42,10 @@ export class TrackDeviceHandle extends EventEmitter {
  * @returns {Promise<Array.<Object>>}
  */
 export function getDevices() {
-	return tailgate('ioslib:devices', () => new Promise((resolve, reject) => {
-		iosDevice.devices((err, devices) => {
-			return err ? reject(err) : resolve(devices.map(d => new Device(d)));
-		});
-	}));
+	return tailgate('ioslib:devices', async () => {
+		const devices = await iosDevice.devices();
+		return devices.map(d => new Device(d));
+	});
 }
 
 /**
