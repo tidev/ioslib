@@ -46,6 +46,6 @@
   "bugs": "https://github.com/appcelerator/ioslib/issues",
   "repository": "https://github.com/appcelerator/ioslib",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=8.10.0"
   }
 }
