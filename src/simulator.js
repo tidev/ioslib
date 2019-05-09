@@ -7,6 +7,7 @@ import Xcode from './xcode';
 
 import { arrayify, cache, get } from 'appcd-util';
 import { expandPath } from 'appcd-path';
+import { isDir } from 'appcd-fs';
 
 /**
  * A lookup table of valid iOS Simulator -> Watch Simulator pairings.
@@ -175,39 +176,41 @@ export function getSimulators({ force } = {}) {
 		const simDevicesPath = getDevicesDir();
 		const results = [];
 
-		for (const dirname of fs.readdirSync(simDevicesPath)) {
-			try {
-				const deviceDir   = path.join(simDevicesPath, dirname);
-				const deviceInfo  = plist.readFileSync(path.join(deviceDir, 'device.plist'));
-				const info = {
-					deviceDir,
-					deviceType: deviceInfo.deviceType,
-					name:       deviceInfo.name,
-					runtime:    deviceInfo.runtime,
-					udid:       deviceInfo.UDID
-				};
+		if (isDir(simDevicesPath)) {
+			for (const dirname of fs.readdirSync(simDevicesPath)) {
+				try {
+					const deviceDir   = path.join(simDevicesPath, dirname);
+					const deviceInfo  = plist.readFileSync(path.join(deviceDir, 'device.plist'));
+					const info = {
+						deviceDir,
+						deviceType: deviceInfo.deviceType,
+						name:       deviceInfo.name,
+						runtime:    deviceInfo.runtime,
+						udid:       deviceInfo.UDID
+					};
 
-				if (dirname !== info.udid) {
-					// sanity check
-					continue;
-				}
+					if (dirname !== info.udid) {
+						// sanity check
+						continue;
+					}
 
-				const m = info.runtime.match(typeRegExp);
-				if (!m) {
-					// can't figure out if it's a iOS or watchOS simulator
-					continue;
-				}
+					const m = info.runtime.match(typeRegExp);
+					if (!m) {
+						// can't figure out if it's a iOS or watchOS simulator
+						continue;
+					}
 
-				switch (m[1].toLowerCase()) {
-					case 'ios':
-						results.push(new iOSSimulator(info));
-						break;
-					case 'watchos':
-						results.push(new watchOSSimulator(info));
-						break;
+					switch (m[1].toLowerCase()) {
+						case 'ios':
+							results.push(new iOSSimulator(info));
+							break;
+						case 'watchos':
+							results.push(new watchOSSimulator(info));
+							break;
+					}
+				} catch (e) {
+					// squelch
 				}
-			} catch (e) {
-				// squelch
 			}
 		}
 
