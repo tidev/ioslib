@@ -1,8 +1,5 @@
 import iosDevice from 'node-ios-device';
 
-import { EventEmitter } from 'events';
-import { tailgate } from 'appcd-util';
-
 /**
  * Device information.
  */
@@ -19,40 +16,21 @@ export class Device {
 }
 
 /**
- * Exposes an event emitter for device changes and a method to stop tracking.
- */
-export class TrackDeviceHandle extends EventEmitter {
-	/**
-	 * Wraps the ios-device handle.
-	 *
-	 * @param {Handle} handle - An ios-device track handle.
-	 * @access public
-	 */
-	constructor(handle) {
-		super();
-		this.stop = () => handle.stop();
-		handle.on('devices', devices => this.emit('devices', devices.map(d => new Device(d))));
-		handle.on('error', err => this.emit('error', err));
-	}
-}
-
-/**
  * Detects all attached devices.
  *
- * @returns {Promise<Array.<Object>>}
+ * @returns {Array.<Object>}
  */
-export function getDevices() {
-	return tailgate('ioslib:devices', async () => {
-		const devices = await iosDevice.devices();
-		return devices.map(d => new Device(d));
-	});
+export function list() {
+	return iosDevice.list().map(d => new Device(d));
 }
 
 /**
  * Starts listening for devices being connected or disconnected.
  *
- * @returns {TrackDeviceHandle}
+ * @returns {WatchDeviceHandle}
  */
-export function trackDevices() {
-	return new TrackDeviceHandle(iosDevice.trackDevices());
+export function watch() {
+	const handle = iosDevice.watch();
+	handle.on('change', devices => handle.emit('devices', devices.map(d => new Device(d))));
+	return handle;
 }
