@@ -116,14 +116,18 @@ export function parseProvisioningProfileFile(file) {
 			}
 
 			let data;
-			const { write } = console._stderr;
-			console._stderr.write = () => {};
+			const write = console._stderr && console._stderr.write;
+			if (write) {
+				console._stderr.write = () => {};
+			}
 			try {
 				data = plist.parse(contents.substring(i, j + 8), path.basename(file));
 			} catch (e) {
 				return reject(new Error(`Unable to parse provisioning profile: ${e.message}`));
 			} finally {
-				console._stderr.write = write;
+				if (write) {
+					console._stderr.write = write;
+				}
 			}
 
 			const entitlements = data.Entitlements || {};
