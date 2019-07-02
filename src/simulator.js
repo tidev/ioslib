@@ -7,6 +7,7 @@ import Xcode from './xcode';
 
 import { arrayify, cache, get } from 'appcd-util';
 import { expandPath } from 'appcd-path';
+import { isDir } from 'appcd-fs';
 
 /**
  * A lookup table of valid iOS Simulator -> Watch Simulator pairings.
@@ -19,75 +20,95 @@ import { expandPath } from 'appcd-path';
  * @type {Object}
  */
 export const devicePairCompatibility = {
-	'>=6.2 <7.0': {        // Xcode 6.2, 6.3, 6.4
-		'>=8.2 <9.0': {    // iOS 8.2, 8.3, 8.4
-			'1.x': true    // watchOS 1.0
+	'>=6.2 <7.0': {             // Xcode 6.2, 6.3, 6.4
+		'>=8.2 <9.0': {         // iOS 8.2, 8.3, 8.4
+			'1.x': true         // watchOS 1.0
 		}
 	},
-	'7.x': {               // Xcode 7.x
-		'>=8.2 <9.0': {    // iOS 8.2, 8.3, 8.4
-			'1.x': true    // watchOS 1.0
+	'7.x': {                    // Xcode 7.x
+		'>=8.2 <9.0': {         // iOS 8.2, 8.3, 8.4
+			'1.x': true         // watchOS 1.0
 		},
-		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
+		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {         // iOS 9.x
-			'2.2': true    // watchOS 2.2
+		'>=9.3': {              // iOS 9.x
+			'2.2': true         // watchOS 2.2
 		}
 	},
-	'8.x': {               // Xcode 8.x
-		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
+	'8.x': {                    // Xcode 8.x
+		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {         // iOS 9.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
+		'>=9.3': {              // iOS 9.x
+			'2.2': true,        // watchOS 2.2
+			'3.x': true         // watchOS 3.x
 		},
-		'10.x': {          // iOS 10.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
+		'10.x': {               // iOS 10.x
+			'2.2': true,        // watchOS 2.2
+			'3.x': true         // watchOS 3.x
 		}
 	},
-	'9.x': {               // Xcode 9.x
-		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
+	'9.x': {                    // Xcode 9.x
+		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {         // iOS 9.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
+		'>=9.3': {              // iOS 9.x
+			'2.2': true,        // watchOS 2.2
+			'3.x': true         // watchOS 3.x
 		},
-		'10.x': {          // iOS 10.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
+		'10.x': {               // iOS 10.x
+			'2.2': true,        // watchOS 2.2
+			'3.x': true         // watchOS 3.x
 		},
-		'11.x': {		   // iOS 11.x
-			'>=3.2': true, // watchOS 3.2
-			'4.x': true    // watchOS 4.x
+		'11.x': {               // iOS 11.x
+			'>=3.2': true,      // watchOS 3.2
+			'4.x': true         // watchOS 4.x
 		}
 	},
-	'10.x': {              // Xcode 10.x
-		'>=9.0 <=9.2': {   // iOS 9.0, 9.1, 9.2
+	'10.x': {                   // Xcode 10.x
+		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {         // iOS 9.x
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
+		'>=9.3': {              // iOS 9.x
+			'2.2': true,        // watchOS 2.2
+			'3.x': true         // watchOS 3.x
 		},
-		'>=10.0 <=10.2': { // iOS 10.0, 10.1, 10.2
-			'2.2': true,   // watchOS 2.2
-			'3.x': true    // watchOS 3.x
+		'>=10.0 <=10.2': {      // iOS 10.0, 10.1, 10.2
+			'2.2': true,        // watchOS 2.2
+			'3.x': true         // watchOS 3.x
 		},
-		'>=10.3': { // iOS 10.3
-			'3.x': true    // watchOS 3.x
+		'>=10.3': {             // iOS 10.3
+			'3.x': true         // watchOS 3.x
 		},
-		'11.x': {		   // iOS 11.x
-			'>=3.2': true, // watchOS 3.2
-			'4.x': true    // watchOS 4.x
+		'11.x': {               // iOS 11.x
+			'>=3.2': true,      // watchOS 3.2
+			'4.x': true         // watchOS 4.x
 		},
-		'12.x': {		   // iOS 12.x
-			'>=3.2': true, // watchOS 3.2
-			'4.x': true,   // watchOS 4.x
-			'5.x': true    // watchOS 5.x
+		'12.x': {               // iOS 12.x
+			'>=3.2': true,      // watchOS 3.2
+			'4.x': true,        // watchOS 4.x
+			'5.x': true         // watchOS 5.x
+		}
+	},
+	'11.x': {                   // Xcode 11.x
+		'10.x': {               // iOS 10.x
+			'2.2': true,        // watchOS 2.2
+			'3.x': true         // watchOS 3.x
+		},
+		'11.x': {               // iOS 11.x
+			'>=3.2': true,      // watchOS 3.2
+			'4.x': true         // watchOS 4.x
+		},
+		'12.x': {               // iOS 12.x
+			'4.x': true,        // watchOS 4.x
+			'5.x': true,        // watchOS 5.x
+			'6.x': true         // watchOS 6.x
+		},
+		'13.x': {               // iOS 13.x
+			'4.x': true,        // watchOS 4.x
+			'5.x': true,        // watchOS 5.x
+			'6.x': true         // watchOS 6.x
 		}
 	}
 };
@@ -175,39 +196,41 @@ export function getSimulators({ force } = {}) {
 		const simDevicesPath = getDevicesDir();
 		const results = [];
 
-		for (const dirname of fs.readdirSync(simDevicesPath)) {
-			try {
-				const deviceDir   = path.join(simDevicesPath, dirname);
-				const deviceInfo  = plist.readFileSync(path.join(deviceDir, 'device.plist'));
-				const info = {
-					deviceDir,
-					deviceType: deviceInfo.deviceType,
-					name:       deviceInfo.name,
-					runtime:    deviceInfo.runtime,
-					udid:       deviceInfo.UDID
-				};
+		if (isDir(simDevicesPath)) {
+			for (const dirname of fs.readdirSync(simDevicesPath)) {
+				try {
+					const deviceDir   = path.join(simDevicesPath, dirname);
+					const deviceInfo  = plist.readFileSync(path.join(deviceDir, 'device.plist'));
+					const info = {
+						deviceDir,
+						deviceType: deviceInfo.deviceType,
+						name:       deviceInfo.name,
+						runtime:    deviceInfo.runtime,
+						udid:       deviceInfo.UDID
+					};
 
-				if (dirname !== info.udid) {
-					// sanity check
-					continue;
-				}
+					if (dirname !== info.udid) {
+						// sanity check
+						continue;
+					}
 
-				const m = info.runtime.match(typeRegExp);
-				if (!m) {
-					// can't figure out if it's a iOS or watchOS simulator
-					continue;
-				}
+					const m = info.runtime.match(typeRegExp);
+					if (!m) {
+						// can't figure out if it's a iOS or watchOS simulator
+						continue;
+					}
 
-				switch (m[1].toLowerCase()) {
-					case 'ios':
-						results.push(new iOSSimulator(info));
-						break;
-					case 'watchos':
-						results.push(new watchOSSimulator(info));
-						break;
+					switch (m[1].toLowerCase()) {
+						case 'ios':
+							results.push(new iOSSimulator(info));
+							break;
+						case 'watchos':
+							results.push(new watchOSSimulator(info));
+							break;
+					}
+				} catch (e) {
+					// squelch
 				}
-			} catch (e) {
-				// squelch
 			}
 		}
 
@@ -300,9 +323,10 @@ export function generateSimulatorRegistry({ simulators, xcodes }) {
 								for (const watchSim of unsorted.watchos[watchVersion]) {
 									if (version.satisfies(watchSim.version, watchosRange)) {
 										if (!sim.watchCompanion[xcodeId]) {
-											sim.watchCompanion[xcodeId] = {};
+											sim.watchCompanion[xcodeId] = [ watchSim.udid ];
+										} else if (!sim.watchCompanion[xcodeId].includes(watchSim.udid)) {
+											sim.watchCompanion[xcodeId].push(watchSim.udid);
 										}
-										sim.watchCompanion[xcodeId][watchSim.udid] = watchSim;
 									}
 								}
 							}
