@@ -1,6 +1,6 @@
-# 3.0.0
+# 3.0.0 (Jul 2, 2019)
 
- * BREAKING CHANGE: Dropped support for Node.js versions before v8.10.0.
+ * BREAKING CHANGE: Dropped support for Node.js versions before v8.12.0.
  * BREAKING CHANGE(dep): Upgraded to node-ios-device v2 which dropped support for Node.js 7.x and
    older.
  * BREAKING CHANGE(simulator): iOS Simulator watch companion lookup map changed to only have
