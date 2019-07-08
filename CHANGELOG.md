@@ -1,3 +1,7 @@
+# 3.1.1 (Jul 8, 2019)
+
+ * fix: Removed global simulator profiles directory from Xcode `coreSimulatorProfilesPaths`.
+
 # 3.1.0 (Jul 8, 2019)
 
  * fix: Added new Xcode 11 simulator runtime and device types search paths.
