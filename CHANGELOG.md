@@ -1,13 +1,3 @@
-# 3.0.0
-
- * BREAKING CHANGE(dep): Upgraded to node-ios-device v2 which dropped support for Node.js 7.x and
-   older.
- * BREAKING CHANGE(simulator): iOS Simulator watch companion lookup map changed to only have
-   compatible watch simulator UDIDs instead of full descriptor to save on memory.
- * fix(simulator): Added check for the existence of the simulator device directory before walking.
- * feat(simulator): Added support for Xcode 11.
- * chore: Updated dependencies.
-
 # v2.4.0 (Mar 29, 2019)
 
  * chore: Updated dependencies.
