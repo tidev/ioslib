@@ -114,7 +114,7 @@ export class Xcode {
 
 		// loop over the names and scan the derived path for simulator device types and runtimes
 		// note: Xcode 9 moved CoreSimulator into the "xxxxOS" directory instead of the "xxxxSimulator" directory
-		this.findDeviceTypesAndRuntimes(globalSimProfilesPath);
+		this.findDeviceTypesAndRuntimes(globalSimProfilesPath, true);
 		for (const name of [ 'iPhoneSimulator', 'iPhoneOS', 'WatchSimulator', 'WatchOS' ]) {
 			// Xcode 10 and older
 			this.findDeviceTypesAndRuntimes(path.join(this.path, `Platforms/${name}.platform/Developer/Library/CoreSimulator/Profiles`));
@@ -185,15 +185,18 @@ export class Xcode {
 	 * Finds all simulator device types and runtimes in the given Xcode dir.
 	 *
 	 * @param {String} dir - The directory to scan for device types and runtimes.
+	 * @param {Boolean} isGlobal - Indicates if `dir` is the global simulator profiles path.
 	 * @access private
 	 */
-	findDeviceTypesAndRuntimes(dir) {
+	findDeviceTypesAndRuntimes(dir, isGlobal) {
 		if (!isDir(dir)) {
 			return;
 		}
 
-		// add the path
-		this.coreSimulatorProfilesPaths.push(dir);
+		if (!isGlobal) {
+			// add the path
+			this.coreSimulatorProfilesPaths.push(dir);
+		}
 
 		// device types
 		const deviceTypesDir = path.join(dir, 'DeviceTypes');
