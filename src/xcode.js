@@ -96,6 +96,7 @@ export class Xcode {
 			xcodebuild
 		};
 		this.eulaAccepted = spawnSync(xcodebuild, [ '-checkFirstLaunchStatus' ]).status === 0;
+		this.coreSimulatorProfilesPaths = [];
 		this.sdks = {
 			ios:     this.findSDKs('iPhoneOS'),
 			watchos: this.findSDKs('WatchOS')
@@ -115,7 +116,11 @@ export class Xcode {
 		// note: Xcode 9 moved CoreSimulator into the "xxxxOS" directory instead of the "xxxxSimulator" directory
 		this.findDeviceTypesAndRuntimes(globalSimProfilesPath);
 		for (const name of [ 'iPhoneSimulator', 'iPhoneOS', 'WatchSimulator', 'WatchOS' ]) {
+			// Xcode 10 and older
 			this.findDeviceTypesAndRuntimes(path.join(this.path, `Platforms/${name}.platform/Developer/Library/CoreSimulator/Profiles`));
+
+			// Xcode 11 and newer
+			this.findDeviceTypesAndRuntimes(path.join(this.path, `Platforms/${name}.platform/Library/Developer/CoreSimulator/Profiles`));
 		}
 
 		for (const name of [ 'Simulator', 'iOS Simulator' ]) {
@@ -186,6 +191,9 @@ export class Xcode {
 		if (!isDir(dir)) {
 			return;
 		}
+
+		// add the path
+		this.coreSimulatorProfilesPaths.push(dir);
 
 		// device types
 		const deviceTypesDir = path.join(dir, 'DeviceTypes');

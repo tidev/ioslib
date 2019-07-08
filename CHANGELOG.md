@@ -1,3 +1,10 @@
+# 3.1.0 (Jul 8, 2019)
+
+ * fix: Added new Xcode 11 simulator runtime and device types search paths.
+ * feat: Added `info` and `reset-sims` commands to `ioslib` CLI.
+ * feat: Added `coreSimulatorProfilesPaths` to Xcode info object.
+   [(DAEMON-250)](https://jira.appcelerator.org/browse/DAEMON-250)
+
 # 3.0.0 (Jul 2, 2019)
 
  * BREAKING CHANGE: Dropped support for Node.js versions before v8.12.0.
