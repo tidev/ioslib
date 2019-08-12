@@ -52,6 +52,7 @@ export function getCerts(force) {
 							if (fullname !== wwdrName) {
 								const m = fullname.match(certRegExp);
 								if (m) {
+									const team = certObj.subject.attributes.find(attr => attr.name === 'organizationalUnitName');
 									const cert = stdout.substring(p + BEGIN.length, q).replace(/\n/g, '');
 									certs[m[1] ? 'developer' : 'distribution'].push({
 										name: m[3],
@@ -62,7 +63,8 @@ export function getCerts(force) {
 										after: notAfter,
 										expired,
 										invalid: expired || notBefore > now,
-										keychain: keychain.path
+										keychain: keychain.path,
+										teamId: team && team.value
 									});
 								}
 							} else if (!expired) {
