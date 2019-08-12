@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "publishConfig": {
     "tag": "next"
   },
@@ -31,13 +31,13 @@
     "appcd-path": "^1.1.6",
     "appcd-subprocess": "^2.0.1",
     "appcd-util": "^1.1.7",
-    "cli-kit": "^0.11.1",
+    "cli-kit": "^0.11.2",
     "node-forge": "^0.8.5",
     "node-ios-device": "^2.0.0",
     "promise-limit": "^2.7.0",
-    "semver": "^6.2.0",
+    "semver": "^6.3.0",
     "simple-plist": "^1.0.0",
-    "source-map-support": "^0.5.12"
+    "source-map-support": "^0.5.13"
   },
   "devDependencies": {
     "appcd-gulp": "^2.1.1"

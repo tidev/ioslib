@@ -1,3 +1,8 @@
+# 3.2.0 (Aug 12, 2019)
+
+ * feat: Added `teamId` to certificate info.
+ * chore: Updated dependencies.
+
 # 3.1.1 (Jul 8, 2019)
 
  * fix: Removed global simulator profiles directory from Xcode `coreSimulatorProfilesPaths`.
