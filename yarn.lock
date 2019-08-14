@@ -1612,7 +1612,7 @@ cli-cursor@^3.1.0:
   dependencies:
     restore-cursor "^3.1.0"
 
-cli-kit@^0.11.1, cli-kit@^0.11.2:
+cli-kit@^0.11.2:
   version "0.11.2"
   resolved "https://registry.yarnpkg.com/cli-kit/-/cli-kit-0.11.2.tgz#7d22ad03b074833e5265de3454f8e28400ba76be"
   integrity sha512-3j58Q9wq+wnyOIt0gCxmNIqpc2t7w+F3azVcn1uKogKS2bhfnbS0QNTwdzK34wVDmIm7qxbfr2KW6sv0/01XvA==
@@ -5162,15 +5162,15 @@ node-gyp-build@^4.1.0:
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.1.0.tgz#3bc3dd7dd4aafecaf64a2e3729e785bc3cdea565"
   integrity sha512-rGLv++nK20BG8gc0MzzcYe1Nl3p3mtwJ74Q2QD0HTEDKZ6NvOFSelY6s2QBPWIHRR8h7hpad0LiwajfClBJfNg==
 
-node-ios-device@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/node-ios-device/-/node-ios-device-2.0.0.tgz#5698b988230f468316b4c9d313c2e09f19733bc8"
-  integrity sha512-1fiy82GohxVrccYV658rJv8OjeON4McgzFgEC7sitfF0byZYHTyaHEYe5QdnLd4rclGhMfUQr0ZPygZZ94dIGg==
+node-ios-device@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/node-ios-device/-/node-ios-device-2.0.1.tgz#f940440f1b44009ae679b118156826a6a7668493"
+  integrity sha512-dA77euPvCFGBd0bc1awDfxycBQCHebDjkW0fUkJl4lmlaB/992kNk5F01Zmf2NL2SXYvG9gTk4p9W5StiSy7VA==
   dependencies:
-    cli-kit "^0.11.1"
+    cli-kit "^0.11.2"
     napi-macros "^2.0.0"
     node-gyp-build "^4.1.0"
-    snooplogg "^2.0.1"
+    snooplogg "^2.1.0"
 
 node-libs-browser@^2.2.1:
   version "2.2.1"
@@ -6548,7 +6548,7 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-snooplogg@^2.0.1, snooplogg@^2.1.0:
+snooplogg@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/snooplogg/-/snooplogg-2.1.0.tgz#3ea78698b21222f0d2e8ca51c3084a3cc89efe6b"
   integrity sha512-cRrUOZdQCxoDqMtV9u9ss1psSTdysXkLyRHWriFO7DqSQN2FbP2RGoLkyLiq2OJ+9+XxNVjdAl6F/5IuBsNZLw==

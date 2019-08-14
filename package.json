@@ -19,9 +19,7 @@
     "xcode",
     "apple"
   ],
-  "bin": {
-    "ioslib": "./bin/ioslib"
-  },
+  "bin": "./bin/ioslib",
   "scripts": {
     "build": "gulp build",
     "coverage": "gulp coverage",
@@ -36,7 +34,7 @@
     "appcd-util": "^2.0.0",
     "cli-kit": "^0.11.2",
     "node-forge": "^0.8.5",
-    "node-ios-device": "^2.0.0",
+    "node-ios-device": "^2.0.1",
     "promise-limit": "^2.7.0",
     "semver": "^6.3.0",
     "simple-plist": "^1.0.0",
