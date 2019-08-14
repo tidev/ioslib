@@ -3,37 +3,75 @@
 const CLI = require('cli-kit').CLI;
 const ioslib = require('../dist/index');
 const pkgJson = require('../package.json');
+const { spawnSync } = require('child_process');
 
 new CLI({
 	banner: `${pkgJson.name}, version ${pkgJson.version}`,
 	commands: {
+		'detect-device-pairs': {
+			action: detectDevicePairs,
+			args: [
+				{
+					name: 'xcode-path',
+					desc: 'The path to Xcode to use'
+				}
+			],
+			desc: 'Detects all valid iOS and watchOS simulator pairs'
+		},
 		devices: {
-			desc: 'lists connected devices',
 			async action() {
 				const devices = await ioslib.devices.getDevices();
 				console.log(JSON.stringify(devices, null, '  '));
-			}
+			},
+			desc: 'Lists connected devices'
+		},
+		info: {
+			async action({ argv }) {
+				const info = {};
+				const types = argv.types
+					? Array.from(new Set(argv.types.split(','))).filter(Boolean)
+					: [ 'certs', 'keychains', 'provisioning', 'simulator', 'teams', 'xcode' ];
+				for (const type of types) {
+					switch (type) {
+						case 'certs':        info.certs        = await ioslib.certs.getCerts();                       break;
+						case 'keychains':    info.keychains    = await ioslib.keychains.getKeychains();               break;
+						case 'provisioning': info.provisioning = await ioslib.provisioning.getProvisioningProfiles(); break;
+						case 'simulator':    info.simulator    = await ioslib.simulator.getSimulators();              break;
+						case 'teams':        info.teams        = await ioslib.teams.getTeams();                       break;
+						case 'xcode':        info.xcode        = await ioslib.xcode.getXcodes();                      break;
+					}
+				}
+				console.log(JSON.stringify(info, null, '  '));
+			},
+			aliases: 'detect',
+			args: [
+				{
+					name: 'types',
+					desc: 'Comma-separated list of types to detect'
+				}
+			],
+			desc: 'Detects installed Xcode and iOS information'
+		},
+		'reset-sims': {
+			action: resetSims,
+			args: [
+				{
+					name: 'xcode-path',
+					desc: 'The path to Xcode to use'
+				}
+			],
+			desc: 'Removes all simulators and recreates them'
 		},
 		track: {
-			aliases: [ 'trackdevices', 'track-devices' ],
-			desc: 'listens for devices to be connected/disconnected',
 			async action() {
 				const handle = ioslib.devices.trackDevices();
 				handle.on('devices', devices => {
 					console.log(JSON.stringify(devices, null, '  '));
 					console.log();
 				});
-			}
-		},
-		'detect-device-pairs': {
-			action: detectDevicePairs,
-			args: [
-				{
-					name: 'xcode-path',
-					desc: 'the path to Xcode to use'
-				}
-			],
-			desc: 'detects all valid iOS and watchOS simulator pairs'
+			},
+			aliases: [ 'trackdevices', 'track-devices' ],
+			desc: 'Listens for devices to be connected/disconnected'
 		}
 	},
 	help: true,
@@ -45,14 +83,10 @@ new CLI({
 		process.exit(err.exitCode || 1);
 	});
 
-function detectDevicePairs({ argv }) {
-	const { existsSync } = require('fs');
+function getSimCtl(xcodePath) {
 	const path = require('path');
-	const { spawnSync } = require('child_process');
-
+	const { existsSync } = require('fs');
 	let last;
-	let simctl;
-	let { xcodePath } = argv;
 
 	if (xcodePath) {
 		xcodePath = path.join(xcodePath, 'Contents');
@@ -73,8 +107,13 @@ function detectDevicePairs({ argv }) {
 		throw new Error('Unable to locate simctl');
 	}
 
-	const testSimName = "ioslib_test_sim";
+	return simctl;
+}
+
+function detectDevicePairs({ argv }) {
 	const startTime = Date.now();
+	const simctl = getSimCtl(argv.xcodePath);
+	const testSimName = "ioslib_test_sim";
 
 	const getInfo = () => {
 		return JSON.parse(spawnSync(simctl, [ 'list', '--json' ]).stdout.toString());
@@ -137,9 +176,9 @@ function detectDevicePairs({ argv }) {
 
 	const stats = {
 		iPhoneSimsCreated: 0,
-		watchSimsCreated: 0,
-		pairings: 0,
-		pairSuccess: 0
+		watchSimsCreated:  0,
+		pairings:          0,
+		pairSuccess:       0
 	};
 
 	// create the watch sims
@@ -216,4 +255,57 @@ function detectDevicePairs({ argv }) {
 	console.log(`Successful Pairings: ${stats.pairSuccess}`);
 	console.log();
 	console.log(results);
+}
+
+function resetSims({ argv }) {
+	const startTime = Date.now();
+	const simctl = getSimCtl(argv.xcodePath);
+	const json = JSON.parse(spawnSync(simctl, [ 'list', '--json' ]).stdout.toString());
+	const stats = {
+		simsRemoved:       0,
+		iPhoneSimsCreated: 0,
+		tvSimsCreated:     0,
+		watchSimsCreated:  0
+	};
+	const runtimeRegExp = /(iOS|tvOS|watchOS)/;
+
+	for (const runtime of Object.keys(json.devices)) {
+		for (const device of json.devices[runtime]) {
+			console.log(`Removing ${device.name} (${device.udid})`);
+			spawnSync(simctl, [ 'delete', device.udid ]);
+			stats.simsRemoved++;
+		}
+	}
+	console.log();
+
+	for (const deviceType of json.devicetypes) {
+		for (const runtime of json.runtimes) {
+			if (runtime.isAvailable || runtime.availability === '(available)') {
+				process.stdout.write(`Creating ${deviceType.name} with ${runtime.name}... `);
+				try {
+					spawnSync(simctl, [ 'create', `${deviceType.name} ${runtime.name}`, deviceType.identifier, runtime.identifier ]);
+					console.log('SUCCESS!');
+
+					const m = runtime.identifier.match(runtimeRegExp);
+					switch (m && m[0]) {
+						 case 'iOS':      stats.iPhoneSimsCreated++;  break;
+						 case 'tvOS':     stats.tvSimsCreated++;      break;
+						 case 'watchOS':  stats.watchSimsCreated++;   break;
+					}
+				} catch (e) {
+					console.log(`FAILED! ${e.toString()}`);
+				}
+			}
+		}
+	}
+	console.log();
+
+	const delta = Date.now() - startTime;
+	const minutes = Math.floor(delta / 60000);
+	const seconds = (delta % 60000) / 1000;
+	console.log(`Completed in ${minutes}m ${seconds}s\n`);
+	console.log(`Sims Removed:        ${stats.simsRemoved}`);
+	console.log(`iPhone Sims Created: ${stats.iPhoneSimsCreated}`);
+	console.log(`TV Sims Created:     ${stats.tvSimsCreated}`);
+	console.log(`Watch Sims Created:  ${stats.watchSimsCreated}`);
 }

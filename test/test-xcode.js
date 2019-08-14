@@ -64,6 +64,7 @@ describe('Xcode', () => {
 				watchsimulator: simwatchapp,
 				xcodebuild: path.join(dir, 'Contents/Developer/usr/bin/xcodebuild')
 			},
+			coreSimulatorProfilesPaths: [],
 			eulaAccepted: true,
 			sdks: {
 				ios: [ '10.3.1' ],
@@ -113,9 +114,64 @@ describe('Xcode', () => {
 				watchsimulator: simapp,
 				xcodebuild: path.join(dir, 'Contents/Developer/usr/bin/xcodebuild')
 			},
+			coreSimulatorProfilesPaths: [
+				path.join(dir, 'Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles')
+			],
 			eulaAccepted: true,
 			sdks: {
 				ios: [ '11.0', '10.3.1' ],
+				watchos: []
+			},
+			simDeviceTypes: {},
+			simRuntimes: {},
+			simDevicePairs: {}
+		});
+
+		expect(simDeviceTypes).to.be.an('object');
+		for (const id of Object.keys(simDeviceTypes)) {
+			expect(simDeviceTypes[id]).to.be.an('object');
+			expect(simDeviceTypes[id]).to.have.keys('name', 'model', 'supportsWatch');
+		}
+
+		expect(simRuntimes).to.be.an('object');
+		for (const id of Object.keys(simRuntimes)) {
+			expect(simRuntimes[id]).to.be.an('object');
+			expect(simRuntimes[id]).to.have.keys('name', 'version');
+		}
+	});
+
+	it('should detect a Xcode 11 install', () => {
+		const dir = path.join(__dirname, 'fixtures/Xcode11.app');
+		const simapp = path.join(dir, 'Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator');
+		const xcode = new ioslib.xcode.Xcode(dir);
+
+		expect(xcode).to.be.an('object');
+
+		// the Xcode object will merge 'global' sim device types and runtimes with those found in
+		// the path and this can make testing difficult, so just remove them and manually check
+		const { simDeviceTypes, simRuntimes } = xcode;
+		xcode.simDeviceTypes = {};
+		xcode.simRuntimes = {};
+		xcode.simDevicePairs = {};
+
+		expect(xcode).to.deep.equal({
+			path: path.join(dir, 'Contents/Developer'),
+			xcodeapp: dir,
+			version: '11.0',
+			build: '11M362v',
+			id: '11.0:11M362v',
+			executables: {
+				simctl: path.join(dir, 'Contents/Developer/usr/bin/simctl'),
+				simulator: simapp,
+				watchsimulator: simapp,
+				xcodebuild: path.join(dir, 'Contents/Developer/usr/bin/xcodebuild')
+			},
+			coreSimulatorProfilesPaths: [
+				path.join(dir, 'Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles')
+			],
+			eulaAccepted: true,
+			sdks: {
+				ios: [ '13.0' ],
 				watchos: []
 			},
 			simDeviceTypes: {},

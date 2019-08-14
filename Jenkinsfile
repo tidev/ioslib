@@ -1,29 +1,31 @@
 #! groovy
 library 'pipeline-library'
 // TODO: Could we make this an array and test across multiple major versions
-def nodeVersion = '8.9.1'
+def nodeVersion = '8.16.0'
 
 def unitTests(os, nodeVersion) {
   return {
     node(os) {
-      nodejs(nodeJSInstallationName: "node ${nodeVersion}") {
-        stage('Test') {
+      try {
+        nodejs(nodeJSInstallationName: "node ${nodeVersion}") {
           timeout(15) {
             unstash 'sources'
-            if (sh(returnStatus: true, script: 'which yarn') != 0) {
-              sh 'npm install -g yarn'
-            }
-            sh 'yarn install'
-            fingerprint 'package.json'
+            ensureYarn()
+            command 'yarn install' // runs bat on win, sh on unix/mac
             try {
               sh 'yarn run coverage'
             } finally {
               // record results even if tests/coverage 'fails'
               junit 'junit.xml'
+              if (fileExists('coverage/cobertura-coverage.xml')) {
+                step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage/cobertura-coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
+              }
             }
           } // timeout
-        } // test
-      } // nodejs
+        } // nodejs
+      } finally {
+        deleteDir() // wipe the workspace no matter what
+      }
     }  // node
   }
 }
@@ -47,6 +49,7 @@ timestamps {
       isMaster = env.BRANCH_NAME.equals('master')
       packageVersion = jsonParse(readFile('package.json'))['version']
       currentBuild.displayName = "#${packageVersion}-${currentBuild.number}"
+      fingerprint 'package.json'
       stash allowEmpty: true, name: 'sources', useDefaultExcludes: false
     }
   }

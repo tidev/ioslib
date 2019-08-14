@@ -9,7 +9,7 @@ describe('Certificates', () => {
 
 		for (const cert of certs.developer) {
 			expect(cert).to.be.an('object');
-			expect(cert).to.have.keys('name', 'fullname', 'cert', 'hash', 'before', 'after', 'expired', 'invalid', 'keychain');
+			expect(cert).to.have.keys('name', 'fullname', 'cert', 'hash', 'before', 'after', 'expired', 'invalid', 'keychain', 'teamId');
 			expect(cert.fullname).to.contain(cert.name);
 			expect(cert.before).to.be.an.instanceof(Date);
 			expect(cert.after).to.be.an.instanceof(Date);
