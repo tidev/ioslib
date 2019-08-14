@@ -1,6 +1,7 @@
 # 3.2.1 (Aug 14, 2019)
 
  * feat: Registered `ioslib` bin in `package.json`.
+ * chore: Updated dependencies.
 
 # 3.2.0 (Aug 12, 2019)
 
@@ -28,6 +29,16 @@
  * fix(simulator): Added check for the existence of the simulator device directory before walking.
  * feat(simulator): Added support for Xcode 11.
  * chore: Updated dependencies.
+
+# v2.5.0 (Aug 14, 2019)
+
+ * feat: Added teamId to certificate info.
+ * feat: Added info and reset-sims commands to ioslib CLI.
+ * feat: Added coreSimulatorProfilesPaths to Xcode info object. (DAEMON-250)
+ * feat(simulator): Added support for Xcode 11.
+ * fix: Removed global simulator profiles directory from Xcode coreSimulatorProfilesPaths.
+ * fix: Added new Xcode 11 simulator runtime and device types search paths.
+ * fix(simulator): Added check for the existence of the simulator device directory before walking.
 
 # v2.4.0 (Mar 29, 2019)
 
