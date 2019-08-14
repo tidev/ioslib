@@ -19,6 +19,9 @@
     "xcode",
     "apple"
   ],
+  "bin": {
+    "ioslib": "./bin/ioslib"
+  },
   "scripts": {
     "build": "gulp build",
     "coverage": "gulp coverage",
@@ -27,10 +30,10 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "appcd-fs": "^1.1.7",
-    "appcd-path": "^1.1.6",
-    "appcd-subprocess": "^2.0.1",
-    "appcd-util": "^1.1.7",
+    "appcd-fs": "^1.1.8",
+    "appcd-path": "^1.1.7",
+    "appcd-subprocess": "^3.0.0",
+    "appcd-util": "^2.0.0",
     "cli-kit": "^0.11.2",
     "node-forge": "^0.8.5",
     "node-ios-device": "^2.0.0",
@@ -40,7 +43,7 @@
     "source-map-support": "^0.5.13"
   },
   "devDependencies": {
-    "appcd-gulp": "^2.1.1"
+    "appcd-gulp": "^2.2.0"
   },
   "homepage": "https://github.com/appcelerator/ioslib",
   "bugs": "https://github.com/appcelerator/ioslib/issues",

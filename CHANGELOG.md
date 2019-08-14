@@ -1,3 +1,7 @@
+# 3.2.1 (Aug 14, 2019)
+
+ * feat: Registered `ioslib` bin in `package.json`.
+
 # 3.2.0 (Aug 12, 2019)
 
  * feat: Added `teamId` to certificate info.
