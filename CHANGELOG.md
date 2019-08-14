@@ -1,3 +1,13 @@
+# v2.5.0 (Aug 14, 2019)
+
+ * feat: Added teamId to certificate info.
+ * feat: Added info and reset-sims commands to ioslib CLI.
+ * feat: Added coreSimulatorProfilesPaths to Xcode info object. (DAEMON-250)
+ * feat(simulator): Added support for Xcode 11.
+ * fix: Removed global simulator profiles directory from Xcode coreSimulatorProfilesPaths.
+ * fix: Added new Xcode 11 simulator runtime and device types search paths.
+ * fix(simulator): Added check for the existence of the simulator device directory before walking.
+
 # v2.4.0 (Mar 29, 2019)
 
  * chore: Updated dependencies.

@@ -1,7 +1,7 @@
 #! groovy
 library 'pipeline-library'
 // TODO: Could we make this an array and test across multiple major versions
-def nodeVersion = '8.9.1'
+def nodeVersion = '8.16.0'
 
 def unitTests(os, nodeVersion) {
   return {
