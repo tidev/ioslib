@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "publishConfig": {
     "tag": "next"
   },
@@ -32,7 +32,7 @@
     "appcd-path": "^1.1.7",
     "appcd-subprocess": "^3.0.0",
     "appcd-util": "^2.0.0",
-    "cli-kit": "^0.11.2",
+    "cli-kit": "^0.12.0",
     "node-forge": "^0.8.5",
     "node-ios-device": "^2.0.1",
     "promise-limit": "^2.7.0",
@@ -47,6 +47,6 @@
   "bugs": "https://github.com/appcelerator/ioslib/issues",
   "repository": "https://github.com/appcelerator/ioslib",
   "engines": {
-    "node": ">=8.12.0"
+    "node": ">=8.12.0 || >=10.2.0"
   }
 }

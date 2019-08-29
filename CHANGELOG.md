@@ -1,3 +1,9 @@
+# 3.2.2 (Aug 29, 2019)
+
+ * fix: Added support for Apple developer certificates.
+   [(TIMOB-27358)](https://jira.appcelerator.org/browse/TIMOB-27358)
+ * chore: Updated dependencies.
+
 # 3.2.1 (Aug 14, 2019)
 
  * feat: Registered `ioslib` bin in `package.json`.
