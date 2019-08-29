@@ -36,6 +36,11 @@
  * feat(simulator): Added support for Xcode 11.
  * chore: Updated dependencies.
 
+# v2.5.1 (Aug 29, 2019)
+
+ * fix: Added support for Apple developer certificates.
+   [(TIMOB-27358)](https://jira.appcelerator.org/browse/TIMOB-27358)
+
 # v2.5.0 (Aug 14, 2019)
 
  * feat: Added teamId to certificate info.
