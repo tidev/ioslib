@@ -9,7 +9,7 @@ import { run } from 'appcd-subprocess';
 const BEGIN = '-----BEGIN CERTIFICATE-----';
 const END = '-----END CERTIFICATE-----';
 const wwdrName = 'Apple Worldwide Developer Relations Certification Authority';
-const certRegExp = /^(?:(iOS Development|iPhone Developer)|((?:iOS|iPhone) Distribution)): (.+)$/;
+const certRegExp = /^(?:((?:Apple|iOS) Development|iPhone Developer)|((?:Apple|iOS|iPhone) Distribution)): (.+)$/;
 
 /**
  * Detects the installed certs across all keychains, then sorts them into either an iOS Developer
