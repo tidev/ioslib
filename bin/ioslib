@@ -36,9 +36,14 @@ new CLI({
 						case 'certs':        info.certs        = await ioslib.certs.getCerts();                       break;
 						case 'keychains':    info.keychains    = await ioslib.keychains.getKeychains();               break;
 						case 'provisioning': info.provisioning = await ioslib.provisioning.getProvisioningProfiles(); break;
-						case 'simulator':    info.simulator    = await ioslib.simulator.getSimulators();              break;
+						case 'simulator':
+							info.simulator = await ioslib.simulator.generateSimulatorRegistry({
+								simulators: await ioslib.simulator.getSimulators(),
+								xcodes:     info.xcode || (info.xcode = (await ioslib.xcode.getXcodes()))
+							});
+							break;
 						case 'teams':        info.teams        = await ioslib.teams.getTeams();                       break;
-						case 'xcode':        info.xcode        = await ioslib.xcode.getXcodes();                      break;
+						case 'xcode':        info.xcode        = info.xcode || (await ioslib.xcode.getXcodes());      break;
 					}
 				}
 				console.log(JSON.stringify(info, null, '  '));
