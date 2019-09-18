@@ -62,7 +62,7 @@ export const devicePairCompatibility = {
 			'3.x': true         // watchOS 3.x
 		},
 		'11.x': {               // iOS 11.x
-			'>=3.2': true,      // watchOS 3.2
+			'>=3.2 <4.0': true, // watchOS 3.2
 			'4.x': true         // watchOS 4.x
 		}
 	},
@@ -82,11 +82,11 @@ export const devicePairCompatibility = {
 			'3.x': true         // watchOS 3.x
 		},
 		'11.x': {               // iOS 11.x
-			'>=3.2': true,      // watchOS 3.2
+			'>=3.2 <4.0': true, // watchOS 3.2
 			'4.x': true         // watchOS 4.x
 		},
 		'12.x': {               // iOS 12.x
-			'>=3.2': true,      // watchOS 3.2
+			'>=3.2 <4.0': true, // watchOS 3.2
 			'4.x': true,        // watchOS 4.x
 			'5.x': true         // watchOS 5.x
 		}
@@ -97,7 +97,7 @@ export const devicePairCompatibility = {
 			'3.x': true         // watchOS 3.x
 		},
 		'11.x': {               // iOS 11.x
-			'>=3.2': true,      // watchOS 3.2
+			'>=3.2 <4.0': true, // watchOS 3.2
 			'4.x': true         // watchOS 4.x
 		},
 		'12.x': {               // iOS 12.x
@@ -297,6 +297,8 @@ export function generateSimulatorRegistry({ simulators, xcodes }) {
 				sim.supportsXcode = {};
 				sim.version       = runtime.version;
 				type === 'ios' && (sim.watchCompanion = {});
+				sim.simctl        = xcode.executables.simctl;
+				sim.simulator     = type === 'ios' ? xcode.executables.simulator : xcode.executables.watchsimulator;
 
 				if (!unsorted[type][sim.version]) {
 					unsorted[type][sim.version] = [];
@@ -312,20 +314,22 @@ export function generateSimulatorRegistry({ simulators, xcodes }) {
 	}
 
 	// for iOS Simulators only, build the lookup of compatible watch companions
-	for (const sims of Object.values(unsorted.ios)) {
-		for (const sim of sims) {
-			for (const xcodeId of Object.keys(sim.supportsWatch).filter(xcodeId => sim.supportsWatch[xcodeId])) {
+	for (const sims of Object.values(unsorted.ios)) { // array sim handles
+		for (const sim of sims) { // sim handle
+			for (const xcodeId of Object.keys(sim.supportsWatch).filter(xcodeId => sim.supportsWatch[xcodeId])) { // 11.0:11A419c
 				const xcode = xcodes[xcodeId];
-				for (const iosRange of Object.keys(xcode.simDevicePairs)) {
+				for (const iosRange of Object.keys(xcode.simDevicePairs)) { // 13.x
 					if (version.satisfies(sim.version, iosRange)) {
-						for (const watchosRange of Object.keys(xcode.simDevicePairs[iosRange])) {
-							for (const watchVersion of Object.keys(unsorted.watchos)) {
-								for (const watchSim of unsorted.watchos[watchVersion]) {
-									if (version.satisfies(watchSim.version, watchosRange)) {
-										if (!sim.watchCompanion[xcodeId]) {
-											sim.watchCompanion[xcodeId] = [ watchSim.udid ];
-										} else if (!sim.watchCompanion[xcodeId].includes(watchSim.udid)) {
-											sim.watchCompanion[xcodeId].push(watchSim.udid);
+						for (const watchosRange of Object.keys(xcode.simDevicePairs[iosRange])) { // 6.x
+							if (xcode.simDevicePairs[iosRange][watchosRange]) {
+								for (const watchVersion of Object.keys(unsorted.watchos)) { // 6.x
+									for (const watchSim of unsorted.watchos[watchVersion]) { // watch sim handle
+										if (version.satisfies(watchSim.version, watchosRange)) {
+											if (!sim.watchCompanion[xcodeId]) {
+												sim.watchCompanion[xcodeId] = [ watchSim.udid ];
+											} else if (!sim.watchCompanion[xcodeId].includes(watchSim.udid)) {
+												sim.watchCompanion[xcodeId].push(watchSim.udid);
+											}
 										}
 									}
 								}
