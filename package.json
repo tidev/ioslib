@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "1.7.13",
+  "version": "1.7.14",
   "description": "iOS Utility Library",
   "keywords": [
     "appcelerator",
@@ -34,16 +34,16 @@
   },
   "dependencies": {
     "always-tail": "0.2.0",
-    "async": "^2.6.1",
+    "async": "^2.6.3",
     "bplist-parser": "0.1.1",
-    "debug": "^3.1.0",
+    "debug": "^3.2.6",
     "mkdirp": "0.5.1",
-    "node-appc": "^0.2.48",
-    "node-ios-device": "^1.6.2"
+    "node-appc": "^0.3.4",
+    "node-ios-device": "^1.6.3"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "mocha-jenkins-reporter": "^0.4.0",
+    "mocha-jenkins-reporter": "^0.4.2",
     "should": "^13.2.3"
   },
   "scripts": {
