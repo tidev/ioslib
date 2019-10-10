@@ -4,6 +4,8 @@
    truthiness check in case we ever need to blacklist a version.
  * fix(simulator): Added `simctl` and `simualator` executables to simulator info handles.
  * fix(cli): Fixed simulator info to display generated data instead of just the unsorted sims.
+ * fix(xcode): Fix Xcode sim runtime compatiblity lookup.
+   [(TIMOB-27463)](https://jira.appcelerator.org/browse/TIMOB-27463)
  * chore: Updated dependencies.
 
 # v2.5.1 (Aug 29, 2019)
