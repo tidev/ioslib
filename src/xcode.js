@@ -262,7 +262,9 @@ export class Xcode {
 						// squelch
 					}
 
-					this.simRuntimes[id] = runtime;
+					if (Object.keys(this.simDevicePairs).some(iosRange => version.satisfies(runtime.version, iosRange))) {
+						this.simRuntimes[id] = runtime;
+					}
 				} catch (e) {
 					// squelch
 				}
