@@ -10,7 +10,7 @@ import { expandPath } from 'appcd-path';
 import { isDir } from 'appcd-fs';
 
 /**
- * A lookup table of valid iOS Simulator -> Watch Simulator pairings.
+ * A lookup table of Xcode supported iOS Simulators and watchOS Simulator device pairs.
  *
  * This table MUST be maintained!
  *
@@ -66,7 +66,8 @@ export const devicePairCompatibility = {
 			'4.x': true         // watchOS 4.x
 		}
 	},
-	'10.x': {                   // Xcode 10.x
+	'10.x <10.3': {             // Xcode 10.0-10.2.1
+		'8.x': {},              // iOS 8.x
 		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
@@ -91,8 +92,18 @@ export const devicePairCompatibility = {
 			'5.x': true         // watchOS 5.x
 		}
 	},
+	'>=10.3': {
+		'11.x': {		        // iOS 11.x
+			'>=3.2 <4.0': true, // watchOS 3.2
+			'4.x': true         // watchOS 4.x
+		},
+		'12.x': {		        // iOS 12.x
+			'4.x': true,        // watchOS 4.x
+			'5.x': true         // watchOS 5.x
+		}
+	},
 	'11.x': {                   // Xcode 11.x
-		'10.x': {               // iOS 10.x
+		'>=10.3': {             // iOS 10.3
 			'2.2': true,        // watchOS 2.2
 			'3.x': true         // watchOS 3.x
 		},
