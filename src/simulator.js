@@ -32,7 +32,7 @@ export const devicePairCompatibility = {
 		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {              // iOS 9.x
+		'>=9.3 <10': {          // iOS 9.3
 			'2.2': true         // watchOS 2.2
 		}
 	},
@@ -40,7 +40,7 @@ export const devicePairCompatibility = {
 		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {              // iOS 9.x
+		'>=9.3 <10': {          // iOS 9.x
 			'2.2': true,        // watchOS 2.2
 			'3.x': true         // watchOS 3.x
 		},
@@ -53,7 +53,7 @@ export const devicePairCompatibility = {
 		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {              // iOS 9.x
+		'>=9.3 <10': {          // iOS 9.x
 			'2.2': true,        // watchOS 2.2
 			'3.x': true         // watchOS 3.x
 		},
@@ -71,7 +71,7 @@ export const devicePairCompatibility = {
 		'>=9.0 <=9.2': {        // iOS 9.0, 9.1, 9.2
 			'>=2.0 <=2.1': true // watchOS 2.0, 2.1
 		},
-		'>=9.3': {              // iOS 9.x
+		'>=9.3 <10': {          // iOS 9.x
 			'2.2': true,        // watchOS 2.2
 			'3.x': true         // watchOS 3.x
 		},
@@ -79,7 +79,7 @@ export const devicePairCompatibility = {
 			'2.2': true,        // watchOS 2.2
 			'3.x': true         // watchOS 3.x
 		},
-		'>=10.3': {             // iOS 10.3
+		'>=10.3 <11': {         // iOS 10.3
 			'3.x': true         // watchOS 3.x
 		},
 		'11.x': {               // iOS 11.x
@@ -92,7 +92,7 @@ export const devicePairCompatibility = {
 			'5.x': true         // watchOS 5.x
 		}
 	},
-	'>=10.3': {
+	'>=10.3 <11': {             // Xcode 10.3
 		'11.x': {		        // iOS 11.x
 			'>=3.2 <4.0': true, // watchOS 3.2
 			'4.x': true         // watchOS 4.x
@@ -103,7 +103,7 @@ export const devicePairCompatibility = {
 		}
 	},
 	'11.x': {                   // Xcode 11.x
-		'>=10.3': {             // iOS 10.3
+		'>=10.3 <11': {         // iOS 10.3
 			'2.2': true,        // watchOS 2.2
 			'3.x': true         // watchOS 3.x
 		},
