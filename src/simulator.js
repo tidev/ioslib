@@ -93,6 +93,9 @@ export const devicePairCompatibility = {
 		}
 	},
 	'>=10.3 <11': {             // Xcode 10.3
+		'>=10.3 <11': {         // iOS 10.3
+			'3.x': true         // watchOS 3.x
+		},
 		'11.x': {		        // iOS 11.x
 			'>=3.2 <4.0': true, // watchOS 3.2
 			'4.x': true         // watchOS 4.x
