@@ -109,7 +109,7 @@ describe('Provisioning Profiles', () => {
 			await ioslib.provisioning.parseProvisioningProfileFile(file);
 		} catch (err) {
 			expect(err).to.be.instanceof(Error);
-			expect(err.message).to.equal('Unable to parse provisioning profile: bad_plist.mobileprovision has errors');
+			expect(err.message).to.match(/^Unable to parse provisioning profile: .+$/);
 			return;
 		}
 
