@@ -1,4 +1,4 @@
-# 3.2.3
+# 3.2.3 (Nov 7, 2019)
 
  * fix(simulator): Fixed watchOS sim semver ranges for device pair compatibility lookup and added a
    truthiness check in case we ever need to blacklist a version.
