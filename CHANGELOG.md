@@ -1,3 +1,9 @@
+# 3.2.4
+
+ * fix(xcode): Fixed bug where compatible iOS runtime filtering was also being applied to watchOS
+   runtimes causing them to not be listed.
+   [(DAEMON-306)](https://jira.appcelerator.org/browse/DAEMON-306)
+
 # 3.2.3 (Nov 7, 2019)
 
  * fix(simulator): Fixed watchOS sim semver ranges for device pair compatibility lookup and added a
