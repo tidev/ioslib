@@ -123,6 +123,33 @@ export class Xcode {
 			this.findDeviceTypesAndRuntimes(path.join(this.path, `Platforms/${name}.platform/Library/Developer/CoreSimulator/Profiles`));
 		}
 
+		// Remove any simulator runtime versions that are not compatible wit this version of xcode
+		for (const [ runtime, runtimeInfo ] of Object.entries(this.simRuntimes)) {
+			// Remove any iOS runtimes that are not compatible wit this version of xcode
+			if (/ios/i.test(runtimeInfo.name) && !Object.keys(this.simDevicePairs).some(iosRange => version.satisfies(runtimeInfo.version, iosRange))) {
+				delete this.simRuntimes[runtime];
+			}
+
+			if (!/watchos/i.test(runtimeInfo.name)) {
+				continue;
+			}
+
+			let isWatchOsRuntimeValid = false;
+			// Loop through the watch version ranges in the compatibility matrix,
+			// if the runtime version satisfies ant of the constraints then it's valid
+			for (const watchVersions of Object.values(this.simDevicePairs)) {
+				for (const versionRange of Object.keys(watchVersions)) {
+					if (version.satisfies(runtimeInfo.version, versionRange)) {
+						isWatchOsRuntimeValid = true;
+					}
+				}
+			}
+
+			if (!isWatchOsRuntimeValid) {
+				delete this.simRuntimes[runtime];
+			}
+		}
+
 		for (const name of [ 'Simulator', 'iOS Simulator' ]) {
 			const app = path.join(this.path, `Applications/${name}.app/Contents/MacOS/${name}`);
 			if (isFile(app)) {
@@ -262,9 +289,7 @@ export class Xcode {
 						// squelch
 					}
 
-					if (Object.keys(this.simDevicePairs).some(iosRange => version.satisfies(runtime.version, iosRange))) {
-						this.simRuntimes[id] = runtime;
-					}
+					this.simRuntimes[id] = runtime;
 				} catch (e) {
 					// squelch
 				}
