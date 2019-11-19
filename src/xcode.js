@@ -123,29 +123,35 @@ export class Xcode {
 			this.findDeviceTypesAndRuntimes(path.join(this.path, `Platforms/${name}.platform/Library/Developer/CoreSimulator/Profiles`));
 		}
 
-		// Remove any simulator runtime versions that are not compatible wit this version of xcode
+		// remove any simulator runtime versions that are not compatible wit this version of xcode
 		for (const [ runtime, runtimeInfo ] of Object.entries(this.simRuntimes)) {
-			// Remove any iOS runtimes that are not compatible wit this version of xcode
-			if (/ios/i.test(runtimeInfo.name) && !Object.keys(this.simDevicePairs).some(iosRange => version.satisfies(runtimeInfo.version, iosRange))) {
-				delete this.simRuntimes[runtime];
-			}
+			let valid = false;
 
-			if (!/watchos/i.test(runtimeInfo.name)) {
-				continue;
-			}
-
-			let isWatchOsRuntimeValid = false;
-			// Loop through the watch version ranges in the compatibility matrix,
-			// if the runtime version satisfies ant of the constraints then it's valid
-			for (const watchVersions of Object.values(this.simDevicePairs)) {
-				for (const versionRange of Object.keys(watchVersions)) {
-					if (version.satisfies(runtimeInfo.version, versionRange)) {
-						isWatchOsRuntimeValid = true;
+			// remove any iOS runtimes that are not compatible wit this version of xcode
+			if (/ios/i.test(runtimeInfo.name)) {
+				for (const iosRange of Object.keys(this.simDevicePairs)) {
+					if (version.satisfies(runtimeInfo.version, iosRange)) {
+						valid = true;
+						break;
+					}
+				}
+			} else if (/watchos/i.test(runtimeInfo.name)) {
+				// loop through the watch version ranges in the compatibility matrix,
+				// if the runtime version satisfies ant of the constraints then it's valid
+				for (const watchosVersions of Object.values(this.simDevicePairs)) {
+					for (const watchosRange of Object.keys(watchosVersions)) {
+						if (version.satisfies(runtimeInfo.version, watchosRange)) {
+							valid = true;
+							break;
+						}
+					}
+					if (valid) {
+						break;
 					}
 				}
 			}
 
-			if (!isWatchOsRuntimeValid) {
+			if (!valid) {
 				delete this.simRuntimes[runtime];
 			}
 		}
