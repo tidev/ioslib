@@ -1,4 +1,4 @@
-# 3.2.4
+# 3.2.4 (Nov 19, 2019)
 
  * fix(xcode): Fixed bug where compatible iOS runtime filtering was also being applied to watchOS
    runtimes causing them to not be listed.
