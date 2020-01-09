@@ -1,3 +1,7 @@
+# 3.2.5 (Jan 8, 2020)
+
+ * chore: Updated dependencies.
+
 # 3.2.4 (Nov 19, 2019)
 
  * fix(xcode): Fixed bug where compatible iOS runtime filtering was also being applied to watchOS
