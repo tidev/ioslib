@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "publishConfig": {
     "tag": "next"
   },
@@ -33,7 +33,7 @@
     "appcd-util": "^2.0.2",
     "cli-kit": "^0.13.1",
     "node-forge": "^0.9.1",
-    "node-ios-device": "^2.0.2",
+    "node-ios-device": "^1.7.1",
     "promise-limit": "^2.7.0",
     "semver": "^7.1.1",
     "simple-plist": "^1.1.0",

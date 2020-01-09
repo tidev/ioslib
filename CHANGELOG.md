@@ -1,3 +1,11 @@
+# 2.5.5 (Jan 9, 2020)
+
+ * fix: Downgraded `node-ios-device` from v2.0.2 to v1.7.1. It was accidentially bumped to 2.x.
+
+# 2.5.4 (Jan 8, 2020)
+
+ * chore: Updated dependencies.
+
 # 2.5.3 (Nov 19, 2019)
 
  * fix(xcode): Fixed bug where compatible iOS runtime filtering was also being applied to watchOS
