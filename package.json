@@ -24,6 +24,7 @@
     "build": "gulp build",
     "coverage": "gulp coverage",
     "docs": "gulp docs",
+    "lint": "gulp lint",
     "prepare": "gulp build",
     "test": "gulp test"
   },
