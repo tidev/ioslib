@@ -1,3 +1,7 @@
+# v2.5.6 (Jun 23, 2020)
+
+ * feat: Added Xcode 12 and iOS 14 to the device pair compatibility table.
+
 # 2.5.5 (Jan 9, 2020)
 
  * fix: Downgraded `node-ios-device` from v2.0.2 to v1.7.1. It was accidentially bumped to 2.x.
