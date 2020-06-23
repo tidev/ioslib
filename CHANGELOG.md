@@ -1,3 +1,7 @@
+# v3.2.6 (Jun 23, 2020)
+
+ * feat: Added Xcode 12 and iOS 14 to the device pair compatibility table.
+
 # 3.2.5 (Jan 8, 2020)
 
  * chore: Updated dependencies.
