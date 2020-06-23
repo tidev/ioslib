@@ -20,7 +20,7 @@ new CLI({
 		},
 		devices: {
 			async action() {
-				const devices = await ioslib.devices.getDevices();
+				const devices = await ioslib.devices.list();
 				console.log(JSON.stringify(devices, null, '  '));
 			},
 			desc: 'Lists connected devices'
@@ -48,7 +48,7 @@ new CLI({
 				}
 				console.log(JSON.stringify(info, null, '  '));
 			},
-			aliases: 'detect',
+			aliases: '!detect',
 			args: [
 				{
 					name: 'types',
@@ -75,7 +75,7 @@ new CLI({
 					console.log();
 				});
 			},
-			aliases: [ 'trackdevices', 'track-devices' ],
+			aliases: [ '!trackdevices', '!track-devices' ],
 			desc: 'Listens for devices to be connected/disconnected'
 		}
 	},
