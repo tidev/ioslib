@@ -1,3 +1,11 @@
+# v4.0.0 (Jun 23, 2020)
+
+ * BREAKING CHANGE: Dropped support for Node.js 10.12 and older. Please use Node.js 10.13.0 LTS or
+   newer.
+ * feat: Added Xcode 12 and iOS 14 to the device pair compatibility table.
+ * feat: Lazy load `node-ios-device` when listing or watching for devices.
+ * chore: Updated dependencies.
+
 # 3.2.5 (Jan 8, 2020)
 
  * chore: Updated dependencies.

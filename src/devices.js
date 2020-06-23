@@ -1,4 +1,4 @@
-import iosDevice from 'node-ios-device';
+let iosDevice;
 
 /**
  * Device information.
@@ -21,6 +21,9 @@ export class Device {
  * @returns {Array.<Object>}
  */
 export function list() {
+	if (!iosDevice) {
+		iosDevice = require('node-ios-device');
+	}
 	return iosDevice.list().map(d => new Device(d));
 }
 
@@ -30,6 +33,9 @@ export function list() {
  * @returns {WatchDeviceHandle}
  */
 export function watch() {
+	if (!iosDevice) {
+		iosDevice = require('node-ios-device');
+	}
 	const handle = iosDevice.watch();
 	handle.on('change', devices => handle.emit('devices', devices.map(d => new Device(d))));
 	return handle;
