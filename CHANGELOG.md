@@ -1,3 +1,8 @@
+# v4.1.0 (Aug 25, 2020)
+
+ * feat(xcode): Added `userLicenseFile` path.
+ * chore: Updated dependencies.
+
 # v4.0.0 (Jun 23, 2020)
 
  * BREAKING CHANGE: Dropped support for Node.js 10.12 and older. Please use Node.js 10.13.0 LTS or

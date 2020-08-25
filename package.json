@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "publishConfig": {
     "tag": "next"
   },
@@ -33,7 +33,7 @@
     "appcd-path": "^2.0.1",
     "appcd-subprocess": "^4.0.0",
     "appcd-util": "^3.0.0",
-    "cli-kit": "^1.2.3",
+    "cli-kit": "^1.8.0",
     "node-forge": "^0.9.1",
     "node-ios-device": "^3.0.0",
     "promise-limit": "^2.7.0",
