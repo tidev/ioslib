@@ -36,6 +36,13 @@ export const globalSimProfilesPath = '/Library/Developer/CoreSimulator/Profiles'
 export const globalLicenseFile = '/Library/Preferences/com.apple.dt.Xcode.plist';
 
 /**
+ * The path to the user Xcode license file. It tracks the license acceptance for GM (golden
+ * master) and beta releases.
+ * @type {String}
+ */
+export const userLicenseFile = '~/Library/Preferences/com.apple.dt.Xcode.plist';
+
+/**
  * Xcode information object.
  */
 export class Xcode {
