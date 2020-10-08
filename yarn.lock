@@ -1755,9 +1755,9 @@ cli-cursor@^3.1.0:
     restore-cursor "^3.1.0"
 
 cli-kit@^1.2.3, cli-kit@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/cli-kit/-/cli-kit-1.8.0.tgz#2bf5ee61c42812e1551170cd54da9fe00a829fd9"
-  integrity sha512-d7TyGRYMUtMkxpx+1+BCMc3q06ftPS41OlpWJOWzw6qgEYuFCsl98GViLwMYcnxxTQwn2pTt6EENkHW72NckVw==
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/cli-kit/-/cli-kit-1.8.2.tgz#905b8f5835e23abc05177acb9875671720d254de"
+  integrity sha512-OUVO5EjkSJ2K+xb1G+NIpgzjIqWis6qahyGU0IY2ewrNhBKEhnx48HCmyK32nPu/sZdQqH19V0gl/E0atPQnrg==
   dependencies:
     argv-split "^2.0.1"
     fastest-levenshtein "^1.0.12"
