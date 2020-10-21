@@ -38,7 +38,7 @@
     "bplist-parser": "0.1.1",
     "debug": "^3.2.6",
     "mkdirp": "0.5.1",
-    "node-appc": "^0.3.4",
+    "node-appc": "^1.1.2",
     "node-ios-device": "^1.7.0"
   },
   "devDependencies": {
