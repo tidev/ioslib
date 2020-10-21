@@ -42,7 +42,7 @@
     "node-ios-device": "^1.7.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
+    "mocha": "^8.2.0",
     "mocha-jenkins-reporter": "^0.4.2",
     "should": "^13.2.3"
   },
