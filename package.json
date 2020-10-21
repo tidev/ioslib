@@ -58,6 +58,6 @@
     "test-xcode": "mocha --require test/init --reporter spec --check-leaks test/test-xcode"
   },
   "engines": {
-    "node": ">=0.10"
+    "node": ">=10.13"
   }
 }
