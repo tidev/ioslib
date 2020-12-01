@@ -815,9 +815,9 @@ appcd-nodejs@^4.0.0:
     yauzl "^2.10.0"
 
 appcd-path@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/appcd-path/-/appcd-path-2.0.1.tgz#50110a1acf60924869888c14527137917f86e44e"
-  integrity sha512-Az3KmtKO81mVF3QDNzNbVybbPixmPcrfp9yJmEdlBFw7jXY/ntPShxiMQMWR3bjkqhJYVaFKDqMlrTx+pB+7rw==
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/appcd-path/-/appcd-path-2.0.2.tgz#44775fe3e12dc635d483de2a257a336e29c2ab60"
+  integrity sha512-rrKbYefvQ+fYgad17LSGjCVFCJWEk/ChsFeGNpZkTtrKu3YrW0jMJC4YsuNdhsc8aMsrIIgVDcs9lQg2SnxjWA==
   dependencies:
     source-map-support "^0.5.19"
 
