@@ -738,9 +738,9 @@ appcd-dispatcher@^3.0.0:
     uuid "^8.1.0"
 
 appcd-fs@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.0.tgz#331cff551eb8e0831accca333578fa0a967969e4"
-  integrity sha512-mbxdmQvRMf/PP3HBsoLAmu1G8nytqQ8AJXPcZUTKDwZEb/5bkMnIpph0G6rI5MP6ZeGqKVqrod6s7fH+cv8TWA==
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.1.tgz#577f22704c7e8586b204ad7349b519d667a71da2"
+  integrity sha512-yQP9QRSMJt72zIbNZ8k5EHQpjGassszOQVwPh/fpH88+lRNAzfNLwMPGVbBAqAKiRKi6O8TU41zzefSiXJM/jQ==
   dependencies:
     source-map-support "^0.5.19"
 
