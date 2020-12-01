@@ -737,10 +737,10 @@ appcd-dispatcher@^3.0.0:
     source-map-support "^0.5.19"
     uuid "^8.1.0"
 
-appcd-fs@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.0.tgz#331cff551eb8e0831accca333578fa0a967969e4"
-  integrity sha512-mbxdmQvRMf/PP3HBsoLAmu1G8nytqQ8AJXPcZUTKDwZEb/5bkMnIpph0G6rI5MP6ZeGqKVqrod6s7fH+cv8TWA==
+appcd-fs@^2.0.0, appcd-fs@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.1.tgz#577f22704c7e8586b204ad7349b519d667a71da2"
+  integrity sha512-yQP9QRSMJt72zIbNZ8k5EHQpjGassszOQVwPh/fpH88+lRNAzfNLwMPGVbBAqAKiRKi6O8TU41zzefSiXJM/jQ==
   dependencies:
     source-map-support "^0.5.19"
 
@@ -860,12 +860,13 @@ appcd-subprocess@^4.0.0:
     which "^2.0.2"
 
 appcd-util@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/appcd-util/-/appcd-util-3.0.0.tgz#50126415ab7016597568002ceeaf8f393799e309"
-  integrity sha512-E08lV/0B67biSDVznVXB+onlF6VsSRQDyfNC/z6Zj9TnluJV/aLHiPxfvNux+hMiobQkTmJK5BHqwR27G11Tiw==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/appcd-util/-/appcd-util-3.1.0.tgz#9f64ec6256254c57fa2775e0cc8e390e97457fb6"
+  integrity sha512-MGDHgl2ZPox7HHK2PoxDQCXt94gluU95j8h4R87hWIsTqcdE08cxBznjU1XboqUxDVcsyW05zaiTwrdGXWsyTQ==
   dependencies:
-    appcd-fs "^2.0.0"
+    appcd-fs "^2.0.1"
     lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
     semver "^7.3.2"
     source-map-support "^0.5.19"
 
@@ -4914,6 +4915,11 @@ lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
   integrity sha1-k2pOMJ7zMKdkXtQUWYbIWuWyCAU=
+
+lodash.set@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
+  integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
 
 lodash.some@^4.4.0:
   version "4.6.0"
