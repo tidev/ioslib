@@ -1,3 +1,7 @@
+# v4.2.1 (Dec 2, 2020)
+
+ * fix: Fixed yarn lockfile.
+
 # v4.2.0 (Dec 2, 2020)
 
  * chore: Updated dependencies.
