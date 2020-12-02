@@ -1,3 +1,7 @@
+# v4.2.0 (Dec 2, 2020)
+
+ * chore: Updated dependencies.
+
 # v4.1.0 (Aug 25, 2020)
 
  * feat(xcode): Added `userLicenseFile` path.
@@ -11,17 +15,17 @@
  * feat: Lazy load `node-ios-device` when listing or watching for devices.
  * chore: Updated dependencies.
 
-# 3.2.5 (Jan 8, 2020)
+# v3.2.5 (Jan 8, 2020)
 
  * chore: Updated dependencies.
 
-# 3.2.4 (Nov 19, 2019)
+# v3.2.4 (Nov 19, 2019)
 
  * fix(xcode): Fixed bug where compatible iOS runtime filtering was also being applied to watchOS
    runtimes causing them to not be listed.
    [(DAEMON-306)](https://jira.appcelerator.org/browse/DAEMON-306)
 
-# 3.2.3 (Nov 7, 2019)
+# v3.2.3 (Nov 7, 2019)
 
  * fix(simulator): Fixed watchOS sim semver ranges for device pair compatibility lookup and added a
    truthiness check in case we ever need to blacklist a version.
@@ -31,34 +35,34 @@
    [(TIMOB-27463)](https://jira.appcelerator.org/browse/TIMOB-27463)
  * chore: Updated dependencies.
 
-# 3.2.2 (Aug 29, 2019)
+# v3.2.2 (Aug 29, 2019)
 
  * fix: Added support for Apple developer certificates.
    [(TIMOB-27358)](https://jira.appcelerator.org/browse/TIMOB-27358)
  * chore: Updated dependencies.
 
-# 3.2.1 (Aug 14, 2019)
+# v3.2.1 (Aug 14, 2019)
 
  * feat: Registered `ioslib` bin in `package.json`.
  * chore: Updated dependencies.
 
-# 3.2.0 (Aug 12, 2019)
+# v3.2.0 (Aug 12, 2019)
 
  * feat: Added `teamId` to certificate info.
  * chore: Updated dependencies.
 
-# 3.1.1 (Jul 8, 2019)
+# v3.1.1 (Jul 8, 2019)
 
  * fix: Removed global simulator profiles directory from Xcode `coreSimulatorProfilesPaths`.
 
-# 3.1.0 (Jul 8, 2019)
+# v3.1.0 (Jul 8, 2019)
 
  * fix: Added new Xcode 11 simulator runtime and device types search paths.
  * feat: Added `info` and `reset-sims` commands to `ioslib` CLI.
  * feat: Added `coreSimulatorProfilesPaths` to Xcode info object.
    [(DAEMON-250)](https://jira.appcelerator.org/browse/DAEMON-250)
 
-# 3.0.0 (Jul 2, 2019)
+# v3.0.0 (Jul 2, 2019)
 
  * BREAKING CHANGE: Dropped support for Node.js versions before v8.12.0.
  * BREAKING CHANGE(dep): Upgraded to node-ios-device v2 which dropped support for Node.js 7.x and
