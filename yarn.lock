@@ -1594,9 +1594,9 @@ cli-cursor@^3.1.0:
     restore-cursor "^3.1.0"
 
 cli-kit@^1.9.2:
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/cli-kit/-/cli-kit-1.9.2.tgz#f0984d33f80bf5dcba8b1711bfa47c28f6e35938"
-  integrity sha512-V6BHZgUEkcILME5FRGeyISUs/VibZtXG7QKcis7/RLwJs5uye9cJ/2RUhQ94W9za8UrqvFMlocgid5rVv6s71A==
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/cli-kit/-/cli-kit-1.9.3.tgz#4ae6cfbf767ad8ca9e5773aafa605e58817f3642"
+  integrity sha512-mgdyf2fEv8+7rZlpIiVo4MkPoEZk2AiwKeX9w1V9U21RG3BDLdyxdOlr+7+JmN49L+WT5j5C/JubRoAigEdwVw==
   dependencies:
     argv-split "^2.0.1"
     fastest-levenshtein "^1.0.12"
@@ -1606,7 +1606,7 @@ cli-kit@^1.9.2:
     pkg-dir "^5.0.0"
     pluralize "^8.0.0"
     semver "^7.3.4"
-    snooplogg "^3.0.1"
+    snooplogg "^3.0.2"
     source-map-support "^0.5.19"
     which "^2.0.2"
     ws "^7.4.2"
@@ -6064,7 +6064,7 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-snooplogg@^3.0.1, snooplogg@^3.0.2:
+snooplogg@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/snooplogg/-/snooplogg-3.0.2.tgz#86f38bd06254c90c91e3df565face959e16b976e"
   integrity sha512-WIeAbTRd64HEtkdoqwK8i9A+anSp1FZXai31fxBzcW8ESvg9wsBuD8+XPVNpX4i6ASUqH73NvXOUVeXzEb0Bcg==
