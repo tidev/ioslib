@@ -769,6 +769,13 @@ appcd-fs@^2.0.2:
   dependencies:
     source-map-support "^0.5.19"
 
+appcd-fs@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.3.tgz#ef4afa1bb6e3dd49a4f66a3928a9b16caee97320"
+  integrity sha512-44bX6ZPP/V9DniiT+kyad0xm1NVeO8e0QJiKjrWd1G9hWPUKv15V7xeKD17vXphvgR57aX2pZBmXoXwErPSy3g==
+  dependencies:
+    source-map-support "^0.5.19"
+
 appcd-gulp@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/appcd-gulp/-/appcd-gulp-3.1.1.tgz#4af4399d673bf31c4e5b618264bd5925e2c5404b"
@@ -815,10 +822,10 @@ appcd-gulp@^3.1.1:
     sinon-chai "^3.5.0"
     webpack "^5.11.1"
 
-appcd-logger@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/appcd-logger/-/appcd-logger-3.0.2.tgz#a7294e8ed24c1bc5646bcd77bb85d9aac4920888"
-  integrity sha512-xDYxNWg2OH4i3sKAeTmAdmfnTucw92BtDU59+BEq19kphCD06l8aFsMEusMerPPEUeYs5yDZLcLDlMssL7iLtQ==
+appcd-logger@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/appcd-logger/-/appcd-logger-3.0.3.tgz#dc7b45ab8f9227562a0e13bab9da42ff4c2454e5"
+  integrity sha512-W4TJuDWbJyIoujccjBxQVNGjo2QRT/IqwSQ0gaCSAXOdejs8wG4+0xFpl/acwap5ICKOpr+/GmJg8y7IyQGgsQ==
   dependencies:
     snooplogg "^3.0.2"
     source-map-support "^0.5.19"
@@ -830,23 +837,30 @@ appcd-path@^2.0.3:
   dependencies:
     source-map-support "^0.5.19"
 
-appcd-response@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/appcd-response/-/appcd-response-3.0.2.tgz#5b7db7dbe745a13a911618149858f21987f3e47c"
-  integrity sha512-Grd5LWUOy3oeT1u1nxmINM2kLdebVQNWDKanuAdjtp4x89jGo2LU77P8kpFy5K1HZzxratAlBwqo4jPb2yRXQg==
+appcd-path@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/appcd-path/-/appcd-path-2.0.4.tgz#7c81f5683c9443f1d44aa9b940cab0645ef0e041"
+  integrity sha512-eibNrNO5eVolINthW5hXv8qlmU97q7p6IbZL6LL7Vt9wHN2uQWhSVev+nB2RIyq3xRhsota0fiLz3b5W6z0uKQ==
   dependencies:
-    appcd-fs "^2.0.2"
-    appcd-path "^2.0.3"
+    source-map-support "^0.5.19"
+
+appcd-response@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/appcd-response/-/appcd-response-3.0.3.tgz#f79600783ed70e01bc4b53ab97442ab20172b32b"
+  integrity sha512-fvTclKbUMg0kaOwf3QOr5TAZcEqtI3C34IXG4Swr7tX60N4TvRcAn4YpnmXCRiab2qIBRNiYaR4YVmiAvRBtiQ==
+  dependencies:
+    appcd-fs "^2.0.3"
+    appcd-path "^2.0.4"
     source-map-support "^0.5.19"
     sprintf-js "^1.1.2"
 
 appcd-subprocess@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/appcd-subprocess/-/appcd-subprocess-5.0.1.tgz#6cf924b3a70a0f3e6f55fab62824e4f78dea5280"
-  integrity sha512-bPNMNOq/egPF2wYaPcTZRxRYjMkUv2pVo9g1OIvK0QZ4eElkWNv9YhLbX+wptM5N+zVyXCNzOPydHUo5oAdToQ==
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/appcd-subprocess/-/appcd-subprocess-5.0.2.tgz#736b2f2c4cc6d432d3164387a783c1bf971a9bd7"
+  integrity sha512-2sSGklfkN9EWQ15ZOi93kSYTCJY2QU/X1nfzZJcKGXfU1JkdFG8KQFo39ddefJ35tFb5dL6/TI5Ml+KEWAdfBA==
   dependencies:
-    appcd-logger "^3.0.2"
-    appcd-response "^3.0.2"
+    appcd-logger "^3.0.3"
+    appcd-response "^3.0.3"
     source-map-support "^0.5.19"
     which "^2.0.2"
 
