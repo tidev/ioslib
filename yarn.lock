@@ -762,10 +762,10 @@ anymatch@~3.1.1:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-appcd-fs@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.2.tgz#e88601695291da7585e44fe1eba4302f7dbcc5e3"
-  integrity sha512-UW0OkezNxBfX6dUs+Ik+RxdUoPwG3UXBasSm/+7N5kHxrFPZrABWvh2NSVdVT9yOodEbbDXt+NQd6cRJVJ7XFA==
+appcd-fs@^2.0.2, appcd-fs@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.4.tgz#7388af54839f4ab92fd9707c7ef57d962b5a024b"
+  integrity sha512-ulJwq2DB2pT4B4tNStB319n9eJzj9lPSrYD5ptF8283AYZUTo9uiL46OgLQSIwxD9wFfZTay+NfpHwNfqWXlkg==
   dependencies:
     source-map-support "^0.5.19"
 
@@ -851,11 +851,11 @@ appcd-subprocess@^5.0.1:
     which "^2.0.2"
 
 appcd-util@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/appcd-util/-/appcd-util-3.1.1.tgz#e3e11c9f57a93b539b537363df591fb43b14276e"
-  integrity sha512-a/CiK7mdGa6qleRH5REVC9u5wn9+IbqeA/7oVBTSbLKwTc+QCYp8bkotymV0cfBjtBlH7TxjvLZUg6KjLRT1JQ==
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/appcd-util/-/appcd-util-3.1.3.tgz#6080c5274487d9d8ed07e16940b119167d4ed2f3"
+  integrity sha512-76Go21u4TOOG9PjPTW7grnNUtRw8drWN0YZFC7mJrAUhRpamSc1AZhz8w9yhCVioUb8xvOQxPlm000AhbyMMIQ==
   dependencies:
-    appcd-fs "^2.0.2"
+    appcd-fs "^2.0.4"
     lodash.get "^4.4.2"
     lodash.set "^4.3.2"
     semver "^7.3.4"
