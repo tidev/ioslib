@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "always-tail": "0.2.0",
-    "async": "^2.6.3",
+    "async": "^3.2.0",
     "bplist-parser": "0.3.0",
     "debug": "^4.2.0",
     "mkdirp": "0.5.1",
