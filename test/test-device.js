@@ -36,9 +36,6 @@ function build(app, provisioningProfileUUID, certName, defs, done){
 			'clean', 'build',
 			'-configuration', 'Debug',
 			'-sdk', 'iphoneos' + appc.version.format(env.selectedXcode.sdks[0], 2, 2),
-			'VALID_ARCHS="armv7 armv7s"',
-			'ARCHS="armv7 armv7s"',
-			'IPHONEOS_DEPLOYMENT_TARGET=6.0',
 			'PROVISIONING_PROFILE=' + provisioningProfileUUID,
 			'DEPLOYMENT_POSTPROCESSING=YES',
 			// 'CODE_SIGN_IDENTITY="' + certName + '"',
@@ -133,11 +130,11 @@ describe('device', function () {
 
 		ioslib.device
 			.install(null, '/path/to/something/that/does/not/exist', 'foo', function (err) {
-				should(err).be.an.instanceOf(Error);
-				done();
+				done(new Error('Callback was called unexpectedly'));
 			})
 			.on('error', function (err) {
 				should(err).be.an.instanceOf(Error);
+				done();
 			});
 	});
 
