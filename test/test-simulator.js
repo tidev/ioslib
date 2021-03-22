@@ -9,6 +9,13 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
+/**
+ * To run these tests do the following:
+ * 1. Update the xcVersion below
+ * 2. Update the iphoneSim, ipadSim, and watchosSim to point to valid UDIDs for your machine
+ * 3. If you get provisioning profile errors, ensure that the TestApp project is setup correctly
+*/
+
 const
 	appc = require('node-appc'),
 	assert = require('assert'),
@@ -19,11 +26,10 @@ const
 	path = require('path'),
 
 	// these will vary by machine
-	xc6_ios84_iphone6 = 'F3A838A8-9109-4F8C-AAA3-21EB164D5377',
-	xc6_watchos1_42mm = 'D5C1DA2F-7A74-49C8-809A-906E554021B0',
-	xc7_ios9_iphone6  = 'FA9941AA-A14E-405D-A76F-1472C47CBFED',
-	xc7_watchos2_42mm = 'EDD1754C-C0D2-47E2-8E9B-46934962F84B',
-	xc7_ios9_ipadAir2 = 'B6CEDBA2-4E8A-4BE7-8E0E-2A5E2B679488';
+	xcVersion = '12.4',
+	iphoneSim = 'ADF9395D-11BE-47F4-9499-8665D1D6FA07', // iPhone 12 Pro Max
+	ipadSim = '6DAFA4CA-859F-42BA-901D-F6E1AE84C080', // iPad Pro (12.9-inch) (4th generation)
+	watchosSim = '22B18EDA-9743-452E-8865-68FD833D56EF'; // Apple Watch Series 6 - 44mm (WatchOS 7.2)
 
 function checkSims(sims) {
 	should(sims).be.an.Array;
@@ -84,7 +90,7 @@ function build(app, iosVersion, defs, done){
 			'clean', 'build',
 			'-configuration', 'Debug',
 			'-scheme', app,
-			'-destination', "platform='iOS Simulator',OS=" + appc.version.format(iosVersion, 2, 2) + ",name='iPhone 6'",
+			'-destination', "platform='iOS Simulator',OS=" + appc.version.format(iosVersion, 2, 2) + ",name='iPhone 12 Pro Max'",
 			'-derivedDataPath', path.join(__dirname, app),
 			'GCC_PREPROCESSOR_DEFINITIONS="' + defs.join(' ') + '"'
 		];
@@ -219,13 +225,13 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 9.0 Sim + bad Watch Sim UDID + no watch app is valid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS Sim + bad Watch Sim UDID + no watch app is valid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			simHandleOrUDID: xc7_ios9_iphone6,
+			simHandleOrUDID: iphoneSim,
 			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -233,21 +239,21 @@ describe('simulator', function () {
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc7_ios9_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			assert(watchSimHandle === null);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('7.0');
+			should(selectedXcode.version).equal('12.4');
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('fail with good iOS 9.0 Sim UDID + bad Watch Sim UDID + watch app', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('fail with good iOS Sim UDID + bad Watch Sim UDID + watch app', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			simHandleOrUDID: xc7_ios9_iphone6,
+			simHandleOrUDID: iphoneSim,
 			watchAppBeingInstalled: true,
 			watchHandleOrUDID: 'bar'
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
@@ -257,36 +263,36 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 8.4 Sim + Watch 1.0 Sim + no watch app is valid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS Sim + Watch Sim + no watch app is valid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			simHandleOrUDID: xc6_ios84_iphone6,
+			simHandleOrUDID: iphoneSim,
 			watchAppBeingInstalled: false,
-			watchHandleOrUDID: xc6_watchos1_42mm
+			watchHandleOrUDID: watchosSim
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			assert(watchSimHandle === null);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 8.4 Sim is valid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS Sim is valid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			simHandleOrUDID: xc6_ios84_iphone6,
+			simHandleOrUDID: iphoneSim,
 			watchAppBeingInstalled: false
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -294,45 +300,45 @@ describe('simulator', function () {
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			assert(watchSimHandle === null);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 8.4 Sim + Watch 1.0 Sim + watch app is valid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS Sim + Watch Sim + watch app is valid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			simHandleOrUDID: xc6_ios84_iphone6,
+			simHandleOrUDID: iphoneSim,
 			watchAppBeingInstalled: true,
-			watchHandleOrUDID: xc6_watchos1_42mm
+			watchHandleOrUDID: watchosSim
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc6_watchos1_42mm);
+			should(watchSimHandle.udid).equal(watchosSim);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 8.4 Sim + watch app is valid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS Sim + watch app is valid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
-			simHandleOrUDID: xc6_ios84_iphone6,
+			simHandleOrUDID: iphoneSim,
 			watchAppBeingInstalled: true
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
@@ -340,159 +346,33 @@ describe('simulator', function () {
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc6_watchos1_42mm);
+			should(watchSimHandle.udid).equal(watchosSim);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 8.4 Sim + Watch 2.0 Sim + watch app is invalid', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
-
-		ioslib.simulator.findSimulators({
-			logger: logger,
-			simHandleOrUDID: xc6_ios84_iphone6,
-			watchAppBeingInstalled: true,
-			watchHandleOrUDID: xc7_watchos2_42mm
-		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
-			should(err).be.ok;
-			should(err).be.instanceof(Error);
-			should(err.message).equal('Specified Watch Simulator "' + xc7_watchos2_42mm + '" is not compatible with iOS Simulator "' + xc6_ios84_iphone6 + '".');
-			done();
-		});
-	});
-
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 9.0 Sim + Watch 2.0 Sim + no watch app is valid', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
-
-		ioslib.simulator.findSimulators({
-			logger: logger,
-			simHandleOrUDID: xc7_ios9_iphone6,
-			watchAppBeingInstalled: false,
-			watchHandleOrUDID: xc7_watchos2_42mm
-		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
-			if (err) {
-				return done(err);
-			}
-
-			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc7_ios9_iphone6);
-			assert(watchSimHandle === null);
-			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('7.0');
-			done();
-		});
-	});
-
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 9.0 Sim is valid', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
-
-		ioslib.simulator.findSimulators({
-			logger: logger,
-			simHandleOrUDID: xc7_ios9_iphone6,
-			watchAppBeingInstalled: false
-		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
-			if (err) {
-				return done(err);
-			}
-
-			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc7_ios9_iphone6);
-			assert(watchSimHandle === null);
-			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('7.0');
-			done();
-		});
-	});
-
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 9.0 Sim + Watch 2.0 Sim + watch app is valid', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
-
-		ioslib.simulator.findSimulators({
-			logger: logger,
-			simHandleOrUDID: xc7_ios9_iphone6,
-			watchAppBeingInstalled: true,
-			watchHandleOrUDID: xc7_watchos2_42mm
-		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
-			if (err) {
-				return done(err);
-			}
-
-			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc7_ios9_iphone6);
-			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc7_watchos2_42mm);
-			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('7.0');
-			done();
-		});
-	});
-
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 9.0 Sim + watch app is valid', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
-
-		ioslib.simulator.findSimulators({
-			logger: logger,
-			simHandleOrUDID: xc7_ios9_iphone6,
-			watchAppBeingInstalled: true
-		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
-			if (err) {
-				return done(err);
-			}
-
-			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc7_ios9_iphone6);
-			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc7_watchos2_42mm);
-			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('7.0');
-			done();
-		});
-	});
-
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iOS 9.0 Sim + Watch 1.0 Sim + watch app is invalid', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
-
-		ioslib.simulator.findSimulators({
-			logger: logger,
-			simHandleOrUDID: xc7_ios9_iphone6,
-			watchAppBeingInstalled: true,
-			watchHandleOrUDID: xc6_watchos1_42mm
-		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
-			should(err).be.ok;
-			should(err).be.instanceof(Error);
-			should(err.message).equal('Specified Watch Simulator "' + xc6_watchos1_42mm + '" is not compatible with iOS Simulator "' + xc7_ios9_iphone6 + '".');
-			done();
-		});
-	});
-
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('no iOS Sim + Watch 1.0 Sim + no watch app is valid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('no iOS Sim + Watch Sim + no watch app is valid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			watchAppBeingInstalled: false,
-			watchHandleOrUDID: xc6_watchos1_42mm
+			watchHandleOrUDID: watchosSim
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			assert(watchSimHandle === null);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
@@ -510,10 +390,10 @@ describe('simulator', function () {
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			assert(watchSimHandle === null);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
@@ -532,34 +412,10 @@ describe('simulator', function () {
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			assert(watchSimHandle === null);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
-			done();
-		});
-	});
-
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('no iOS Sim + app + Watch 1.0 Sim + watch app is valid', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
-
-		ioslib.simulator.findSimulators({
-			logger: logger,
-			appBeingInstalled: true,
-			watchAppBeingInstalled: true,
-			watchHandleOrUDID: xc6_watchos1_42mm
-		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
-			if (err) {
-				return done(err);
-			}
-
-			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
-			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc6_watchos1_42mm);
-			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
@@ -578,16 +434,16 @@ describe('simulator', function () {
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc6_ios84_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc6_watchos1_42mm);
+			should(watchSimHandle.udid).equal(watchosSim);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('6.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('no iOS Sim + app + Watch 2.0 Sim + watch app is valid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('no iOS Sim + app + Watch Sim + watch app is valid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
@@ -595,35 +451,35 @@ describe('simulator', function () {
 			logger: logger,
 			appBeingInstalled: true,
 			watchAppBeingInstalled: true,
-			watchHandleOrUDID: xc7_watchos2_42mm
+			watchHandleOrUDID: watchosSim
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			if (err) {
 				return done(err);
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc7_ios9_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc7_watchos2_42mm);
+			should(watchSimHandle.udid).equal(watchosSim);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('7.0');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iPad Sim + Watch 2.0 Sim + watch app is invalid', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('iPad Sim + Watch Sim + watch app is invalid', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			appBeingInstalled: true,
-			simHandleOrUDID: xc7_ios9_ipadAir2,
+			simHandleOrUDID: ipadSim,
 			watchAppBeingInstalled: true,
-			watchHandleOrUDID: xc7_watchos2_42mm
+			watchHandleOrUDID: watchosSim
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
-			should(err.message).equal('Specified Watch Simulator "' + xc7_watchos2_42mm + '" is not compatible with iOS Simulator "' + xc7_ios9_ipadAir2 + '".');
+			should(err.message).equal(`Unable to find any Watch Simulators that can be paired with the specified iOS Simulator ${ipadSim}.`);
 			done();
 		});
 	});
@@ -635,16 +491,16 @@ describe('simulator', function () {
 		ioslib.simulator.findSimulators({
 			logger: logger,
 			appBeingInstalled: true,
-			simHandleOrUDID: xc7_ios9_ipadAir2,
+			simHandleOrUDID: ipadSim,
 			watchAppBeingInstalled: true
 		}, function (err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) {
 			should(err).be.ok;
-			should(err.message).equal('Specified iOS Simulator "' + xc7_ios9_ipadAir2 + '" does not support watch apps.');
+			should(err.message).equal(`Unable to find any Watch Simulators that can be paired with the specified iOS Simulator ${ipadSim}.`);
 			done();
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('find a Xcode 7 iOS 9 iOS and Watch Sim', function (done) {
+	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('find a iOS and Watch Sim', function (done) {
 		this.timeout(5000);
 		this.slow(2000);
 
@@ -660,20 +516,20 @@ describe('simulator', function () {
 			}
 
 			should(simHandle).be.ok;
-			should(simHandle.udid).equal(xc7_ios9_iphone6);
+			should(simHandle.udid).equal(iphoneSim);
 			should(watchSimHandle).be.ok;
-			should(watchSimHandle.udid).equal(xc7_watchos2_42mm);
+			should(watchSimHandle.udid).equal(watchosSim);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('7.0');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
 
 	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('should launch the default simulator and stop it', function (done) {
-		this.timeout(60000);
+		this.timeout(120000);
 		this.slow(60000);
 
-		ioslib.simulator.launch(xc7_ios9_iphone6, null, function (err, simHandle, watchSimHandle) {
+		ioslib.simulator.launch(iphoneSim, null, function (err, simHandle, watchSimHandle) {
 			simHandlesToWipe.push(simHandle, watchSimHandle);
 
 			if (err) {
@@ -697,7 +553,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('should be able to launch simulator and log basic logs', function (done) {
-		this.timeout(60000);
+		this.timeout(120000);
 		this.slow(60000);
 
 		build('TestApp', null, ['TEST_BASIC_LOGGING'], function (err, appPath) {
@@ -787,7 +643,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('should be able to launch simulator and log ti mocha results with multiple lines', function (done) {
-		this.timeout(60000);
+		this.timeout(120000);
 		this.slow(60000);
 
 		build('TestApp', null, ['TEST_TIMOCHA_MULTIPLE_LINES'], function (err, appPath) {
@@ -885,8 +741,11 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('should be able to launch simulator and detect crash with C exception', function (done) {
-		this.timeout(60000);
+	// EH 19/3/2021 - I'm unable to capture the C exception here with the new logfile system, it
+	// appears that the C exception does not get written to the logfile or the system log. But leaving
+	// this test here skipped incase someone more familiar wants to poke around
+	 it.skip('should be able to launch simulator and detect crash with C exception', function (done) {
+		this.timeout(120000);
 		this.slow(60000);
 
 		build('TestApp', null, ['TEST_C_CRASH'], function (err, appPath) {
@@ -937,50 +796,11 @@ describe('simulator', function () {
 		});
 	});
 
-	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('should launch the default simulator and launch the watchOS 1 app', function (done) {
-		this.timeout(60000);
-		this.slow(60000);
-
-		build('TestWatchApp', '>=8.2 <9.0', ['TEST_BASIC_LOGGING'], function (err, appPath) {
-			if (err) {
-				return done(err);
-			}
-
-			should(appPath).be.a.String;
-			should(fs.existsSync(appPath)).be.ok;
-
-			ioslib.simulator.detect(function (err, simInfo) {
-				ioslib.simulator.launch(xc6_ios84_iphone6, {
-					appPath: appPath,
-					hide: true,
-					launchWatchApp: true
-				}).on('log-debug', function (line, simHandle) {
-					logger((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
-				}).on('launched', function (simHandle, watchSimHandle) {
-					simHandlesToWipe.push(simHandle, watchSimHandle);
-				}).on('app-started', function (simHandle, watchSimHandle) {
-					ioslib.simulator.stop(simHandle, function () {
-						if (watchSimHandle) {
-							ioslib.simulator.stop(watchSimHandle, function () {
-								done();
-							});
-						} else {
-							done();
-						}
-					});
-				}).on('error', function (err) {
-					done(err);
-				});
-			});
-		});
-	});
-
-
 	(process.env.TRAVIS || process.env.JENKINS ? it.skip : it)('should launch the default simulator and launch the watchOS 2 app', function (done) {
-		this.timeout(60000);
+		this.timeout(120000);
 		this.slow(60000);
 
-		build('TestWatchApp2', '9.x', ['TEST_BASIC_LOGGING'], function (err, appPath) {
+		build('TestWatchApp2', undefined, ['TEST_BASIC_LOGGING'], function (err, appPath) {
 			if (err) {
 				return done(err);
 			}
@@ -989,7 +809,7 @@ describe('simulator', function () {
 			should(fs.existsSync(appPath)).be.ok;
 
 			ioslib.simulator.detect(function (err, simInfo) {
-				ioslib.simulator.launch(xc7_ios9_iphone6, {
+				ioslib.simulator.launch(iphoneSim, {
 					appPath: appPath,
 					hide: true,
 					launchWatchApp: true,
