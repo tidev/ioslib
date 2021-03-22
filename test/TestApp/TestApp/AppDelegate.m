@@ -12,6 +12,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	NSString *logPath = [documentsDirectory stringByAppendingPathComponent:@"TestApp.log"];
+	freopen([logPath cStringUsingEncoding:NSUTF8StringEncoding], "w+", stderr);
+	fprintf(stderr, "[INFO] Application started\n");
+
 #ifdef TEST_BASIC_LOGGING
 	NSLog(@"[INFO] info test");
 	NSLog(@"[DEBUG] debug test");

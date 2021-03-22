@@ -715,7 +715,8 @@ describe('simulator', function () {
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
 				autoExit: true,
-				hide: true
+				hide: true,
+				logFilename: 'TestApp.log'
 			}).on('log', function (line) {
 				counter++;
 			}).on('log-debug', function (line, simHandle) {
@@ -753,7 +754,8 @@ describe('simulator', function () {
 				n = 0,
 				emitter = ioslib.simulator.launch(null, {
 					appPath: appPath,
-					hide: true
+					hide: true,
+					logFilename: 'TestApp.log'
 				});
 
 			function stop() {
@@ -800,7 +802,8 @@ describe('simulator', function () {
 				n = 0,
 				emitter = ioslib.simulator.launch(null, {
 					appPath: appPath,
-					hide: true
+					hide: true,
+					logFilename: 'TestApp.log'
 				});
 
 			function stop() {
@@ -847,7 +850,8 @@ describe('simulator', function () {
 
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
-				hide: true
+				hide: true,
+				logFilename: 'TestApp.log'
 			}).on('app-started', function (handle) {
 				simHandle = handle;
 			}).on('log-debug', function (line, simHandle) {
@@ -897,7 +901,8 @@ describe('simulator', function () {
 
 			ioslib.simulator.launch(null, {
 				appPath: appPath,
-				hide: true
+				hide: true,
+				logFilename: 'TestApp.log'
 			}).on('app-started', function (handle) {
 				simHandle = handle;
 			}).on('launched', function (simHandle, watchSimHandle) {
@@ -987,7 +992,8 @@ describe('simulator', function () {
 				ioslib.simulator.launch(xc7_ios9_iphone6, {
 					appPath: appPath,
 					hide: true,
-					launchWatchApp: true
+					launchWatchApp: true,
+					logFilename: 'TestApp.log'
 				}).on('log-debug', function (line, simHandle) {
 					logger((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
 				}).on('launched', function (simHandle, watchSimHandle) {
