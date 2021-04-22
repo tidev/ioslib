@@ -763,9 +763,9 @@ anymatch@~3.1.1:
     picomatch "^2.0.4"
 
 appcd-fs@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.2.tgz#e88601695291da7585e44fe1eba4302f7dbcc5e3"
-  integrity sha512-UW0OkezNxBfX6dUs+Ik+RxdUoPwG3UXBasSm/+7N5kHxrFPZrABWvh2NSVdVT9yOodEbbDXt+NQd6cRJVJ7XFA==
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/appcd-fs/-/appcd-fs-2.0.6.tgz#da818a60d5ae13df163e4a25ee0f1f8f32cb1f27"
+  integrity sha512-pLWvM4AT+BVDsLUuwlCbKuI7A8+T6J8MopdUmBoYeSbfprnWsJ//NEkgSKgLTtz7v3jknK2SUM9H8OTTqPfCVw==
   dependencies:
     source-map-support "^0.5.19"
 
