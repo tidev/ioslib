@@ -1,0 +1,60 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: cli-kit
+    versions:
+    - 1.10.0
+    - 1.11.0
+    - 1.11.1
+    - 1.11.2
+    - 1.11.3
+    - 1.12.0
+    - 1.9.3
+  - dependency-name: appcd-util
+    versions:
+    - 3.1.3
+    - 3.1.4
+    - 3.1.5
+  - dependency-name: appcd-gulp
+    versions:
+    - 3.1.3
+    - 3.1.4
+    - 3.1.5
+  - dependency-name: appcd-subprocess
+    versions:
+    - 5.0.3
+    - 5.0.4
+    - 5.0.5
+  - dependency-name: appcd-path
+    versions:
+    - 2.0.5
+    - 2.0.6
+    - 2.0.7
+  - dependency-name: appcd-fs
+    versions:
+    - 2.0.4
+    - 2.0.5
+    - 2.0.6
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  target-branch: 1_7_X
+  ignore:
+  - dependency-name: node-ios-device
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: mocha
+    versions:
+    - 8.3.1
+  - dependency-name: bplist-parser
+    versions:
+    - 0.2.0
