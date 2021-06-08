@@ -14,7 +14,7 @@ describe('Simulators', () => {
 	});
 
 	it('should generate a simulator registry', async function () {
-		this.timeout(60000);
+		this.timeout(90000);
 		this.slow(10000);
 
 		const simulators = await ioslib.simulator.getSimulators({ force: true });
