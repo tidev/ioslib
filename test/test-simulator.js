@@ -12,7 +12,7 @@
 /**
  * To run these tests do the following:
  * 1. Update the xcVersion below
- * 2. Update the iphoneSim, ipadSim, and watchosSim to point to valid UDIDs for your machine
+ * 2. Update the iphoneSim, ipadSim, and watchosSim to point to valid UDIDs for your machine. The UDIDs should come from the last simulator shown for a version in ti info output
  * 3. If you get provisioning profile errors, ensure that the TestApp project is setup correctly
 */
 
@@ -26,10 +26,10 @@ const
 	path = require('path'),
 
 	// these will vary by machine
-	xcVersion = '12.4',
-	iphoneSim = 'ADF9395D-11BE-47F4-9499-8665D1D6FA07', // iPhone 12 Pro Max
-	ipadSim = '6DAFA4CA-859F-42BA-901D-F6E1AE84C080', // iPad Pro (12.9-inch) (4th generation)
-	watchosSim = '22B18EDA-9743-452E-8865-68FD833D56EF'; // Apple Watch Series 6 - 44mm (WatchOS 7.2)
+	xcVersion = '13.0',
+	iphoneSim = '2A1AB1A5-73BE-4536-93F2-BA20D307E1B4', // iPhone 12 Pro Max
+	ipadSim = 'F3D0DAA8-7449-4D85-BAE5-278704A432B4', // iPad Pro (12.9-inch) (4th generation)
+	watchosSim = '0E855BDE-862C-4360-8720-351785A5B201'; // Apple Watch Series 6 - 44mm (WatchOS 7.2)
 
 function checkSims(sims) {
 	should(sims).be.an.Array;
@@ -242,7 +242,7 @@ describe('simulator', function () {
 			should(simHandle.udid).equal(iphoneSim);
 			assert(watchSimHandle === null);
 			should(selectedXcode).be.ok;
-			should(selectedXcode.version).equal('12.4');
+			should(selectedXcode.version).equal(xcVersion);
 			done();
 		});
 	});
@@ -573,7 +573,7 @@ describe('simulator', function () {
 				autoExit: true,
 				hide: true,
 				logFilename: 'TestApp.log'
-			}).on('log', function (line) {
+			}).on('log-file', function (line) {
 				counter++;
 			}).on('log-debug', function (line, simHandle) {
 				logger((simHandle ? '[' + simHandle.family.toUpperCase() + '] ' : '') + '[DEBUG]', line);
@@ -585,9 +585,9 @@ describe('simulator', function () {
 			}).on('app-started', function (simHandle) {
 				started = true;
 			}).on('app-quit', function (err) {
-				should(err).not.be.ok;
-				should(launched).be.ok;
-				should(started).be.ok;
+				should(err).not.be.ok();
+				should(launched).equal(true);
+				should(started).equal(true);
 				should(counter).not.equal(0);
 				done();
 			});
