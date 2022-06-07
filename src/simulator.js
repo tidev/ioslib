@@ -190,6 +190,33 @@ export const devicePairCompatibility = {
 			'7.x': true,        // watchOS 7.x
 			'8.x': true         // watchOS 8.x
 		}
+	},
+	'14.x': {                   // Xcode 14.x
+		'12.x': {               // iOS 12.x
+			'7.x': true,        // watchOS 7.x
+			'8.x': true,        // watchOS 8.x
+			'9.x': true			// watchOS 9.x
+		},
+		'13.x': {               // iOS 13.x
+			'7.x': true,        // watchOS 7.x
+			'8.x': true,        // watchOS 8.x
+			'9.x': true			// watchOS 9.x
+		},
+		'14.x': {               // iOS 14.x
+			'7.x': true,        // watchOS 7.x
+			'8.x': true,        // watchOS 8.x
+			'9.x': true			// watchOS 9.x
+		},
+		'15.x': {
+			'7.x': true,        // watchOS 7.x
+			'8.x': true,        // watchOS 8.x
+			'9.x': true			// watchOS 9.x
+		},
+		'16.x': {
+			'7.x': true,        // watchOS 7.x
+			'8.x': true,        // watchOS 8.x
+			'9.x': true			// watchOS 9.x
+		}
 	}
 };
 
