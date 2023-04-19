@@ -38,8 +38,8 @@
     "bplist-parser": "0.3.2",
     "debug": "^4.3.4",
     "mkdirp": "0.5.1",
-    "node-appc": "^1.1.6",
-    "node-ios-device": "^1.10.0"
+    "node-appc": "1.1.6",
+    "node-ios-device": "1.11.0"
   },
   "devDependencies": {
     "mocha": "^8.2.0",
