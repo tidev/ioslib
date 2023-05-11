@@ -34,7 +34,7 @@
     "appcd-subprocess": "^5.0.1",
     "appcd-util": "^3.1.1",
     "cli-kit": "^1.9.2",
-    "node-forge": "^0.10.0",
+    "node-forge": "^1.3.0",
     "node-ios-device": "^3.1.1",
     "promise-limit": "^2.7.0",
     "semver": "^7.3.4",
