@@ -1,5 +1,6 @@
 import { run } from 'appcd-subprocess';
 import { sleep } from 'appcd-util';
+import { spawnSync } from 'child_process';
 
 /**
  * Wrapper around executing the `simctl` utility that ships with Xcode.
@@ -50,6 +51,21 @@ export default class Simctl {
 
 				return json;
 			});
+	}
+
+	/**
+	 * Lists all simulator runtimes.
+	 *
+	 * @returns {Object}
+	 * @access public
+	 */
+	listRuntimes() {
+		const { stdout } = spawnSync(this.bin, [ 'list', 'devices', '--json' ]);
+		// we trim off everything before the first '{' just in case simctl outputs some
+		// garbage
+		const output = stdout.toString();
+		const json = JSON.parse(output.substring(output.indexOf('{')));
+		return json.devices;
 	}
 
 	/**

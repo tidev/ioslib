@@ -275,38 +275,14 @@ export class Xcode {
 		}
 
 		// runtimes
-		const runtimesDir = path.join(dir, 'Runtimes');
-		if (isDir(runtimesDir)) {
-			// regex to extract the version from the runtime name
-			const runtimeNameRegExp = /\s(\d+(?:\.\d+(?:\.\d+)?)?)$/;
-
-			for (const name of fs.readdirSync(runtimesDir)) {
-				try {
-					let info = plist.readFileSync(path.join(runtimesDir, name, 'Contents/Info.plist'));
-					const runtime = {
-						name: info.CFBundleName,
-						version: null
-					};
-					const id = info.CFBundleIdentifier;
-					const m = info.CFBundleName.match(runtimeNameRegExp);
-					if (m) {
-						runtime.version = m[1];
-					}
-
-					try {
-						info = plist.readFileSync(path.join(runtimesDir, name, 'Contents/Resources/profile.plist'));
-						if (!runtime.version || info.defaultVersionString.startsWith(runtime.version)) {
-							runtime.version = info.defaultVersionString;
-						}
-					} catch (e) {
-						// squelch
-					}
-
-					this.simRuntimes[id] = runtime;
-				} catch (e) {
-					// squelch
-				}
-			}
+		const runtimes = this.simctl.listRuntimes();
+		for (const id of Object.keys(runtimes)) {
+			const [ _, platform, rawVersion ] = id.match(/\.SimRuntime\.(.*?)-(.*)$/);
+			const version = rawVersion.replace(/-/g, '.');
+			this.simRuntimes[id] = {
+				name: `${platform} ${version}`,
+				version: version
+			};
 		}
 	}
 }
