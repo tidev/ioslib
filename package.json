@@ -39,7 +39,7 @@
     "debug": "^4.3.4",
     "mkdirp": "0.5.1",
     "node-appc": "1.1.6",
-    "node-ios-device": "1.11.0"
+    "node-ios-device": "1.12.0"
   },
   "devDependencies": {
     "mocha": "^8.2.0",
