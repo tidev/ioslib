@@ -34,7 +34,7 @@ exports.findValidDeviceCertProfileCombos = findValidDeviceCertProfileCombos;
  * @param {Boolean} [options.bypassCache=false] - When true, re-detects the all iOS information.
  * @param {String} [options.minIosVersion] - The minimum iOS SDK to detect.
  * @param {String} [options.minWatchosVersion] - The minimum WatchOS SDK to detect.
- * @param {String} [options.profileDir=~/Library/MobileDevice/Provisioning Profiles] - The path to search for provisioning profiles.
+ * @param {String} [options.profileDir=~/Library/Developer/Xcode/UserData/Provisioning Profiles] - The path to search for provisioning profiles.
  * @param {String} [options.security] - Path to the <code>security</code> executable
  * @param {String} [options.supportedVersions] - A string with a version number or range to check if an Xcode install is supported.
  * @param {String} [options.type] - The type of emulators to return. Can be either "iphone" or "ipad". Defaults to all types.
