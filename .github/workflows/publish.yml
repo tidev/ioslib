@@ -1,7 +1,7 @@
 name: Publish
 on:
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   publish:
@@ -10,14 +10,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      uses: actions/checkout@v4
 
     - name: Setup node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version: 20
         registry-url: 'https://registry.npmjs.org'
 
     - name: Install dependencies
@@ -26,6 +24,5 @@ jobs:
 
     - name: Publish to npm
       env:
-        GH_TOKEN: ${{ github.token }}
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npm publish
+      run: npm publish --tag ${{ github.event.release.prerelease && 'next' || 'latest' }}

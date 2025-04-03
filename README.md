@@ -1,32 +1,16 @@
 # iOS Utility Library
 
 > This is a library of utilities for dealing programmatically with iOS applications,
-used namely for tools like [Hyperloop](https://github.com/appcelerator/hyperloop)
-and [Titanium](https://github.com/appcelerator/titanium).
+used namely for tools like [Hyperloop](https://github.com/tidev/hyperloop)
+and [Titanium SDK](https://github.com/tidev/titanium-sdk).
 
 ioslib supports Xcode 6 and newer.
-
-[![Build Status](https://travis-ci.org/appcelerator/ioslib.svg?branch=master)](https://travis-ci.org/appcelerator/ioslib)
-[![Dependency Status](https://david-dm.org/appcelerator/ioslib.svg)](https://david-dm.org/appcelerator/ioslib)
-[![devDependency Status](https://david-dm.org/appcelerator/ioslib/dev-status.svg)](https://david-dm.org/appcelerator/ioslib#info=devDependencies)
-[![NPM version](https://badge.fury.io/js/ioslib.svg)](http://badge.fury.io/js/ioslib)
-
-[![NPM](https://nodei.co/npm-dl/ioslib.png)](https://nodei.co/npm/ioslib/)
-
-## Prerequisites
-
-This library current depends on [node-ios-device](https://github.com/appcelerator/node-ios-device)
-which supports Node.js 0.10 and Node 4.x through 8.x.
 
 ## Installation
 
 From NPM:
 
 	npm install ioslib
-
-From GitHub:
-
-	npm install git://github.com/appcelerator/ioslib.git
 
 ## Examples
 
@@ -210,45 +194,32 @@ npm run-script test-simulator
 npm run-script test-xcode
 ```
 
-## Known Issues
-
-Simulator tests fail due to issue with NSLog() calls not properly being logged
-and thus we don't know when tests are done. The result is the tests timeout.
-
-## Reporting Bugs or Submitting Fixes
-
-If you run into problems, and trust us, there are likely plenty of them at this
-point -- please create an [Issue](https://github.com/appcelerator/ioslib/issues)
-or, even better, send us a pull request.
-
 ## Contributing
 
-ioslib is an open source project. ioslib wouldn't be where it is now without
-contributions by the community. Please consider forking ioslib to improve,
-enhance or fix issues. If you feel like the community will benefit from your
-fork, please open a pull request.
+Interested in contributing? There are several ways you can help contribute to this project.
 
-To protect the interests of the ioslib contributors, Appcelerator, customers
-and end users we require contributors to sign a Contributors License Agreement
-(CLA) before we pull the changes into the main repository. Our CLA is simple and
-straightforward - it requires that the contributions you make to any
-Appcelerator open source project are properly licensed and that you have the
-legal authority to make those changes. This helps us significantly reduce future
-legal risk for everyone involved. It is easy, helps everyone, takes only a few
-minutes, and only needs to be completed once.
+### New Features, Improvements, Bug Fixes, & Documentation
 
-[You can digitally sign the CLA](http://bit.ly/app_cla) online. Please indicate
-your email address in your first pull request so that we can make sure that will
-locate your CLA.  Once you've submitted it, you no longer need to send one for
-subsequent submissions.
+Source code contributions are always welcome! Before we can accept your pull request, you must sign a Contributor License Agreement (CLA). Please visit https://tidev.io/contribute for more information.
 
-## Contributors
+### Donations
 
-The original source and design for this project was developed by
-[Jeff Haynie](http://github.com/jhaynie) ([@jhaynie](http://twitter.com/jhaynie)).
+Please consider supporting this project by making a charitable [donation](https://tidev.io/donate). The money you donate goes to compensate the skilled engineeers and maintainers that keep this project going.
+
+### Code of Conduct
+
+TiDev wants to provide a safe and welcoming community for everyone to participate. Please see our [Code of Conduct](https://tidev.io/code-of-conduct) that applies to all contributors.
+
+## Security
+
+If you find a security related issue, please send an email to [security@tidev.io](mailto:security@tidev.io) instead of publicly creating a ticket.
+
+## Stay Connected
+
+For the latest information, please find us on Twitter: [Titanium SDK](https://twitter.com/titaniumsdk) and [TiDev](https://twitter.com/tidevio).
+
+Join our growing Slack community by visiting https://slack.tidev.io!
 
 ## Legal
 
-Copyright (c) 2014-2017 by [Appcelerator, Inc](http://www.appcelerator.com). All
-Rights Reserved. This project is licensed under the Apache Public License,
-version 2.  Please see details in the LICENSE file.
+Titanium is a registered trademark of TiDev Inc. All Titanium trademark and patent rights were transferred and assigned to TiDev Inc. on 4/7/2022. Please see the LEGAL information about using our trademarks, privacy policy, terms of usage and other legal information at https://tidev.io/legal.

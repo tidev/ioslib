@@ -1,0 +1,27 @@
+name: Test
+on:
+  - pull_request
+
+jobs:
+  test:
+    runs-on: macos-latest
+    name: Test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install dependencies
+       registry-url: 'https://registry.npmjs.org'
+
+    - name: Install dependencies
+      run: npm ci
+      if: steps.node-cache.outputs.cache-hit != 'true'
+
+    - name: Run tests
+      run: npm test
