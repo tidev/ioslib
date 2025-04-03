@@ -1,12 +1,12 @@
-name: Publish
+name: Test
 on:
-  release:
-    types: [ published ]
+  - pull_request
+  - push
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    name: Publish
+  test:
+    runs-on: macos-latest
+    name: Test
 
     steps:
     - name: Checkout repository
@@ -22,7 +22,5 @@ jobs:
       run: npm ci
       if: steps.node-cache.outputs.cache-hit != 'true'
 
-    - name: Publish to npm
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npm publish --tag ${{ github.event.release.prerelease && 'next' || 'latest' }}
+    - name: Run tests
+      run: npm test

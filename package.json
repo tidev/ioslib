@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "1.7.39",
+  "version": "5.0.0",
   "description": "iOS Utility Library",
   "keywords": [
     "appcelerator",
@@ -10,44 +10,28 @@
     "xcode",
     "apple"
   ],
-  "author": {
-    "name": "Appcelerator, Inc.",
-    "email": "npmjs@appcelerator.com"
-  },
-  "maintainers": [
-    {
-      "name": "Chris Barber",
-      "email": "cbarber@appcelerator.com"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/appcelerator/ioslib.git"
-  },
+  "author": "TiDev, Inc. <npm@tidev.io>",
+  "repository": "https://github.com/tidev/ioslib",
   "license": "Apache-2.0",
   "main": "./index",
-  "bugs": {
-    "url": "https://github.com/appcelerator/ioslib/issues"
-  },
+  "bugs": "https://github.com/tidev/ioslib/issues",
   "directories": {
     "lib": "./lib"
   },
   "dependencies": {
     "always-tail": "0.2.0",
-    "async": "^3.2.4",
+    "async": "^3.2.6",
     "bplist-parser": "0.3.2",
     "debug": "^4.3.4",
-    "mkdirp": "0.5.1",
-    "node-appc": "1.1.6",
+    "node-appc": "^1.1.7",
     "node-ios-device": "^1.12.1"
   },
   "devDependencies": {
     "mocha": "^8.2.0",
-    "mocha-jenkins-reporter": "^0.4.2",
     "should": "^13.2.3"
   },
   "scripts": {
-    "test": "JUNIT_REPORT_PATH=junit_report.xml mocha --require test/init --reporter mocha-jenkins-reporter --check-leaks test/",
+    "test": "mocha --require test/init --check-leaks test/",
     "test-certs": "mocha --require test/init --reporter spec --check-leaks test/test-certs",
     "test-device": "mocha --require test/init --reporter spec --check-leaks test/test-device",
     "test-env": "mocha --require test/init --reporter spec --check-leaks test/test-env",
@@ -58,6 +42,6 @@
     "test-xcode": "mocha --require test/init --reporter spec --check-leaks test/test-xcode"
   },
   "engines": {
-    "node": ">=10.13"
+    "node": ">=18"
   }
 }
