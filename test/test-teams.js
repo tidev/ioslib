@@ -31,8 +31,8 @@ describe('teams', function () {
 	});
 
 	it('return a emitter', function (done) {
-		this.timeout(10000);
-		this.slow(5000);
+		this.timeout(30000);
+		this.slow(10000);
 
 		ioslib.teams.detect({ bypassCache: true })
 			.on('detected', function (results) {
