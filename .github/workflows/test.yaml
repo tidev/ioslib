@@ -1,12 +1,24 @@
 name: Test
+
 on:
-  - pull_request
-  - push
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
+
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   test:
+    name: Test on Node.js ${{ matrix.node }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
     runs-on: macos-latest
-    name: Test
 
     steps:
     - name: Checkout repository
@@ -15,12 +27,39 @@ jobs:
     - name: Setup node
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: ${{ matrix.node }}
         registry-url: 'https://registry.npmjs.org'
 
-    - name: Install dependencies
-      run: npm ci
-      if: steps.node-cache.outputs.cache-hit != 'true'
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: latest
 
-    - name: Run tests
-      run: npm test
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-store-
+
+    - name: Install dependencies
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: pnpm install --ignore-scripts
+
+    - name: Lint
+      run: pnpm lint
+
+    - name: Build
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: pnpm build
+
+    - name: Run tests on Node.js ${{ matrix.node }}
+      run: pnpm coverage

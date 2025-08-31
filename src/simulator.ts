@@ -1524,15 +1524,15 @@ function launch(simHandleOrUDID, options, callback) {
 							return next();
 						}
 
-						var done = false,
-							args,
-							action;
+						let done = false;
+						let args;
+						let action;
 
 						// focus or hide the iOS Simulator
 						if (options.focus !== false && !options.hide && !options.autoExit) {
 							action = ['focus', 'focused'];
 							args = [
-								path.join(__dirname, 'sim_focus.scpt'),
+								path.join(__dirname, '..', 'scripts', 'sim_focus.scpt'),
 								path.basename(handle.simulator)
 							];
 
@@ -1545,7 +1545,7 @@ function launch(simHandleOrUDID, options, callback) {
 						} else if (options.hide || options.autoExit) {
 							action = ['hide', 'hidden'];
 							args = [
-								path.join(__dirname, 'sim_hide.scpt'),
+								path.join(__dirname, '..', 'scripts', 'sim_hide.scpt'),
 								path.basename(handle.simulator)
 							];
 						}

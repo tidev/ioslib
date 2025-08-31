@@ -15,7 +15,7 @@
 
 const appc = require('node-appc');
 const async = require('async');
-const debug = require('debug');
+const snooplogg = require('snooplogg');
 const __ = appc.i18n(__dirname).__;
 
 exports.activatePair = activatePair;
@@ -33,7 +33,7 @@ exports.uninstall = uninstall;
 exports.unpair = unpair;
 exports.waitUntilBooted = waitUntilBooted;
 
-const log = debug('ioslib:simctl');
+const log = snooplogg('ioslib:simctl');
 
 /**
  * Activates an existing device pair.

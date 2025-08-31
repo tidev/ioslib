@@ -2,46 +2,75 @@
   "name": "ioslib",
   "version": "5.0.0",
   "description": "iOS Utility Library",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "author": "TiDev, Inc. <npm@tidev.io>",
+  "license": "Apache-2.0",
   "keywords": [
-    "appcelerator",
     "ios",
     "iphone",
     "ipad",
     "xcode",
     "apple"
   ],
-  "author": "TiDev, Inc. <npm@tidev.io>",
-  "repository": "https://github.com/tidev/ioslib",
-  "license": "Apache-2.0",
-  "main": "./index",
-  "bugs": "https://github.com/tidev/ioslib/issues",
-  "directories": {
-    "lib": "./lib"
+  "scripts": {
+    "build": "pnpm build:bundle && pnpm rebuild",
+    "build:bundle": "rimraf dist && rollup -c rollup.config.ts --configPlugin typescript && pnpm build:types",
+    "build:types": "pnpm build:types:temp && pnpm build:types:roll && pnpm build:types:check",
+    "build:types:temp": "tsc --declaration --emitDeclarationOnly --outDir temp --project tsconfig.build.json",
+    "build:types:roll": "rollup --config rollup.dts.config.ts --configPlugin typescript && rimraf temp",
+    "build:types:check": "tsc --project tsconfig.check.json",
+    "check": "pnpm type-check && pnpm lint",
+    "clean": "node-gyp clean",
+    "coverage": "vitest --pool=forks --coverage",
+    "lint": "oxlint",
+    "prepublishOnly": "pnpm build:bundle",
+    "rebuild": "node-gyp rebuild",
+    "test": "vitest --allowOnly --pool=forks",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "always-tail": "0.2.0",
-    "async": "^3.2.6",
+    "async": "3.2.6",
     "bplist-parser": "0.3.2",
-    "debug": "^4.3.4",
-    "node-appc": "^1.1.7",
-    "node-ios-device": "^1.12.1"
+    "node-appc": "1.1.7",
+    "node-ios-device": "4.0.3",
+    "snooplogg": "6.0.1"
   },
   "devDependencies": {
-    "mocha": "^8.2.0",
-    "should": "^13.2.3"
+    "@rollup/plugin-commonjs": "28.0.6",
+    "@rollup/plugin-node-resolve": "16.0.1",
+    "@rollup/plugin-typescript": "12.1.4",
+    "@types/node": "24.3.0",
+    "@vitest/coverage-v8": "3.2.4",
+    "esbuild": "0.25.9",
+    "lefthook": "1.12.3",
+    "oxlint": "1.14.0",
+    "rimraf": "6.0.1",
+    "rollup": "4.49.0",
+    "rollup-plugin-dts": "6.2.3",
+    "rollup-plugin-esbuild": "6.2.1",
+    "tslib": "2.8.1",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
   },
-  "scripts": {
-    "test": "mocha --require test/init --check-leaks test/",
-    "test-certs": "mocha --require test/init --reporter spec --check-leaks test/test-certs",
-    "test-device": "mocha --require test/init --reporter spec --check-leaks test/test-device",
-    "test-env": "mocha --require test/init --reporter spec --check-leaks test/test-env",
-    "test-ioslib": "mocha --require test/init --reporter spec --check-leaks test/test-ioslib",
-    "test-provisioning": "mocha --require test/init --reporter spec --check-leaks test/test-provisioning",
-    "test-simulator": "mocha --require test/init --reporter spec --check-leaks test/test-simulator",
-    "test-teams": "mocha --require test/init --reporter spec --check-leaks test/test-teams",
-    "test-xcode": "mocha --require test/init --reporter spec --check-leaks test/test-xcode"
-  },
+  "files": [
+    "dist",
+    "media",
+    "scripts"
+  ],
+  "homepage": "https://github.com/tidev/ioslib",
+  "bugs": "https://github.com/tidev/ioslib/issues",
+  "repository": "https://github.com/tidev/ioslib",
   "engines": {
-    "node": ">=18"
+    "node": ">=20.18.1"
   }
 }
