@@ -1,31 +1,16 @@
-/**
- * Main namespace for the ioslib.
- *
- * @copyright
- * Copyright (c) 2014-2016 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
+import async from 'async';
+import certs from './certs.js';
+import { device } from './device.js';
+import env from './env.js';
+import magik from './utilities.js';
+import provisioning from './provisioning.js';
+import simulator from './simulator.js';
+import teams from './teams.js';
+import xcode from './xcode.js';
 
-const
-	async = require('async'),
+export { certs, device, env, magik, provisioning, simulator, teams, xcode };
 
-	certs        = exports.certs        = require('./lib/certs'),
-	device       = exports.device       = require('./lib/device'),
-	env          = exports.env          = require('./lib/env'),
-	magik        = exports.magik        = require('./lib/utilities').magik,
-	provisioning = exports.provisioning = require('./lib/provisioning'),
-	simulator    = exports.simulator    = require('./lib/simulator'),
-	teams        = exports.teams        = require('./lib/teams'),
-	utilities    = exports.utilities    = require('./lib/utilities'),
-	xcode        = exports.xcode        = require('./lib/xcode');
-
-var cache;
-
-exports.detect = detect;
-exports.findValidDeviceCertProfileCombos = findValidDeviceCertProfileCombos;
+let cache;
 
 /**
  * Detects the entire iOS environment information.
@@ -42,7 +27,7 @@ exports.findValidDeviceCertProfileCombos = findValidDeviceCertProfileCombos;
  * @param {String} [options.xcodeSelect] - Path to the <code>xcode-select</code> executable
  * @param {Function} [callback(err, info)] - A function to call when all detection tasks have completed.
  */
-function detect(options, callback) {
+export function detect(options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
 		if (cache && !options.bypassCache) {
 			emitter.emit('detected', cache);
@@ -139,7 +124,7 @@ function detect(options, callback) {
  * @param {Boolean} [options.unmanagedProvisioningProfile] - When true, selects an unmanaged provisioning profile.
  * @param {Function} [callback(err, info)] - A function to call when the simulator has launched.
  */
-function findValidDeviceCertProfileCombos(options, callback) {
+export function findValidDeviceCertProfileCombos(options, callback) {
 	if (typeof options === 'function') {
 		callback = options;
 		options = {};

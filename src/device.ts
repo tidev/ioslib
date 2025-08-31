@@ -1,25 +1,6 @@
-/**
- * Detects iOS developer and distribution certificates and the WWDC certificate.
- *
- * @module device
- *
- * @copyright
- * Copyright (c) 2014-2016 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
-
-'use strict';
-
-const appc = require('node-appc');
-const async = require('async');
-const magik = require('./utilities').magik;
-const fs = require('fs');
-const iosDevice = require('node-ios-device');
-const path = require('path');
-const __ = appc.i18n(__dirname).__;
+import fs from 'node:fs';
+import iosDevice from 'node-ios-device';
+import { magik } from './utilities.js';
 
 var cache;
 

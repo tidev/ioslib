@@ -1,37 +1,14 @@
-/**
- * Utility functions used by ioslib.
- *
- * @module utilities
- *
- * @copyright
- * Copyright (c) 2015-2016 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
-
-'use strict';
-
-const appc = require('node-appc');
-const bplist = require('bplist-parser');
-const crypto = require('crypto');
-const EventEmitter = require('events').EventEmitter;
-const fs = require('fs');
-const __ = appc.i18n(__dirname).__;
-const util = require('util');
-
-exports.Handle = Handle;
-exports.magik = magik;
-exports.hash = hash;
-exports.readPlist = readPlist;
+import appc from 'node-appc';
+import bplist from 'bplist-parser';
+import crypto from 'node:crypto';
+import { EventEmitter } from 'node:events';
+import { existsSync, readFileSync } from 'node:fs';
 
 /**
  * Exposes both an event emitter API and a `stop()` method for canceling long
  * running functions such as `trackDevices()` and `log()`.
  */
-function Handle() {}
-util.inherits(Handle, EventEmitter);
+export class Handle extends EventEmitter {}
 
 /**
  * Creates an event emitting handle, validates that the platform is OS X,
@@ -44,7 +21,7 @@ util.inherits(Handle, EventEmitter);
  *
  * @returns {Handle}
  */
-function magik(options, callback, body) {
+export function magik(options, callback, body) {
     var handle = new Handle;
     handle.on('error', function () {});
 
@@ -76,7 +53,7 @@ function magik(options, callback, body) {
  *
  * @returns {String} The MD5 hash.
  */
-function hash(str) {
+export function hash(str) {
 	return crypto.createHash('md5').update(str || '').digest('hex');
 };
 
@@ -87,10 +64,10 @@ function hash(str) {
  *
  * @returns {Object|null} - Returns a JSON representation of the plist file or null if the file does not exist or unable to parse.
  */
-function readPlist(file) {
+export function readPlist(file) {
 	try {
-		if (fs.existsSync(file)) {
-			var buffer = fs.readFileSync(file),
+		if (existsSync(file)) {
+			var buffer = readFileSync(file),
 				header = buffer.slice(0, 'bplist'.length).toString('utf8');
 			if (header === 'bplist') {
 				return bplist.parseBuffer(buffer)[0];
@@ -98,6 +75,6 @@ function readPlist(file) {
 				return (new appc.plist()).parse(buffer.toString());
 			}
 		}
-	} catch (ex) {}
+	} catch {}
 	return null;
 }

@@ -1,25 +1,13 @@
 /**
- * Detects iOS developer and distribution certificates and the WWDC certificate.
- *
- * @module certs
- *
- * @copyright
- * Copyright (c) 2014-2016 by Appcelerator, Inc. All Rights Reserved.
- *
+ * This file contains code from the forge project.
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  * {@link https://github.com/digitalbazaar/forge}
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
  */
 
-const
-	appc = require('node-appc'),
-	async = require('async'),
-	env = require('./env'),
-	magik = require('./utilities').magik,
-	__ = appc.i18n(__dirname).__;
+import appc from 'node-appc';
+import async from 'async';
+import env from './env.js';
+import { magik } from './utilities.js';
 
 const certRegExp = /^(?:((?:Apple|iOS) Development)|((?:iOS|Apple|iPhone) Distribution)): (.+)$/;
 
@@ -207,8 +195,8 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_WWDR_CERT_FOUND',
 			type: 'error',
-			message: __('Apple’s World Wide Developer Relations (WWDR) intermediate certificate is not installed.') + '\n' +
-				__('This will prevent you from building apps for iOS devices or package for distribution.')
+			message: `Apple's World Wide Developer Relations (WWDR) intermediate certificate is not installed.
+This will prevent you from building apps for iOS devices or package for distribution.`
 		});
 	}
 
@@ -217,7 +205,7 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_KEYCHAINS_FOUND',
 			type: 'warning',
-			message: __('Unable to find any keychains found.')
+			message: 'Unable to find any keychains found.'
 		});
 	}
 
@@ -238,8 +226,8 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_VALID_DEV_CERTS_FOUND',
 			type: 'warning',
-			message: __('Unable to find any valid iOS developer certificates.') + '\n' +
-				__('This will prevent you from building apps for iOS devices.')
+			message: `Unable to find any valid iOS developer certificates.
+This will prevent you from building apps for iOS devices.`
 		});
 	}
 
@@ -247,8 +235,8 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_VALID_DIST_CERTS_FOUND',
 			type: 'warning',
-			message: __('Unable to find any valid iOS production distribution certificates.') + '\n' +
-				__('This will prevent you from packaging apps for distribution.')
+			message: `Unable to find any valid iOS production distribution certificates.
+This will prevent you from packaging apps for distribution.`
 		});
 	}
 }
@@ -800,11 +788,13 @@ function pem2cert(pem) {
 	var msg = decodePem(pem)[0];
 
 	if (msg.type !== 'CERTIFICATE' && msg.type !== 'X509 CERTIFICATE' && msg.type !== 'TRUSTED CERTIFICATE') {
-		throw new Error(__('Could not convert certificate from PEM; PEM header type is "%s", but must be "CERTIFICATE", "X509 CERTIFICATE", or "TRUSTED CERTIFICATE".', msg.type));
+		throw new Error(`Could not convert certificate from PEM; PEM header type is "${
+			msg.type
+		}", but must be "CERTIFICATE", "X509 CERTIFICATE", or "TRUSTED CERTIFICATE".`);
 	}
 
 	if (msg.procType && msg.procType.type === 'ENCRYPTED') {
-		throw new Error(__('Could not convert certificate from PEM; PEM is encrypted.'));
+		throw new Error('Could not convert certificate from PEM; PEM is encrypted.');
 	}
 
 	return asn2cert(der2asn(new ByteStringBuffer(msg.body)));
@@ -862,9 +852,9 @@ function decodePem(str) {
 				// Proc-Type must be the first header
 				if (!msg.procType) {
 					if (header.name !== 'Proc-Type') {
-						throw new Error(__('Invalid PEM formatted message. The first encapsulated header must be "Proc-Type".'));
+						throw new Error('Invalid PEM formatted message. The first encapsulated header must be "Proc-Type".');
 					} else if (header.values.length !== 2) {
-						throw new Error(__('Invalid PEM formatted message. The "Proc-Type" header must have two subfields.'));
+						throw new Error('Invalid PEM formatted message. The "Proc-Type" header must have two subfields.');
 					}
 					msg.procType = { version: values[0], type: values[1] };
 
@@ -875,7 +865,7 @@ function decodePem(str) {
 				// special-case DEK-Info
 				} else if (!msg.dekInfo && header.name === 'DEK-Info') {
 					if (header.values.length === 0) {
-						throw new Error(__('Invalid PEM formatted message. The "DEK-Info" header must have at least one subfield.'));
+						throw new Error('Invalid PEM formatted message. The "DEK-Info" header must have at least one subfield.');
 					}
 					msg.dekInfo = { algorithm: values[0], parameters: values[1] || null };
 				} else {
@@ -885,12 +875,12 @@ function decodePem(str) {
 		}
 
 		if (msg.procType === 'ENCRYPTED' && !msg.dekInfo) {
-			throw new Error(__('Invalid PEM formatted message. The "DEK-Info" header must be present if "Proc-Type" is "ENCRYPTED".'));
+			throw new Error('Invalid PEM formatted message. The "DEK-Info" header must be present if "Proc-Type" is "ENCRYPTED".');
 		}
 	}
 
 	if (rval.length === 0) {
-		throw new Error(__('Invalid PEM formatted message.'));
+		throw new Error('Invalid PEM formatted message.');
 	}
 
 	return rval;
@@ -956,7 +946,7 @@ ByteStringBuffer.prototype.clear = function clear() {
 function der2asn(bytes) {
 	// minimum length for ASN.1 DER structure is 2
 	if (bytes.length() < 2) {
-		throw new Error(__('Too few bytes to parse DER; expected at least 2, got %d', bytes.length()));
+		throw new Error(`Too few bytes to parse DER; expected at least 2, got ${bytes.length()}`);
 	}
 
 	// get the first byte
@@ -988,7 +978,7 @@ function der2asn(bytes) {
 
 	// ensure there are enough bytes to get the value
 	if (bytes.length() < length) {
-		throw new Error(__('Too few bytes to read ASN.1 value. %d < %d', bytes.length(), length));
+		throw new Error(`Too few bytes to read ASN.1 value. ${bytes.length()} < ${length}`);
 	}
 
 	// determine if the value is composed of other ASN.1 objects (if its
@@ -1052,7 +1042,7 @@ function der2asn(bytes) {
 	    // TODO: do DER to OID conversion and vice-versa in .toDer?
 
 		if (length === undefined) {
-			throw new Error(__('Non-constructed ASN.1 object of indefinite length.'));
+			throw new Error('Non-constructed ASN.1 object of indefinite length.');
 		}
 
 		if (type === asn1Type.BMPSTRING) {
@@ -1381,11 +1371,11 @@ function pkiRDNAttributesAsArray(rdn, md) {
 
 function asn2cert(obj) {
 	// validate certificate and capture data
-	var capture = {},
-		errors = [];
+	let capture = {};
+	let errors = [];
 
 	if (!asn1validate(obj, x509CertificateValidator, capture, errors)) {
-		var error = new Error(__('Cannot read X.509 certificate. ASN.1 object is not an X509v3 Certificate.'));
+		const error = new Error('Cannot read X.509 certificate. ASN.1 object is not an X509v3 Certificate.');
 		error.errors = errors;
 		throw error;
 	}
@@ -1394,8 +1384,8 @@ function asn2cert(obj) {
 		if (typeof options === 'string') {
 			options = { shortName: options };
 		}
-		var rval = null,
-			attr;
+		let rval = null;
+		let attr;
 		for (var i = 0; rval === null && i < obj.attributes.length; ++i) {
 			attr = obj.attributes[i];
 			if (options.type && options.type === attr.type) {
@@ -1430,10 +1420,10 @@ function asn2cert(obj) {
 		validity.push(asn1generalizedTimeToDate(capture.certValidity4GeneralizedTime));
 	}
 	if (validity.length > 2) {
-		throw new Error(__('Cannot read notBefore/notAfter validity times; more than two times were provided in the certificate.'));
+		throw new Error('Cannot read notBefore/notAfter validity times; more than two times were provided in the certificate.');
 	}
 	if (validity.length < 2) {
-		throw new Error(__('Cannot read notBefore/notAfter validity times; they were not provided as either UTCTime or GeneralizedTime.'));
+		throw new Error('Cannot read notBefore/notAfter validity times; they were not provided as either UTCTime or GeneralizedTime.');
 	}
 
 	return {
