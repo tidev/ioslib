@@ -1,21 +1,7 @@
-/**
- * Detects the Apple developer teams.
- *
- * @module teams
- *
- * @copyright
- * Copyright (c) 2014-2016 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
-
-const
-	async = require('async'),
-	magik = require('./utilities').magik,
-	provisioning = require('./provisioning'),
-	xcode = require('./xcode');
+import async from 'async';
+import { magik } from './utilities.js';
+import * as provisioning from './provisioning.js';
+import * as xcode from './xcode.js';
 
 /**
  * Fired when the developer profiles have been updated.
@@ -40,7 +26,7 @@ const
  *
  * @returns {Handle}
  */
-exports.detect = function detect(options, callback) {
+export function detect(options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
 		async.parallel({
 			provisioning: function (next) {

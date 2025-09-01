@@ -28,7 +28,7 @@ function build(app, provisioningProfileUUID, certName, defs, done){
 		}
 
 		if (env.selectedXcode === null) {
-			return done(new Error(__('No selected Xcode')));
+			return done(new Error('No selected Xcode'));
 		}
 
 		var cmd = [

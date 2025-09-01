@@ -1,32 +1,15 @@
-/**
- * Detects provisioning profiles.
- *
- * @module provisioning
- *
- * @copyright
- * Copyright (c) 2014-2016 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- *
- * @requires certs
- */
+import appc from 'node-appc';
+import { magik } from './utilities.js';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const
-	appc = require('node-appc'),
-	certs = require('./certs'),
-	magik = require('./utilities').magik,
-	fs = require('fs'),
-	path = require('path'),
-	__ = appc.i18n(__dirname).__,
-	provisioningProfilesDirectories = [
-		'~/Library/Developer/Xcode/UserData/Provisioning Profiles',
-		'~/Library/MobileDevice/Provisioning Profiles'
-	]
+const provisioningProfilesDirectories = [
+	'~/Library/Developer/Xcode/UserData/Provisioning Profiles',
+	'~/Library/MobileDevice/Provisioning Profiles'
+];
 
-var cache = null,
-	watchers = {};
+let cache = null;
+let watchers = {};
 
 /**
  * Fired when the provisioning profiles have been detected or updated.
@@ -39,11 +22,6 @@ var cache = null,
  * @event module:provisioning#error
  * @type {Error}
  */
-
-exports.detect = detect;
-exports.find = find;
-exports.watch = watch;
-exports.unwatch = unwatch;
 
 /**
  * Detects installed provisioning profiles.
@@ -61,7 +39,7 @@ exports.unwatch = unwatch;
  *
  * @returns {Handle}
  */
-function detect(options, callback) {
+export function detect(options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
 		var files = {},
 			validOnly = options.validOnly === undefined || options.validOnly === true,
@@ -97,9 +75,9 @@ function detect(options, callback) {
 								// if it's not a provisioning profile, we don't care about it
 								return;
 							}
-	
+
 							var file = path.join(profileDir, filename);
-	
+
 							if (event === 'rename') {
 								if (files[file]) {
 									if (fs.existsSync(file)) {
@@ -117,9 +95,9 @@ function detect(options, callback) {
 								// updated
 								parseProfile(file);
 							}
-	
+
 							clearTimeout(throttleTimer);
-	
+
 							throttleTimer = setTimeout(function () {
 								detectIssues();
 								emitter.emit('detected', results);
@@ -128,7 +106,7 @@ function detect(options, callback) {
 						count: 0
 					};
 				}
-	
+
 				watchers[profileDir].count++;
 			}
 		}
@@ -145,8 +123,8 @@ function detect(options, callback) {
 				results.issues.push({
 					id: 'IOS_NO_VALID_DEVELOPMENT_PROVISIONING_PROFILES',
 					type: 'warning',
-					message: __('Unable to find any valid iOS development provisioning profiles.') + '\n' +
-						__('This will prevent you from building apps for testing on iOS devices.')
+					message: `Unable to find any valid iOS development provisioning profiles.
+This will prevent you from building apps for testing on iOS devices.`
 				});
 			}
 
@@ -154,8 +132,8 @@ function detect(options, callback) {
 				results.issues.push({
 					id: 'IOS_NO_VALID_ADHOC_PROVISIONING_PROFILES',
 					type: 'warning',
-					message: __('Unable to find any valid iOS adhoc provisioning profiles.') + '\n' +
-						__('This will prevent you from packaging apps for adhoc distribution.')
+					message: `Unable to find any valid iOS adhoc provisioning profiles.
+This will prevent you from packaging apps for adhoc distribution.`
 				});
 			}
 
@@ -163,8 +141,8 @@ function detect(options, callback) {
 				results.issues.push({
 					id: 'IOS_NO_VALID_DISTRIBUTION_PROVISIONING_PROFILES',
 					type: 'warning',
-					message: __('Unable to find any valid iOS distribution provisioning profiles.') + '\n' +
-						__('This will prevent you from packaging apps for AppStore distribution.')
+					message: `Unable to find any valid iOS distribution provisioning profiles.
+This will prevent you from packaging apps for AppStore distribution.`
 				});
 			}
 		}
@@ -213,7 +191,7 @@ function detect(options, callback) {
 				if (plist.ExpirationDate) {
 					expired = new Date(plist.ExpirationDate) < new Date;
 				}
-			} catch (e) {}
+			} catch {}
 
 			if (!expired) {
 				valid[dest]++;
@@ -274,7 +252,7 @@ function detect(options, callback) {
  * @param {Boolean} [options.validOnly=true] - When true, only returns valid profiles.
  * @param {Function} callback(err, results) - A function to call with an array of matching provisioning profiles.
  */
-function find(options, callback) {
+export function find(options, callback) {
 	if (typeof options === 'function') {
 		callback = options;
 		options = {};
@@ -288,7 +266,7 @@ function find(options, callback) {
 
 	options.validOnly = options.validOnly === undefined || options.validOnly === true;
 
-	exports.detect(options, function (err, results) {
+	detect(options, function (err, results) {
 		if (err) {
 			return callback(err);
 		} else {
@@ -341,7 +319,7 @@ function find(options, callback) {
  *
  * @returns {Function} A function that unwatches changes.
  */
-function watch(options, callback) {
+export function watch(options, callback) {
 	if (typeof options === 'function') {
 		callback = options;
 		options = {};
@@ -352,7 +330,7 @@ function watch(options, callback) {
 	options.watch = true;
 	options.bypassCache = true;
 
-	exports.detect(options, callback);
+	detect(options, callback);
 
 	return function () {
 		unwatch(options.profileDir);
@@ -364,7 +342,7 @@ function watch(options, callback) {
  *
  * @param {String} [profileDir=~/Library/Developer/Xcode/UserData/Provisioning Profiles] - The path to the provisioning profile directory.
  */
-function unwatch(profileDir) {
+export function unwatch(profileDir) {
 	var profileDirs = getExistingProvisioningProfileDirectories(profileDir);
 
 	for (const profileDir of profileDirs) {
@@ -379,12 +357,12 @@ function unwatch(profileDir) {
 
 /**
  * Searches for existing provisioning profile directories.
- * 
+ *
  * @throws
  * @param {string | undefined} profileDir A custom directory set by the developer.
  * @returns {string[]} The directories that exist on the filesystem.
  */
-function getExistingProvisioningProfileDirectories(profileDir) {
+export function getExistingProvisioningProfileDirectories(profileDir) {
 	const profileDirectories = [];
 
 	for (const directory of [profileDir, ...provisioningProfilesDirectories]) {
@@ -393,7 +371,7 @@ function getExistingProvisioningProfileDirectories(profileDir) {
 		}
 
 		const resolvedDirectory = appc.fs.resolvePath(directory);
-		
+
 		if (fs.existsSync(resolvedDirectory)) {
 			profileDirectories.push(resolvedDirectory);
 		}

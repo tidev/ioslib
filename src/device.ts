@@ -2,10 +2,7 @@ import fs from 'node:fs';
 import iosDevice from 'node-ios-device';
 import { magik } from './utilities.js';
 
-var cache;
-
-exports.detect = detect;
-exports.install = install;
+let cache;
 
 /**
  * Detects connected iOS devices.
@@ -19,7 +16,7 @@ exports.install = install;
  *
  * @returns {Handle}
  */
-function detect(options, callback) {
+export function detect(options, callback) {
 	return magik(options, callback, function (handle, options, callback) {
 		if (cache && !options.bypassCache) {
 			var dupe = JSON.parse(JSON.stringify(cache));
@@ -67,14 +64,14 @@ function detect(options, callback) {
  *
  * @returns {Handle}
  */
-function install(udid, appPath, options) {
+export function install(udid, appPath, options) {
 	return magik(options, null, function (handle, options) {
 		if (!appPath) {
-			return handle.emit('error', new Error(__('Missing app path argument')));
+			return handle.emit('error', new Error('Missing app path argument'));
 		}
 
 		if (!fs.existsSync(appPath)) {
-			return handle.emit('error', new Error(__('App path does not exist: ' + appPath)));
+			return handle.emit('error', new Error(`App path does not exist: ${appPath}`));
 		}
 
 		handle.stop = function () {}; // for stopping logging

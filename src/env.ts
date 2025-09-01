@@ -1,23 +1,8 @@
-/**
- * Detects the iOS development environment.
- *
- * @module env
- *
- * @copyright
- * Copyright (c) 2014-2017 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
+import appc from 'node-appc';
+import async from 'async';
+import { magik } from './utilities.js';
 
-const
-	appc = require('node-appc'),
-	async = require('async'),
-	magik = require('./utilities').magik,
-	__ = appc.i18n(__dirname).__;
-
-var cache = null;
+let cache = null;
 
 /**
  * Fired when the developer profiles have been updated.
@@ -45,7 +30,7 @@ var cache = null;
  *
  * @returns {Handle}
  */
-exports.detect = function detect(options, callback) {
+export function detect(options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
 		if (cache && !options.bypassCache) {
 			return callback(null, cache);
@@ -66,9 +51,9 @@ exports.detect = function detect(options, callback) {
 						results.issues.push({
 							id: 'IOS_SECURITY_EXECUTABLE_NOT_FOUND',
 							type: 'error',
-							message: __("Unable to find the 'security' executable.") + '\n'
-								+ __('Please verify your system path.') + '\n'
-								+ __("This program is distributed with macOS and if it's missing, you'll have to restore it from a backup or another computer, or reinstall macOS.")
+							message: `Unable to find the 'security' executable.
+Please verify your system path.
+This program is distributed with macOS and if it's missing, you'll have to restore it from a backup or another computer, or reinstall macOS.`
 						});
 					} else {
 						results.executables.security = result;
@@ -83,8 +68,8 @@ exports.detect = function detect(options, callback) {
 						results.issues.push({
 							id: 'IOS_XCODE_SELECT_EXECUTABLE_NOT_FOUND',
 							type: 'error',
-							message: __("Unable to find the 'xcode-select' executable.") + '\n'
-								+ __('Perhaps Xcode is not installed, your Xcode installation is corrupt, or your system path is incomplete.')
+							message: `Unable to find the 'xcode-select' executable.
+Perhaps Xcode is not installed, your Xcode installation is corrupt, or your system path is incomplete.`
 						});
 					} else {
 						results.executables.xcodeSelect = result;

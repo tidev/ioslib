@@ -1,37 +1,6 @@
-/**
- * A wrapper around Xcode's `simctl` command line program.
- *
- * @module simctl
- *
- * @copyright
- * Copyright (c) 2016-2017 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
-
-'use strict';
-
-const appc = require('node-appc');
-const async = require('async');
-const snooplogg = require('snooplogg');
-const __ = appc.i18n(__dirname).__;
-
-exports.activatePair = activatePair;
-exports.boot = boot;
-exports.create = create;
-exports.getSim = getSim;
-exports.install = install;
-exports.launch = launch;
-exports.list = list;
-exports.listDevices = listDevices;
-exports.pair = pair;
-exports.pairAndActivate = pairAndActivate;
-exports.shutdown = shutdown;
-exports.uninstall = uninstall;
-exports.unpair = unpair;
-exports.waitUntilBooted = waitUntilBooted;
+import appc from 'node-appc';
+import async from 'async';
+import snooplogg from 'snooplogg';
 
 const log = snooplogg('ioslib:simctl');
 
@@ -43,20 +12,20 @@ const log = snooplogg('ioslib:simctl');
  * @param {String} params.udid - The pair udid to activate.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function activatePair(params, callback) {
+export function activatePair(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 
 	trySimctl(params, ['pair_activate', params.udid], function (err) {
 		// code 37 means the pair is already active
-		callback(err && err.code !== 37 ? new Error(__('Failed to activate pair: %s', err.message)) : null);
+		callback(err && err.code !== 37 ? new Error(`Failed to activate pair: ${err.message}`) : null);
 	});
 }
 
@@ -72,21 +41,21 @@ function activatePair(params, callback) {
  * @param {String} params.simctl - The path to the `simctl` executable.
  * @param {Function} callback(err, udid) - A function to call when finished.
  */
-function create(params, callback) {
+export function create(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.name) {
-		return callback(new Error(__('Missing "name" param')));
+		return callback(new Error('Missing "name" param'));
 	}
 	if (!params.deviceType) {
-		return callback(new Error(__('Missing "deviceType" param')));
+		return callback(new Error('Missing "deviceType" param'));
 	}
 	if (!params.runtime) {
-		return callback(new Error(__('Missing "runtime" param')));
+		return callback(new Error('Missing "runtime" param'));
 	}
 
 	trySimctl(params, ['create', params.name, params.deviceType, params.runtime], function (err, output) {
@@ -106,18 +75,18 @@ function create(params, callback) {
  * @param {String} params.udid - The simulator udid to install the app on.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function install(params, callback) {
+export function install(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 	if (!params.appPath) {
-		return callback(new Error(__('Missing "appPath" param')));
+		return callback(new Error('Missing "appPath" param'));
 	}
 
 	trySimctl(params, ['install', params.udid, params.appPath], callback);
@@ -132,18 +101,18 @@ function install(params, callback) {
  * @param {String} params.udid - The simulator udid to launch the app on.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function launch(params, callback) {
+export function launch(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 	if (!params.appId) {
-		return callback(new Error(__('Missing "appId" param')));
+		return callback(new Error('Missing "appId" param'));
 	}
 
 	trySimctl(params, ['launch', '--terminate-running-process', params.udid, params.appId], callback);
@@ -157,15 +126,15 @@ function launch(params, callback) {
  * @param {String} params.udid - The simulator udid to launch the app on.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function boot(params, callback) {
+export function boot(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 
 	trySimctl(params, ['boot', params.udid], callback);
@@ -179,12 +148,12 @@ function boot(params, callback) {
  * @param {Number} [params.tries] - The max number of `simctl` tries.
  * @param {Function} callback(err, info) - A function to call when finished.
  */
-function list(params, callback) {
+export function list(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 
 	var done = false;
@@ -215,7 +184,7 @@ function list(params, callback) {
 				}
 
 				if (!json) {
-					return cb(new Error(__('simctl list: json is null')));
+					return cb(new Error('simctl list: json is null'));
 				}
 
 				// convert the pairs from <pair udid> -> (ios sim + watch sim) to <ios sim> -> <watch sims> -> <pair udid>
@@ -239,7 +208,7 @@ function list(params, callback) {
 			}
 
 			if (!done) {
-				return callback(new Error(__('simctl list failed after %s tries', maxTries)));
+				return callback(new Error(`simctl list failed after ${maxTries} tries`));
 			}
 
 			callback(null, info);
@@ -256,12 +225,12 @@ function list(params, callback) {
  * @param {Number} [params.tries] - The max number of `simctl` tries.
  * @param {Function} callback(err, info) - A function to call when finished.
  */
-function listDevices(params, callback) {
+export function listDevices(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 
 	var done = false;
@@ -292,7 +261,7 @@ function listDevices(params, callback) {
 				}
 
 				if (!json) {
-					return cb(new Error(__('simctl list devices: json is null')));
+					return cb(new Error('simctl list devices: json is null'));
 				}
 
 				done = true;
@@ -305,7 +274,7 @@ function listDevices(params, callback) {
 			}
 
 			if (!done) {
-				return callback(new Error(__('simctl list devices failed after %s tries', maxTries)));
+				return callback(new Error(`simctl list devices failed after ${maxTries} tries`));
 			}
 
 			callback(null, info);
@@ -323,18 +292,18 @@ function listDevices(params, callback) {
  * @param {String} params.watchSimUdid - The udid of the watchOS Simulator.
  * @param {Function} callback(err, udid) - A function to call when finished.
  */
-function pair(params, callback) {
+export function pair(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.simUdid) {
-		return callback(new Error(__('Missing "simUdid" param')));
+		return callback(new Error('Missing "simUdid" param'));
 	}
 	if (!params.watchSimUdid) {
-		return callback(new Error(__('Missing "watchSimUdid" param')));
+		return callback(new Error('Missing "watchSimUdid" param'));
 	}
 
 	trySimctl(params, ['pair', params.watchSimUdid, params.simUdid], function (err, output) {
@@ -355,12 +324,16 @@ function pair(params, callback) {
 			}
 
 			if (!info.iosSimToWatchSimToPair[params.simUdid]) {
-				return callback(new Error(__('iOS Simulator %s doesn\'t have any paired watchOS Simulators!', params.simUdid)));
+				return callback(new Error(`iOS Simulator ${
+					params.simUdid
+				} doesn't have any paired watchOS Simulators!`));
 			}
 
 			var watchSim = info.iosSimToWatchSimToPair[params.simUdid][params.watchSimUdid];
 			if (!watchSim) {
-				return callback(new Error(__('Failed to find device pair for iOS Simulator %s and watchOS Simulator %s.', params.simUdid, params.watchSimUdid)));
+				return callback(new Error(`Failed to find device pair for iOS Simulator ${
+					params.simUdid
+				} and watchOS Simulator ${params.watchSimUdid}.`));
 			}
 
 			var udid = watchSim.udid;
@@ -380,7 +353,7 @@ function pair(params, callback) {
  * @param {String} params.watchSimUdid - The udid of the watchOS Simulator.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function pairAndActivate(params, callback) {
+export function pairAndActivate(params, callback) {
 	pair(params, function (err, udid) {
 		if (err) {
 			return callback(err);
@@ -399,15 +372,15 @@ function pairAndActivate(params, callback) {
  * @param {String} params.udid - The udid of the simulator to shutdown.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function shutdown(params, callback) {
+export function shutdown(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 
 	getSim(params, function (err, sim) {
@@ -416,11 +389,11 @@ function shutdown(params, callback) {
 		}
 
 		if (!sim) {
-			return callback(new Error(__('Unable to find Simulator %s', params.udid)));
+			return callback(new Error(`Unable to find Simulator ${params.udid}`));
 		}
 
 		if (sim.isAvailable === false && sim.availability !== '(available)') {
-			return callback(new Error(__('Simulator is not available')));
+			return callback(new Error('Simulator is not available'));
 		}
 
 		log('Sim state: ' + sim.state);
@@ -441,18 +414,18 @@ function shutdown(params, callback) {
  * @param {String} params.appId - The app id to uninstall.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function uninstall(params, callback) {
+export function uninstall(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 	if (!params.appId) {
-		return callback(new Error(__('Missing "appId" param')));
+		return callback(new Error('Missing "appId" param'));
 	}
 
 	trySimctl(params, ['uninstall', params.udid, params.appId], function (err) {
@@ -478,15 +451,15 @@ function uninstall(params, callback) {
  * @param {String} params.udid - The pair udid.
  * @param {Function} callback(err) - A function to call when finished.
  */
-function unpair(params, callback) {
+export function unpair(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 
 	list(params, function (err, info) {
@@ -532,15 +505,15 @@ function unpair(params, callback) {
  * @param {String} params.udid - The pair udid.
  * @param {Function} callback(err, sim) - A function to call when finished.
  */
-function getSim(params, callback) {
+export function getSim(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 
 	list(params, function (err, info) {
@@ -574,22 +547,22 @@ function getSim(params, callback) {
  * @param {String} params.udid - The pair udid.
  * @param {Function} callback(err, booted) - A function to call when finished.
  */
-function waitUntilBooted(params, callback) {
+export function waitUntilBooted(params, callback) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		return callback(new Error('Missing params'));
 	}
 	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+		return callback(new Error('Missing "simctl" param'));
 	}
 	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+		return callback(new Error('Missing "udid" param'));
 	}
 
 	var booted = false;
 	var timedOut = false;
 	var tries = 0;
 	var maxTries = params.tries || 4;
-	var timer = null;
+	var timer: NodeJS.Timeout | null = null;
 
 	log('Waiting for simulator ' + params.udid + ' to boot');
 
@@ -611,11 +584,11 @@ function waitUntilBooted(params, callback) {
 				}
 
 				if (!sim) {
-					return cb(new Error(__('Unable to find Simulator %s', params.udid)));
+					return cb(new Error(`Unable to find Simulator ${params.udid}`));
 				}
 
 				if (sim.isAvailable === false && sim.availability !== '(available)') {
-					return cb(new Error(__('Simulator is not available')));
+					return cb(new Error('Simulator is not available'));
 				}
 
 				log('Sim state: ' + sim.state);
@@ -635,7 +608,7 @@ function waitUntilBooted(params, callback) {
 				return callback(err);
 			}
 			if (timedOut) {
-				err = new Error(__('Timed out waiting for simulator to boot'));
+				err = new Error('Timed out waiting for simulator to boot');
 				err.code = 666;
 				return callback(err);
 			}

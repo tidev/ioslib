@@ -11,15 +11,11 @@ import { magik } from './utilities.js';
 
 const certRegExp = /^(?:((?:Apple|iOS) Development)|((?:iOS|Apple|iPhone) Distribution)): (.+)$/;
 
-var cache = null,
-	watchers = {},
-	watchResults = null,
-	watchInterval = 60000,
-	watchTimer = null;
-
-exports.detect = detect;
-exports.watch = watch;
-exports.unwatch = unwatch;
+let cache = null;
+let watchers = {};
+let watchResults = null;
+let watchInterval = 60000;
+let watchTimer = null;
 
 /**
  * Detects installed certificates.
@@ -34,7 +30,7 @@ exports.unwatch = unwatch;
  *
  * @returns {Handle}
  */
-function detect(options, callback) {
+export function detect(options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
 		var validOnly = options.validOnly === undefined || options.validOnly === true;
 
@@ -250,7 +246,7 @@ This will prevent you from packaging apps for distribution.`
  *
  * @returns {Function} A function that unwatches changes.
  */
-function watch(options, callback) {
+export function watch(options, callback) {
 	if (typeof options === 'function') {
 		callback = options;
 		options = {};
@@ -286,7 +282,7 @@ function watch(options, callback) {
 /**
  * Stops watching for certificate changes.
  */
-function unwatch(callback) {
+export function unwatch(callback) {
 	if (!watchers[callback]) return;
 
 	if (--watchers[callback] <= 0) {

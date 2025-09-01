@@ -1,34 +1,20 @@
 /**
- * Detects Xcode installs and their iOS SDKs.
- *
- * @module xcode
- *
- * @copyright
- * Copyright (c) 2014-2018 by Appcelerator, Inc. All Rights Reserved.
- *
+ * This file contains code from the forge project.
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  * {@link https://github.com/digitalbazaar/forge}
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
  */
 
-const
-	appc = require('node-appc'),
-	async = require('async'),
-	env = require('./env'),
-	hash = require('./utilities').hash,
-	magik = require('./utilities').magik,
-	fs = require('fs'),
-	path = require('path'),
-	readPlist = require('./utilities').readPlist,
-	simctl = require('./simctl'),
-	__ = appc.i18n(__dirname).__;
+import appc from 'node-appc';
+import async from 'async';
+import { hash, magik, readPlist } from './utilities.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import * as env from './env.js';
+import * as simctl from './simctl.js';
 
-var cache,
-	detecting = {},
-	waiting = [];
+let cache;
+let detecting = {};
+let waiting = [];
 
 /**
  * A lookup table of valid iOS Simulator -> Watch Simulator pairings.
@@ -586,8 +572,8 @@ exports.detect = function detect(options, callback) {
 
 						const devices = info.devices;
 						const deviceTypes = info.devicetypes;
-	
-						deviceTypes.forEach(function(deviceType) {							
+
+						deviceTypes.forEach(function(deviceType) {
 							if (!xc.simDeviceTypes[deviceType.identifier]) {
 								xc.simDeviceTypes[deviceType.identifier] = {
 									name: deviceType.name,
@@ -610,7 +596,7 @@ exports.detect = function detect(options, callback) {
 								version
 							}
 							appc.util.mix(xc.simRuntimes, { [key]: mapping });
-						}	
+						}
 					});
 
 					['Simulator', 'iOS Simulator'].some(function (name) {
@@ -656,8 +642,8 @@ exports.detect = function detect(options, callback) {
 							results.issues.push({
 								id: 'IOS_XCODE_TOO_OLD',
 								type: 'warning',
-								message: __('Xcode %s is too old and is no longer supported.', '__' + version + '__') + '\n' +
-									__('The minimum supported Xcode version is Xcode %s.', appc.version.parseMin(options.supportedVersions)),
+								message: `Xcode __${version}__ is too old and is no longer supported.
+The minimum supported Xcode version is Xcode ${appc.version.parseMin(options.supportedVersions)}.`,
 								xcodeVer: version,
 								minSupportedVer: appc.version.parseMin(options.supportedVersions)
 							});
@@ -665,8 +651,8 @@ exports.detect = function detect(options, callback) {
 							results.issues.push({
 								id: 'IOS_XCODE_TOO_NEW',
 								type: 'warning',
-								message: __('Xcode %s may or may not work as expected.', '__' + version + '__') + '\n' +
-									__('The maximum supported Xcode version is Xcode %s.', appc.version.parseMax(options.supportedVersions, true)),
+								message: `Xcode __${version}__ may or may not work as expected.
+The maximum supported Xcode version is Xcode ${appc.version.parseMax(options.supportedVersions, true)}.`,
 								xcodeVer: version,
 								maxSupportedVer: appc.version.parseMax(options.supportedVersions, true)
 							});
@@ -686,7 +672,7 @@ exports.detect = function detect(options, callback) {
 						results.issues.push({
 							id: 'IOS_SQLITE_EXECUTABLE_NOT_FOUND',
 							type: 'error',
-							message: __("Unable to find the 'sqlite' or 'sqlite3' executable.")
+							message: `Unable to find the 'sqlite' or 'sqlite3' executable.`
 						});
 						return next();
 					}
@@ -752,14 +738,12 @@ exports.detect = function detect(options, callback) {
 					var message;
 
 					if (xcodeIds.length === 1) {
-						message = __('Xcode EULA has not been accepted.') + '\n' +
-							__('Launch Xcode and accept the license.');
+						message = `Xcode EULA has not been accepted.
+Launch Xcode and accept the license.`;
 					} else {
-						message = __('Multiple Xcode versions have not had their EULA accepted:') + '\n' +
-							eulaNotAccepted.map(function (xc) {
-								return '  ' + xc.version + ' (' + xc.xcodeapp + ')';
-							}).join('\n') + '\n' +
-							__('Launch each Xcode and accept the license.');
+						message = `Multiple Xcode versions have not had their EULA accepted:
+${eulaNotAccepted.map(xc => `  ${xc.version} (${xc.xcodeapp})`).join('\n')}
+Launch each Xcode and accept the license.`;
 					}
 
 					results.issues.push({
@@ -773,7 +757,7 @@ exports.detect = function detect(options, callback) {
 					results.issues.push({
 						id: 'IOS_NO_SUPPORTED_XCODE_FOUND',
 						type: 'warning',
-						message: __('There are no supported Xcode installations found.')
+						message: 'There are no supported Xcode installations found.'
 					});
 				}
 
@@ -781,8 +765,8 @@ exports.detect = function detect(options, callback) {
 					results.issues.push({
 						id: 'IOS_NO_IOS_SDKS',
 						type: 'error',
-						message: __('There are no iOS SDKs found') + '\n' +
-							__('Launch Xcode and download the mobile support packages.')
+						message: `There are no iOS SDKs found
+Launch Xcode and download the mobile support packages.`
 					});
 				}
 
@@ -790,16 +774,16 @@ exports.detect = function detect(options, callback) {
 					results.issues.push({
 						id: 'IOS_NO_IOS_SIMS',
 						type: 'error',
-						message: __('There are no iOS Simulators found') + '\n' +
-							__('You can install them from the Xcode Preferences > Downloads tab.')
+						message: `There are no iOS Simulators found
+You can install them from the Xcode Preferences > Downloads tab.`
 					});
 				}
 			} else {
 				results.issues.push({
 					id: 'IOS_XCODE_NOT_INSTALLED',
 					type: 'error',
-					message: __('No Xcode installations found.') + '\n' +
-						__('You can download it from the %s or from %s.', '__App Store__', '__https://developer.apple.com/xcode/__')
+					message: `No Xcode installations found.
+You can download it from the __App Store__ or from __https://developer.apple.com/xcode/__`
 				});
 			}
 

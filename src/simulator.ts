@@ -1,40 +1,17 @@
-/**
- * Detects iOS developer and distribution certificates and the WWDR certificate.
- *
- * @module simulator
- *
- * @copyright
- * Copyright (c) 2014-2018 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
-
-'use strict';
-
-const appc = require('node-appc');
-const async = require('async');
-const EventEmitter = require('events').EventEmitter;
-const magik = require('./utilities').magik;
-const fs = require('fs');
-const net = require('net');
-const path = require('path');
-const readPlist = require('./utilities').readPlist;
-const simctl = require('./simctl');
-const spawn = require('child_process').spawn;
-const Tail = require('always-tail');
-const xcode = require('./xcode');
-const __ = appc.i18n(__dirname).__;
+import appc from 'node-appc';
+import async from 'async';
+import { EventEmitter } from 'node:events';
+import { magik } from './utilities.js';
+import fs from 'node:fs';
+import net from 'node:net';
+import path from 'node:path';
+import { readPlist } from './utilities.js';
+import * as simctl from './simctl.js';
+import { spawn } from 'node:child_process';
+import Tail from 'always-tail';
+import * as xcode from './xcode.js';
 
 let cache;
-
-exports.detect = detect;
-exports.findSimulators = findSimulators;
-exports.launch = launch;
-exports.stop = stop;
-exports.SimHandle = SimHandle;
-exports.SimulatorCrash = SimulatorCrash;
 
 /**
  * @class
@@ -42,15 +19,15 @@ exports.SimulatorCrash = SimulatorCrash;
  * @constructor
  * @param {Array|Object} [crashFiles] - The crash details.
  */
-function SimulatorCrash(crashFiles) {
+export function SimulatorCrash(crashFiles) {
 	this.name       = 'SimulatorCrash';
-	this.message    = __('App crashed in the iOS Simulator');
+	this.message    = 'App crashed in the iOS Simulator';
 	this.crashFiles = Array.isArray(crashFiles) ? crashFiles : crashFiles ? [ crashFiles ] : null;
 }
 SimulatorCrash.prototype = Object.create(Error.prototype);
 SimulatorCrash.prototype.constructor = SimulatorCrash;
 
-function SimHandle(obj) {
+export function SimHandle(obj) {
 	appc.util.mix(this, obj);
 }
 
@@ -95,7 +72,7 @@ function compareSims(a, b) {
  *
  * @returns {Handle}
  */
-function detect(options, callback) {
+export function detect(options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
 		if (cache && !options.bypassCache) {
 			var dupe = JSON.parse(JSON.stringify(cache));
@@ -412,18 +389,18 @@ function detect(options, callback) {
 function getAppInfo(appPath, watchAppName) {
 	// validate the specified appPath
 	if (!fs.existsSync(appPath)) {
-		throw new Error(__('App path does not exist: ' + appPath));
+		throw new Error(`App path does not exist: ${appPath}`);
 	}
 
 	// get the app's id
 	var infoPlist = path.join(appPath, 'Info.plist');
 	if (!fs.existsSync(infoPlist)) {
-		throw new Error(__('Unable to find Info.plist in root of specified app path: ' + infoPlist));
+		throw new Error(`Unable to find Info.plist in root of specified app path: ${infoPlist}`);
 	}
 
 	var plist = readPlist(infoPlist);
 	if (!plist || !plist.CFBundleIdentifier) {
-		throw new Error(__('Failed to parse app\'s Info.plist: ' + infoPlist));
+		throw new Error(`Failed to parse app's Info.plist: ${infoPlist}`);
 	}
 
 	var results = {
@@ -470,9 +447,9 @@ function getAppInfo(appPath, watchAppName) {
 
 		if (!results.watchAppId) {
 			if (typeof watchAppName === 'string') {
-				throw new Error(__('Unable to find a watch app named "%s".', watchAppName));
+				throw new Error(`Unable to find a watch app named "${watchAppName}".`);
 			} else {
-				throw new Error(__('The launch watch app flag was set, however unable to find a watch app.'));
+				throw new Error('The launch watch app flag was set, however unable to find a watch app.');
 			}
 		}
 	}
@@ -500,7 +477,7 @@ function getAppInfo(appPath, watchAppName) {
  * @param {String} [options.watchMinOSVersion] - The min Watch OS version supported by the specified watch app id.
  * @param {Function} callback(err, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo) - A function to call with the simulators found.
  */
-function findSimulators(options, callback) {
+export function findSimulators(options, callback) {
 	if (typeof options === 'function') {
 		callback = options;
 		options = {};
@@ -548,16 +525,20 @@ function findSimulators(options, callback) {
 			.sort(compareXcodes);
 		if (!xcodeIds.length) {
 			if (options.iosVersion) {
-				return callback(new Error(__('Unable to find any Xcode installations that supports iOS SDK %s.', options.iosVersion)));
+				return callback(new Error(`Unable to find any Xcode installations that supports iOS SDK ${options.iosVersion}.`));
 			} else {
-				return callback(new Error(__('Unable to find any supported Xcode installations. Please install the latest Xcode.')));
+				return callback(new Error('Unable to find any supported Xcode installations. Please install the latest Xcode.'));
 			}
 		}
 		var xcodeId = xcodeIds[0];
 		var selectedXcode = xcodeInfo.xcode[xcodeId];
 
 		if (!selectedXcode.eulaAccepted) {
-			var eulaErr = new Error(__(`Xcode ${selectedXcode.version} end-user license agreement has not been accepted. Please launch "${selectedXcode.xcodeapp}" or run "sudo xcodebuild -license" to accept the license`));
+			var eulaErr = new Error(
+				`Xcode ${selectedXcode.version} end-user license agreement has not been accepted. Please launch "${
+					selectedXcode.xcodeapp
+				}" or run "sudo xcodebuild -license" to accept the license`
+			);
 			return callback(eulaErr);
 		}
 
@@ -576,13 +557,13 @@ function findSimulators(options, callback) {
 				if (!(options.simHandleOrUDID instanceof SimHandle)) {
 					var vers = Object.keys(simInfo.simulators.ios);
 
-					logger(__('Validating iOS Simulator UDID %s', options.simHandleOrUDID));
+					logger(`Validating iOS Simulator UDID ${options.simHandleOrUDID}`);
 
 					for (var i = 0, l = vers.length; !simHandle && i < l; i++) {
 						var sims = simInfo.simulators.ios[vers[i]];
 						for (var j = 0, k = sims.length; j < k; j++) {
 							if (sims[j].udid === options.simHandleOrUDID) {
-								logger(__('Found iOS Simulator UDID %s', options.simHandleOrUDID));
+								logger(`Found iOS Simulator UDID ${options.simHandleOrUDID}`);
 								simHandle = new SimHandle(sims[j]);
 								break;
 							}
@@ -590,12 +571,12 @@ function findSimulators(options, callback) {
 					}
 
 					if (!simHandle) {
-						return callback(new Error(__('Unable to find an iOS Simulator with the UDID "%s".', options.simHandleOrUDID)));
+						return callback(new Error(`Unable to find an iOS Simulator with the UDID "${options.simHandleOrUDID}".`));
 					}
 				}
 
 				if (options.minIosVersion && appc.version.lt(simHandle.version, options.minIosVersion)) {
-					return callback(new Error(__('The selected iOS %s Simulator is less than the minimum iOS version %s.', simHandle.version, options.minIosVersion)));
+					return callback(new Error(`The selected iOS ${simHandle.version} Simulator is less than the minimum iOS version ${options.minIosVersion}.`));
 				}
 
 				if (options.watchAppBeingInstalled) {
@@ -608,11 +589,11 @@ function findSimulators(options, callback) {
 						.pop();
 
 					if (!watchXcodeId) {
-						return callback(new Error(__('Unable to find any Watch Simulators that can be paired with the specified iOS Simulator %s.', simHandle.udid)));
+						return callback(new Error(`Unable to find any Watch Simulators that can be paired with the specified iOS Simulator ${simHandle.udid}.`));
 					}
 
 					if (!options.watchHandleOrUDID) {
-						logger(__('Watch app present, autoselecting a Watch Simulator'));
+						logger('Watch app present, autoselecting a Watch Simulator');
 
 						var companions = simHandle.watchCompanion[watchXcodeId];
 						var companionUDID = Object.keys(companions)
@@ -624,15 +605,15 @@ function findSimulators(options, callback) {
 						watchSimHandle = new SimHandle(companions[companionUDID]);
 
 						if (!watchSimHandle) {
-							return callback(new Error(__('Specified iOS Simulator "%s" does not support Watch apps.', options.simHandleOrUDID)));
+							return callback(new Error(`Specified iOS Simulator "${options.simHandleOrUDID}" does not support Watch apps.`));
 						}
 					} else if (!(options.watchHandleOrUDID instanceof SimHandle)) {
-						logger(__('Watch app present, validating Watch Simulator UDID %s', options.watchHandleOrUDID));
+						logger(`Watch app present, validating Watch Simulator UDID ${options.watchHandleOrUDID}`);
 
 						Object.keys(simInfo.simulators.watchos).some(function (ver) {
 							return simInfo.simulators.watchos[ver].some(function (sim) {
 								if (sim.udid === options.watchHandleOrUDID) {
-									logger(__('Found Watch Simulator UDID %s', options.watchHandleOrUDID));
+									logger(`Found Watch Simulator UDID ${options.watchHandleOrUDID}`);
 									watchSimHandle = new SimHandle(sim);
 									return true;
 								}
@@ -640,59 +621,59 @@ function findSimulators(options, callback) {
 						});
 
 						if (!watchSimHandle) {
-							return callback(new Error(__('Unable to find a Watch Simulator with the UDID "%s".', options.watchHandleOrUDID)));
+							return callback(new Error(`Unable to find a Watch Simulator with the UDID "${options.watchHandleOrUDID}".`));
 						}
 					}
 				}
 
 				// double check
 				if (watchSimHandle && !simHandle.watchCompanion[watchXcodeId][watchSimHandle.udid]) {
-					return callback(new Error(__('Specified Watch Simulator "%s" is not compatible with iOS Simulator "%s".', watchSimHandle.udid, simHandle.udid)));
+					return callback(new Error(`Specified Watch Simulator "${watchSimHandle.udid}" is not compatible with iOS Simulator "${simHandle.udid}".`));
 				}
 
 				if (options.watchAppBeingInstalled && !options.watchHandleOrUDID && !watchSimHandle) {
 					if (options.watchMinOSVersion) {
-						return callback(new Error(__('Unable to find a Watch Simulator that supports watchOS %s.', options.watchMinOSVersion)));
+						return callback(new Error(`Unable to find a Watch Simulator that supports watchOS ${options.watchMinOSVersion}.`));
 					} else {
-						return callback(new Error(__('Unable to find a Watch Simulator.')));
+						return callback(new Error('Unable to find a Watch Simulator.'));
 					}
 				}
 
-				logger(__('Selected iOS Simulator: %s', simHandle.name));
-				logger(__('  UDID    = %s', simHandle.udid));
-				logger(__('  iOS     = %s', simHandle.version));
+				logger(`Selected iOS Simulator: ${simHandle.name}`);
+				logger(`  UDID    = ${simHandle.udid}`);
+				logger(`  iOS     = ${simHandle.version}`);
 				if (watchSimHandle) {
 					if (options.watchAppBeingInstalled && options.watchHandleOrUDID) {
-						logger(__('Selected watchOS Simulator: %s', watchSimHandle.name));
+						logger(`Selected watchOS Simulator: ${watchSimHandle.name}`);
 					} else {
-						logger(__('Autoselected watchOS Simulator: %s', watchSimHandle.name));
+						logger(`Autoselected watchOS Simulator: ${watchSimHandle.name}`);
 					}
-					logger(__('  UDID    = %s', watchSimHandle.udid));
-					logger(__('  watchOS = %s', watchSimHandle.version));
+					logger(`  UDID    = ${watchSimHandle.udid}`);
+					logger(`  watchOS = ${watchSimHandle.version}`);
 				}
-				logger(__('Autoselected Xcode: %s', selectedXcode.version));
+				logger(`Autoselected Xcode: ${selectedXcode.version}`);
 			} else {
-				logger(__('No iOS Simulator UDID specified, searching for best match'));
+				logger('No iOS Simulator UDID specified, searching for best match');
 
 				if (options.watchAppBeingInstalled && options.watchHandleOrUDID) {
-					logger(__('Validating Watch Simulator UDID %s', options.watchHandleOrUDID));
+					logger(`Validating Watch Simulator UDID ${options.watchHandleOrUDID}`);
 					Object.keys(simInfo.simulators.watchos).some(function (ver) {
 						return simInfo.simulators.watchos[ver].some(function (sim) {
 							if (sim.udid === options.watchHandleOrUDID) {
 								watchSimHandle = new SimHandle(sim);
-								logger(__('Found Watch Simulator UDID %s', options.watchHandleOrUDID));
+								logger(`Found Watch Simulator UDID ${options.watchHandleOrUDID}`);
 								return true;
 							}
 						});
 					});
 
 					if (!watchSimHandle) {
-						return callback(new Error(__('Unable to find a Watch Simulator with the UDID "%s".', options.watchHandleOrUDID)));
+						return callback(new Error(`Unable to find a Watch Simulator with the UDID "${options.watchHandleOrUDID}".`));
 					}
 				}
 
 				// pick one
-				logger(__('Scanning Xcodes: %s', xcodeIds.join(' ')));
+				logger(`Scanning Xcodes: ${xcodeIds.join(' ')}`);
 
 				// loop through xcodes
 				for (var i = 0; !simHandle && i < xcodeIds.length; i++) {
@@ -711,7 +692,7 @@ function findSimulators(options, callback) {
 						});
 					var simVers = appc.version.sort(Object.keys(simVersMap)).reverse();
 
-					logger(__('Scanning Xcode %s sims: %s', xcodeIds[i], simVers.join(', ')));
+					logger(`Scanning Xcode ${xcodeIds[i]} sims: ${simVers.join(', ')}`);
 
 					// loop through each xcode simulators
 					for (var j = 0; !simHandle && j < simVers.length; j++) {
@@ -753,7 +734,7 @@ function findSimulators(options, callback) {
 									}
 								} else {
 									// no watch app
-									logger(__('No watch app being installed, so picking first Simulator'));
+									logger('No watch app being installed, so picking first Simulator');
 									simHandle = new SimHandle(sims[k]);
 
 									// fallback to the newest supported Xcode version
@@ -774,27 +755,27 @@ function findSimulators(options, callback) {
 
 					// user experience!
 					if (options.simVersion) {
-						return callback(new Error(__(`Unable to find an iOS Simulator running iOS %s. ${helpText}`, options.simVersion)));
+						return callback(new Error(`Unable to find an iOS Simulator running iOS ${options.simVersion}. ${helpText}`));
 					} else {
-						return callback(new Error(__(`Unable to find an iOS Simulator. ${helpText}`)));
+						return callback(new Error(`Unable to find an iOS Simulator. ${helpText}`));
 					}
 				} else if (options.watchAppBeingInstalled && !watchSimHandle) {
-					return callback(new Error(__('Unable to find a watchOS Simulator that supports watchOS %s', options.watchMinOSVersion)));
+					return callback(new Error(`Unable to find a watchOS Simulator that supports watchOS ${options.watchMinOSVersion}`));
 				}
 
-				logger(__('Autoselected iOS Simulator: %s', simHandle.name));
-				logger(__('  UDID    = %s', simHandle.udid));
-				logger(__('  iOS     = %s', simHandle.version));
+				logger(`Autoselected iOS Simulator: ${simHandle.name}`);
+				logger(`  UDID    = ${simHandle.udid}`);
+				logger(`  iOS     = ${simHandle.version}`);
 				if (watchSimHandle) {
 					if (options.watchAppBeingInstalled && options.watchHandleOrUDID) {
-						logger(__('Selected watchOS Simulator: %s', watchSimHandle.name));
+						logger(`Selected watchOS Simulator: ${watchSimHandle.name}`);
 					} else {
-						logger(__('Autoselected watchOS Simulator: %s', watchSimHandle.name));
+						logger(`Autoselected watchOS Simulator: ${watchSimHandle.name}`);
 					}
-					logger(__('  UDID    = %s', watchSimHandle.udid));
-					logger(__('  watchOS = %s', watchSimHandle.version));
+					logger(`  UDID    = ${watchSimHandle.udid}`);
+					logger(`  watchOS = ${watchSimHandle.version}`);
 				}
-				logger(__('Autoselected Xcode: %s', selectedXcode.version));
+				logger(`Autoselected Xcode: ${selectedXcode.version}`);
 			}
 
 			callback(null, simHandle, watchSimHandle, selectedXcode, simInfo, xcodeInfo);
@@ -844,22 +825,22 @@ function findSimulators(options, callback) {
  *
  * @returns {Handle}
  */
-function launch(simHandleOrUDID, options, callback) {
+export function launch(simHandleOrUDID, options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
 		emitter.stop = function () {}; // for stopping logging
 
 		if (!options.appPath && (options.launchWatchApp || options.launchWatchAppOnly)) {
 			var err = new Error(
 				options.launchWatchAppOnly
-					? __('You must specify an appPath when launchWatchApp is true.')
-					: __('You must specify an appPath when launchWatchAppOnly is true.')
+					? 'You must specify an appPath when launchWatchApp is true.'
+					: 'You must specify an appPath when launchWatchAppOnly is true.'
 				);
 			emitter.emit('error', err);
 			return callback(err);
 		}
 
 		if (options.logServerPort && (typeof options.logServerPort !== 'number' || options.logServerPort < 1 || options.logServerPort > 65535)) {
-			var err = new Error(__('Log server port must be a number between 1 and 65535'));
+			var err = new Error('Log server port must be a number between 1 and 65535');
 			emitter.emit('error', err);
 			return callback(err);
 		}
@@ -886,7 +867,7 @@ function launch(simHandleOrUDID, options, callback) {
 						findSimOpts.watchAppBeingInstalled = true;
 						findSimOpts.watchMinOSVersion = ids.watchMinOSVersion;
 					}
-					emitter.emit('log-debug', __('Found watchOS %s app: %s', ids.watchOSVersion, watchAppId));
+					emitter.emit('log-debug', `Found watchOS ${ids.watchOSVersion} app: ${watchAppId}`);
 				}
 			} catch (ex) {
 				emitter.emit('error', ex);
@@ -903,7 +884,7 @@ function launch(simHandleOrUDID, options, callback) {
 			}
 
 			if (!selectedXcode.eulaAccepted) {
-				var eulaErr = new Error(__('Xcode must be launched and the EULA must be accepted before a simulator can be launched.'));
+				var eulaErr = new Error('Xcode must be launched and the EULA must be accepted before a simulator can be launched.');
 				emitter.emit('error', eulaErr);
 				return callback(eulaErr);
 			}
@@ -925,7 +906,7 @@ function launch(simHandleOrUDID, options, callback) {
 				(function walk(dir) {
 					var logFile = path.join(dir, 'Documents', options.logFilename);
 					if (fs.existsSync(logFile)) {
-						emitter.emit('log-debug', __('Removing old log file: %s', logFile));
+						emitter.emit('log-debug', `Removing old log file: ${logFile}`);
 						fs.unlinkSync(logFile);
 						return true;
 					}
@@ -985,7 +966,7 @@ function launch(simHandleOrUDID, options, callback) {
 				if (diffCrashes.length) {
 					// when a crash occurs, we need to provide the plist crash information as a result object
 					diffCrashes.forEach(function (crashFile) {
-						emitter.emit('log-debug', __('Detected crash file: %s', crashFile));
+						emitter.emit('log-debug', `Detected crash file: ${crashFile}`);
 					});
 					cleanupAndEmit('app-quit', new SimulatorCrash(diffCrashes));
 					return true;
@@ -1000,9 +981,9 @@ function launch(simHandleOrUDID, options, callback) {
 
 				function simExited(code, signal) {
 					if (code || code === 0) {
-						emitter.emit('log-debug', __('%s Simulator has exited with code %s', handle.name, code));
+						emitter.emit('log-debug', `${handle.name} Simulator has exited with code ${code}`);
 					} else {
-						emitter.emit('log-debug', __('%s Simulator has exited', handle.name));
+						emitter.emit('log-debug', `${handle.name} Simulator has exited`);
 					}
 					handle.systemLogTail && handle.systemLogTail.unwatch();
 					handle.systemLogTail = null;
@@ -1011,24 +992,24 @@ function launch(simHandleOrUDID, options, callback) {
 
 				async.series([
 					function checkIfRunningAndBooted(next) {
-						emitter.emit('log-debug', __('Checking if the simulator %s is already running', handle.simulator));
+						emitter.emit('log-debug', `Checking if the simulator ${handle.simulator} is already running`);
 
 						isSimulatorRunning(handle.simulator, function (err, pid, udid) {
 							if (err) {
-								emitter.emit('log-debug', __('Failed to check if the simulator is running: %s', err.message || err.toString()));
+								emitter.emit('log-debug', `Failed to check if the simulator is running: ${err.message || err.toString()}`);
 								return next(err);
 							}
 
 							if (!pid) {
-								emitter.emit('log-debug', __('Simulator is not running'));
+								emitter.emit('log-debug', 'Simulator is not running');
 								return next();
 							}
 
-							emitter.emit('log-debug', __('Simulator is running (pid %s)', pid));
+							emitter.emit('log-debug', `Simulator is running (pid ${pid})`);
 
 							// if Xcode 8 or older and the udid doesn't match the running version, then we need to kill the simulator before continuing
 							if (appc.version.lt(selectedXcode.version, '9.0') && udid !== handle.udid) {
-								emitter.emit('log-debug', __('%s Simulator is running, but not the UDID we want, stopping simulator', handle.name));
+								emitter.emit('log-debug', `${handle.name} Simulator is running, but not the UDID we want, stopping simulator`);
 								stop(handle, next);
 								return;
 							}
@@ -1043,28 +1024,28 @@ function launch(simHandleOrUDID, options, callback) {
 
 								if (!sim) {
 									// this should never happen
-									return next(new Error(__('Unable to find simulator %s', handle.udid)));
+									return next(new Error(`Unable to find simulator ${handle.udid}`));
 								}
 
 								function waitToBoot() {
-									emitter.emit('log-debug', __('Waiting for simulator to boot...'));
+									emitter.emit('log-debug', 'Waiting for simulator to boot...');
 									simctl.waitUntilBooted({ simctl: handle.simctl, udid: handle.udid, timeout: 30000 }, function (err, _booted) {
 										if (err && err.code !== 666) {
-											emitter.emit('log-debug', __('Error while waiting for simulator to boot: %s', err.message || err.toString()));
+											emitter.emit('log-debug', `Error while waiting for simulator to boot: ${err.message || err.toString()}`);
 											return next(err);
 										}
 
 										booted = _booted;
 
-										emitter.emit('log-debug', booted ? __('Simulator is booted!') : __('Simulator is NOT booted!'));
+										emitter.emit('log-debug', booted ? 'Simulator is booted!' : 'Simulator is NOT booted!');
 
 										if (err || !booted) {
-											emitter.emit('log-debug', __('%s Simulator is running, but not in a booted state, stopping simulator', handle.name));
+											emitter.emit('log-debug', `${handle.name} Simulator is running, but not in a booted state, stopping simulator`);
 											stop(handle, next);
 											return;
 										}
 
-										emitter.emit('log-debug', __('%s Simulator already running with the correct UDID', handle.name));
+										emitter.emit('log-debug', `${handle.name} Simulator already running with the correct UDID`);
 
 										// because we didn't start the simulator, we have no child process to
 										// listen for when it exits, so we need to monitor it ourselves
@@ -1085,7 +1066,7 @@ function launch(simHandleOrUDID, options, callback) {
 								if (appc.version.lt(selectedXcode.version, '9.0')) {
 									if (/^shutdown/i.test(sim.state)) {
 										// the udid that is supposed to be running isn't, kill the simulator
-										emitter.emit('log-debug', __('%s Simulator is running, but UDID %s is shut down, stopping simulator', handle.name, handle.udid));
+										emitter.emit('log-debug', `${handle.name} Simulator is running, but UDID ${handle.udid} is shut down, stopping simulator`);
 										stop(handle, next);
 										return;
 									}
@@ -1099,7 +1080,7 @@ function launch(simHandleOrUDID, options, callback) {
 									return waitToBoot();
 								}
 
-								emitter.emit('log-debug', __('Getting all running simulator runtimes'));
+								emitter.emit('log-debug', 'Getting all running simulator runtimes');
 								getRunningSimulatorDevices(function (err, sims) {
 									if (err) {
 										return next(err);
@@ -1145,7 +1126,7 @@ function launch(simHandleOrUDID, options, callback) {
 							autoExitToken = options.autoExitToken || 'AUTO_EXIT',
 							detectedCrash = false;
 
-						emitter.emit('log-debug', __('Tailing %s Simulator system log: %s', handle.name, handle.systemLog));
+						emitter.emit('log-debug', `Tailing ${handle.name} Simulator system log: ${handle.systemLog}`);
 
 						// tail the simulator's system log.
 						// as we do this, we want to look for specific things like the watch being installed,
@@ -1162,10 +1143,10 @@ function launch(simHandleOrUDID, options, callback) {
 							if (xcode73WatchLogMsgRegExp) {
 								if (m = line.match(xcode73WatchLogMsgRegExp)) {
 									if (m[1] === 'acknowledged') {
-										emitter.emit('log-debug', __('Watch App installed successfully!'));
+										emitter.emit('log-debug', 'Watch App installed successfully!');
 										handle.installed = true;
 									} else {
-										simEmitter.emit('error', new Error(__('Watch App installation failure')));
+										simEmitter.emit('error', new Error('Watch App installation failure'));
 									}
 									return;
 								}
@@ -1182,12 +1163,12 @@ function launch(simHandleOrUDID, options, callback) {
 									if (type === 'note') {
 										// did the watch app install succeed?
 										if (!handle.installed && (m = msg.match(watchInstallRegExp)) && parseInt(m[1]) === 2 && successRegExp.test(m[2])) {
-											emitter.emit('log-debug', __('Watch App installed successfully!'));
+											emitter.emit('log-debug', 'Watch App installed successfully!');
 											handle.installed = true;
 										}
 									} else if (type === 'error') {
 										// did the watch app install fail?
-										simEmitter.emit('error', new Error(__('Watch App installation failure: %s', msg)));
+										simEmitter.emit('error', new Error(`Watch App installation failure: ${msg}`));
 									}
 
 									return;
@@ -1210,7 +1191,7 @@ function launch(simHandleOrUDID, options, callback) {
 									}
 
 									if (options.autoExit && m[2].indexOf(autoExitToken) !== -1) {
-										emitter.emit('log-debug', __('Found "%s" token, stopping simulator', autoExitToken));
+										emitter.emit('log-debug', `Found "${autoExitToken}" token, stopping simulator`);
 										// stopping the simulator will cause the "close" event to fire
 										stop(handle, function () {
 											cleanupAndEmit('app-quit');
@@ -1227,7 +1208,7 @@ function launch(simHandleOrUDID, options, callback) {
 										// did we crash?
 										if (!checkIfCrashed()) {
 											// well something happened, exit
-											emitter.emit('log-debug', __('Detected crash, but no crash file'));
+											emitter.emit('log-debug', 'Detected crash, but no crash file');
 											cleanupAndEmit('app-quit');
 										}
 									}, 1000);
@@ -1252,12 +1233,12 @@ function launch(simHandleOrUDID, options, callback) {
 						}
 
 						if (!handle.simulator) {
-							emitter.emit('log-debug', __('Cannot run simulator %s because executable was not found', handle.udid));
+							emitter.emit('log-debug', `Cannot run simulator ${handle.udid} because executable was not found`);
 							return next();
 						}
 
 						// not running, start the simulator
-						emitter.emit('log-debug', __('Running: %s', handle.simulator + ' -CurrentDeviceUDID ' + handle.udid));
+						emitter.emit('log-debug', `Running: ${handle.simulator} -CurrentDeviceUDID ${handle.udid}`);
 
 						var child = spawn(handle.simulator, ['-CurrentDeviceUDID', handle.udid], { detached: true, stdio: 'ignore' });
 						child.on('close', simExited);
@@ -1280,7 +1261,7 @@ function launch(simHandleOrUDID, options, callback) {
 									});
 
 									if (booted) {
-										emitter.emit('log-debug', __('Simulator is booted'));
+										emitter.emit('log-debug', 'Simulator is booted');
 										return cb();
 									}
 
@@ -1291,7 +1272,7 @@ function launch(simHandleOrUDID, options, callback) {
 							},
 							function (err) {
 								if (!err) {
-									emitter.emit('log-debug', __('%s Simulator started', handle.name));
+									emitter.emit('log-debug', `${handle.name} Simulator started`);
 								}
 								next(err);
 							}
@@ -1308,7 +1289,7 @@ function launch(simHandleOrUDID, options, callback) {
 				function stopIosSim(next) {
 					// check if we need to stop the iOS simulator
 					if (options.killIfRunning !== false) {
-						emitter.emit('log-debug', __('Stopping iOS Simulator, if running'));
+						emitter.emit('log-debug', 'Stopping iOS Simulator, if running');
 						stop(simHandle, next);
 					} else {
 						next();
@@ -1318,7 +1299,7 @@ function launch(simHandleOrUDID, options, callback) {
 				function stopWatchSim(next) {
 					// check if we need to stop the watchOS simulator
 					if (watchSimHandle && options.killIfRunning !== false && appc.version.gte(watchSimHandle.version, '2.0')) {
-						emitter.emit('log-debug', __('Stopping watchOS Simulator, if running'));
+						emitter.emit('log-debug', 'Stopping watchOS Simulator, if running');
 						stop(watchSimHandle, next);
 					} else {
 						next();
@@ -1334,7 +1315,7 @@ function launch(simHandleOrUDID, options, callback) {
 
 					if (appc.version.lt(watchSimHandle.version, '2.0')) {
 						// no need to pair
-						emitter.emit('log-debug', __('No need to pair WatchKit 1.x app'));
+						emitter.emit('log-debug', 'No need to pair WatchKit 1.x app');
 						return next();
 					}
 
@@ -1345,12 +1326,12 @@ function launch(simHandleOrUDID, options, callback) {
 
 						var found = info.iosSimToWatchSimToPair[simHandle.udid] && info.iosSimToWatchSimToPair[simHandle.udid][watchSimHandle.udid];
 						if (found && found.active) {
-							emitter.emit('log-debug', __('iOS and watchOS simulators already paired and active'));
+							emitter.emit('log-debug', 'iOS and watchOS simulators already paired and active');
 							return next();
 						}
 
 						if (found) {
-							emitter.emit('log-debug', __('Activating iOS and watchOS simulator pair: %s', found.udid));
+							emitter.emit('log-debug', `Activating iOS and watchOS simulator pair: ${found.udid}`);
 							return simctl.activatePair({ simctl: simHandle.simctl, udid: found.udid }, next);
 						}
 
@@ -1365,13 +1346,13 @@ function launch(simHandleOrUDID, options, callback) {
 
 						if (!unpairFromIosSimUdid) {
 							// not paired, try to pair
-							emitter.emit('log-debug', __('Pairing iOS and watchOS simulator pair: %s -> %s', watchSimHandle.udid, simHandle.udid));
+							emitter.emit('log-debug', `Pairing iOS and watchOS simulator pair: ${watchSimHandle.udid} -> ${simHandle.udid}`);
 							return simctl.pairAndActivate({ simctl: simHandle.simctl, simUdid: simHandle.udid, watchSimUdid: watchSimHandle.udid }, next);
 						}
 
 						// try to unpair
 						found = info.iosSimToWatchSimToPair[unpairFromIosSimUdid][watchSimHandle.udid];
-						emitter.emit('log-debug', __('Unpairing iOS and watchOS simulator pair: %s', found.udid));
+						emitter.emit('log-debug', `Unpairing iOS and watchOS simulator pair: ${found.udid}`);
 						simctl.unpair({ simctl: simHandle.simctl, udid: found.udid }, function (err) {
 							if (err && err.code !== 666) {
 								return next(err);
@@ -1379,7 +1360,7 @@ function launch(simHandleOrUDID, options, callback) {
 
 							if (!err) {
 								// unpair succeeded
-								emitter.emit('log-debug', __('Pairing iOS and watchOS simulator pair: %s -> %s', watchSimHandle.udid, simHandle.udid));
+								emitter.emit('log-debug', `Pairing iOS and watchOS simulator pair: ${watchSimHandle.udid} -> ${simHandle.udid}`);
 								return simctl.pairAndActivate({ simctl: simHandle.simctl, simUdid: simHandle.udid, watchSimUdid: watchSimHandle.udid }, next);
 							}
 
@@ -1397,7 +1378,7 @@ function launch(simHandleOrUDID, options, callback) {
 								}
 							});
 
-							emitter.emit('log-debug', __('Unpair failed, checking %s alternative watch simulators', candidates.length));
+							emitter.emit('log-debug', `Unpair failed, checking ${candidates.length} alternative watch simulators`);
 
 							var newWatchSimHandle = null;
 
@@ -1406,11 +1387,11 @@ function launch(simHandleOrUDID, options, callback) {
 								function (cb) {
 									newWatchSimHandle = new SimHandle(candidates.shift());
 
-									emitter.emit('log-debug', __('Trying watch sim %s [%s]', newWatchSimHandle.name, newWatchSimHandle.udid));
-									emitter.emit('log-debug', __('Pairing iOS and watchOS simulator pair: %s -> %s', newWatchSimHandle.udid, simHandle.udid));
+									emitter.emit('log-debug', `Trying watch sim ${newWatchSimHandle.name} [${newWatchSimHandle.udid}]`);
+									emitter.emit('log-debug', `Pairing iOS and watchOS simulator pair: ${newWatchSimHandle.udid} -> ${simHandle.udid}`);
 									simctl.pairAndActivate({ simctl: simHandle.simctl, simUdid: simHandle.udid, watchSimUdid: newWatchSimHandle.udid }, function (err) {
 										if (err) {
-											emitter.emit('log-debug', __('Pairing failed, trying another watch simulator'));
+											emitter.emit('log-debug', 'Pairing failed, trying another watch simulator');
 											newWatchSimHandle = null;
 										}
 										cb();
@@ -1425,7 +1406,7 @@ function launch(simHandleOrUDID, options, callback) {
 									// create a new watch sim
 									var m = watchSimHandle.name.match(/^(.+ \[Titanium\])(?: (\d+))?$/);
 									var name = m ? (m[1] + ' ' + ((~~m[2] || 1) + 1)) : (watchSimHandle.name + ' [Titanium]');
-									emitter.emit('log-debug', __('Creating a new watch simulator: %s', name));
+									emitter.emit('log-debug', `Creating a new watch simulator: ${name}`);
 									simctl.create({
 										simctl: simHandle.simctl,
 										name: name,
@@ -1448,7 +1429,7 @@ function launch(simHandleOrUDID, options, callback) {
 
 											if (!found) {
 												// this shouldn't happen, we just added it!
-												return next(new Error(__('Unable to find the watch simulator %s that was just created', udid)));
+												return next(new Error(`Unable to find the watch simulator ${udid} that was just created`));
 											}
 
 											simctl.pairAndActivate({ simctl: simHandle.simctl, simUdid: simHandle.udid, watchSimUdid: watchSimHandle.udid }, next);
@@ -1482,7 +1463,7 @@ function launch(simHandleOrUDID, options, callback) {
 								// did we crash?
 								if (!checkIfCrashed()) {
 									// we didn't find a crash file, so just report the simulator exited with the code
-									emitter.emit('log-debug', __('Exited with code: %s', code));
+									emitter.emit('log-debug', `Exited with code: ${code}`);
 									cleanupAndEmit('exit', code);
 								}
 							}, 1000);
@@ -1557,7 +1538,7 @@ function launch(simHandleOrUDID, options, callback) {
 						async.whilst(
 							function (cb) { return cb(null, !done); },
 							function (cb) {
-								emitter.emit('log-debug', __('Running: %s', 'osascript "' + args.join('" "') + '"'));
+								emitter.emit('log-debug', `Running: ${'osascript "' + args.join('" "') + '"'}`);
 								appc.subprocess.run('osascript', args, function (code, out, err) {
 									if (code && /Application isn.t running/.test(err)) {
 										// give the iOS Simulator a half second to load
@@ -1568,9 +1549,9 @@ function launch(simHandleOrUDID, options, callback) {
 									}
 
 									if (code) {
-										emitter.emit('log-debug', __('Failed to %s %s Simulator, continuing', action[0], handle.name));
+										emitter.emit('log-debug', `Failed to ${action[0]} ${handle.name} Simulator, continuing`);
 									} else {
-										emitter.emit('log-debug', __('%s Simulator successfully %s', handle.name, action[1]));
+										emitter.emit('log-debug', `${handle.name} Simulator successfully ${action[1]}`);
 									}
 									done = true;
 
@@ -1586,7 +1567,7 @@ function launch(simHandleOrUDID, options, callback) {
 					if (!options.appPath || !appId || options.uninstallApp !== true) {
 						return next();
 					}
-					emitter.emit('log-debug', __('Uninstalling the app'));
+					emitter.emit('log-debug', 'Uninstalling the app');
 					simctl.uninstall({ simctl: simHandle.simctl, udid: simHandle.udid, appId: appId }, next);
 				},
 
@@ -1596,7 +1577,7 @@ function launch(simHandleOrUDID, options, callback) {
 					}
 					simHandle.installing = true;
 					watchSimHandle && (watchSimHandle.installing = true);
-					emitter.emit('log-debug', __('Installing the app'));
+					emitter.emit('log-debug', 'Installing the app');
 					simctl.install({ simctl: simHandle.simctl, udid: simHandle.udid, appPath: options.appPath }, next);
 				},
 
@@ -1615,7 +1596,7 @@ function launch(simHandleOrUDID, options, callback) {
 						const watchAppDir = path.join(watchDir, name);
 						try {
 							if (fs.statSync(watchAppDir).isDirectory() && fs.statSync(path.join(watchAppDir, 'Info.plist')).isFile()) {
-								emitter.emit('log-debug', __('Installing the watch app: %s', path.parse(name).name));
+								emitter.emit('log-debug', `Installing the watch app: ${path.parse(name).name}`);
 								return simctl.install({ simctl: simHandle.simctl, udid: watchSimHandle.udid, appPath: watchAppDir }, cb);
 							}
 						} catch (e) {}
@@ -1644,7 +1625,7 @@ function launch(simHandleOrUDID, options, callback) {
 						if (watchSimHandle && watchAppId && !simHandle.installed && appc.version.lt(selectedXcode.version, '9.0')) {
 							// since we are launching the Watch Simulator, we need to give the iOS Simulator a
 							// second to install the watch app in the Watch Simulator
-							emitter.emit('log-debug', __('Waiting for Watch App to install...'));
+							emitter.emit('log-debug', 'Waiting for Watch App to install...');
 							var timer = setInterval(function () {
 								if (simHandle.installed) {
 									clearInterval(timer);
@@ -1672,9 +1653,9 @@ function launch(simHandleOrUDID, options, callback) {
 							appId: watchAppId
 						}, function (err) {
 							if (err) {
-								emitter.emit('log-debug', __('Launched watch app, but with error: %s', err.toString()));
+								emitter.emit('log-debug', `Launched watch app, but with error: ${err.toString()}`);
 							} else {
-								emitter.emit('log-debug', __('Watch app launched'));
+								emitter.emit('log-debug', 'Watch app launched');
 							}
 							watchSimHandle.appStarted = true;
 							next();
@@ -1693,9 +1674,9 @@ function launch(simHandleOrUDID, options, callback) {
 							appId: appId
 						}, function (err) {
 							if (err) {
-								emitter.emit('log-debug', __('Launched app, but with error: %s', err.toString()));
+								emitter.emit('log-debug', `Launched app, but with error: ${err.toString()}`);
 							} else {
-								emitter.emit('log-debug', __('App launched'));
+								emitter.emit('log-debug', 'App launched');
 							}
 							simHandle.appStarted = true;
 							next();
@@ -1704,10 +1685,10 @@ function launch(simHandleOrUDID, options, callback) {
 
 					function connectToLogServer(next) {
 						if (options.logServerPort) {
-							emitter.emit('log-debug', __('Trying to connect to log server port %s...', options.logServerPort));
+							emitter.emit('log-debug', `Trying to connect to log server port ${options.logServerPort}...`);
 							(function tryConnecting() {
 								var client = net.connect(options.logServerPort, function () {
-									emitter.emit('log-debug', __('Connected to log server port %s', options.logServerPort));
+									emitter.emit('log-debug', `Connected to log server port ${options.logServerPort}`);
 
 									simHandle.disconnectLogServer = function () {
 										if (client) {
@@ -1732,7 +1713,7 @@ function launch(simHandleOrUDID, options, callback) {
 										client.destroy();
 										setTimeout(tryConnecting, 250);
 									} else {
-										emitter.emit('log-error', __('Failed to connect to log server port: %s', err.message || err.toString()));
+										emitter.emit('log-error', `Failed to connect to log server port: ${err.message || err.toString()}`);
 									}
 								});
 							}());
@@ -1757,14 +1738,14 @@ function launch(simHandleOrUDID, options, callback) {
 								(function walk(dir) {
 									const logFile = path.join(dir, 'Documents', options.logFilename);
 									if (fs.existsSync(logFile)) {
-										emitter.emit('log-debug', __('Found application log file: %s', logFile));
+										emitter.emit('log-debug', `Found application log file: ${logFile}`);
 										logFileTail = new Tail(logFile, '\n', { interval: 500, start: 0 });
 										logFileTail.on('line', function (msg) {
 
 											emitter.emit('log-file', msg);
 
 											if (options.autoExit && msg.indexOf(autoExitToken) !== -1) {
-												emitter.emit('log-debug', __('Found "%s" token, stopping simulator', autoExitToken));
+												emitter.emit('log-debug', `Found "${autoExitToken}" token, stopping simulator`);
 												// stopping the simulator will cause the "close" event to fire
 												stop(simHandle, function () {
 													cleanupAndEmit('app-quit');
@@ -1779,7 +1760,7 @@ function launch(simHandleOrUDID, options, callback) {
 													// did we crash?
 													if (!checkIfCrashed()) {
 														// well something happened, exit
-														emitter.emit('log-debug', __('Detected crash, but no crash file'));
+														emitter.emit('log-debug', 'Detected crash, but no crash file');
 														cleanupAndEmit('app-quit');
 													}
 												}, 1000);
@@ -1836,7 +1817,7 @@ function launch(simHandleOrUDID, options, callback) {
 function isSimulatorRunning(proc, callback) {
 	appc.subprocess.run('ps', '-ef', function (code, out, err) {
 		if (code) {
-			return callback(new Error(__('Failed to get process list (exit code %d)', code)));
+			return callback(new Error(`Failed to get process list (exit code ${code})`));
 		}
 
 		var lines = out.split('\n'),
@@ -1863,7 +1844,7 @@ function isSimulatorRunning(proc, callback) {
 function getRunningSimulatorDevices(callback) {
 	appc.subprocess.run('ps', '-ef', function (code, out, err) {
 		if (code) {
-			return callback(new Error(__('Failed to get process list (exit code %d)', code)));
+			return callback(new Error(`Failed to get process list (exit code ${code})`));
 		}
 
 		var lines = out.split('\n'),
@@ -1973,10 +1954,10 @@ function list(options, callback) {
  *
  * @returns {Handle}
  */
-function stop(simHandle, callback) {
+export function stop(simHandle, callback) {
 	return magik(null, callback, function (emitter, options, callback) {
 		if (!simHandle || typeof simHandle !== 'object') {
-			var err = new Error(__('Invalid simulator handle argument'));
+			const err = new Error('Invalid simulator handle argument');
 			emitter.emit('error', err);
 			return callback(err);
 		}

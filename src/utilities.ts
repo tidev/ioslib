@@ -35,7 +35,7 @@ export function magik(options, callback, body) {
         typeof callback === 'function' || (callback = function () {});
 
         if (process.platform !== 'darwin') {
-            var err = new Error(__('Unsupported platform "%s"', process.platform));
+            var err = new Error(`Unsupported platform "${process.platform}"`);
             handle.emit('error', err);
             return callback(err);
         }
