@@ -28,7 +28,7 @@
     "node-ios-device": "^1.12.1"
   },
   "devDependencies": {
-    "mocha": "^8.2.0",
+    "mocha": "^11.7.5",
     "should": "^13.2.3"
   },
   "scripts": {
