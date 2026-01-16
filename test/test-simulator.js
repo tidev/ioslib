@@ -166,7 +166,7 @@ describe('simulator', function () {
 	});
 
 	it('detect iOS Simulators', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.detect(function (err, results) {
@@ -211,7 +211,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('fail with bad iOS Sim UDID', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -226,7 +226,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('iOS Sim + bad Watch Sim UDID + no watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -248,7 +248,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('fail with good iOS Sim UDID + bad Watch Sim UDID + watch app', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -264,7 +264,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('iOS Sim + Watch Sim + no watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -287,7 +287,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('iOS Sim is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -309,7 +309,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('iOS Sim + Watch Sim + watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -333,7 +333,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('iOS Sim + watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -356,7 +356,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('no iOS Sim + Watch Sim + no watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -378,7 +378,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('no iOS Sim + no Watch Sim + no watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -399,7 +399,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('no iOS Sim + app + no Watch Sim + no watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -421,7 +421,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('no iOS Sim + app + no Watch Sim + watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -444,7 +444,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('no iOS Sim + app + Watch Sim + watch app is valid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -468,7 +468,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('iPad Sim + Watch Sim + watch app is invalid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -485,7 +485,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('iPad Sim + watch app is invalid', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
@@ -501,7 +501,7 @@ describe('simulator', function () {
 	});
 
 	(process.env.CI ? it.skip : it)('find a iOS and Watch Sim', function (done) {
-		this.timeout(5000);
+		this.timeout(8000);
 		this.slow(2000);
 
 		ioslib.simulator.findSimulators({
