@@ -25,7 +25,7 @@
     "bplist-parser": "0.3.2",
     "debug": "^4.3.4",
     "node-appc": "^1.1.7",
-    "node-ios-device": "1.13.0"
+    "node-ios-device": "4.0.3"
   },
   "devDependencies": {
     "mocha": "^8.2.0",
