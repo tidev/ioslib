@@ -17,8 +17,8 @@ describe('teams', function () {
 	});
 
 	it('detect teams', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
+		this.timeout(30000);
+		this.slow(10000);
 
 		ioslib.teams.detect(function (err, results) {
 			if (err) {

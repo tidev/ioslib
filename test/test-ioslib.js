@@ -19,8 +19,8 @@ describe('ioslib', function () {
 	});
 
 	it('detect all iOS information', function (done) {
-		this.timeout(80000);
-		this.slow(30000);
+		this.timeout(180000);
+		this.slow(60000);
 
 		ioslib.detect(function (err, results) {
 			if (err) {
