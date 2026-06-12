@@ -17,7 +17,7 @@ function checkXcode(xcode) {
 	should(xcode).be.an.Object;
 	should(xcode).have.keys('xcodeapp', 'path', 'selected', 'version', 'build',
 		'supported', 'eulaAccepted', 'sdks', 'sims', 'simDeviceTypes',
-		'simRuntimes', 'watchos', 'tvos', 'teams', 'executables');
+		'simRuntimes', 'simDevicePairs', 'watchos', 'tvos', 'teams', 'executables');
 
 	should(xcode.xcodeapp).be.a.String;
 	should(xcode.xcodeapp).not.equal('');
@@ -151,6 +151,38 @@ describe('xcode', function () {
 				should(issue.message).be.a.String;
 			});
 
+			done();
+		});
+	});
+
+	it('detect should map Xcode 27 simulator device pairs', function (done) {
+		this.timeout(5000);
+		this.slow(2000);
+
+		ioslib.xcode.detect({ bypassCache: true }, function (err, results) {
+			if (err) {
+				return done(err);
+			}
+
+			var xcode27 = Object.keys(results.xcode)
+				.map(function (id) { return results.xcode[id]; })
+				.filter(function (xc) { return /^27\./.test(xc.version); })
+				.shift();
+
+			if (!xcode27) {
+				return done();
+			}
+
+			should(xcode27.simDevicePairs).eql({
+				'26.x': {
+					'26.x': true,
+					'27.x': true
+				},
+				'27.x': {
+					'26.x': true,
+					'27.x': true
+				}
+			});
 			done();
 		});
 	});
