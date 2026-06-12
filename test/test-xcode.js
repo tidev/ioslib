@@ -10,8 +10,23 @@
  */
 
 const
+	execFile = require('child_process').execFile,
 	fs = require('fs'),
 	ioslib = require('..');
+
+function skipUnlessSelectedXcode27(ctx, done, callback) {
+	execFile('xcodebuild', [ '-version' ], function (err, stdout) {
+		if (err) {
+			return done(err);
+		}
+
+		if (!/^Xcode 27\./m.test(stdout)) {
+			return ctx.skip();
+		}
+
+		callback();
+	});
+}
 
 function checkXcode(xcode) {
 	should(xcode).be.an.Object;
@@ -159,31 +174,33 @@ describe('xcode', function () {
 		this.timeout(5000);
 		this.slow(2000);
 
-		ioslib.xcode.detect({ bypassCache: true }, function (err, results) {
-			if (err) {
-				return done(err);
-			}
-
-			var xcode27 = Object.keys(results.xcode)
-				.map(function (id) { return results.xcode[id]; })
-				.filter(function (xc) { return /^27\./.test(xc.version); })
-				.shift();
-
-			if (!xcode27) {
-				return done();
-			}
-
-			should(xcode27.simDevicePairs).eql({
-				'26.x': {
-					'26.x': true,
-					'27.x': true
-				},
-				'27.x': {
-					'26.x': true,
-					'27.x': true
+		skipUnlessSelectedXcode27(this, done, function () {
+			ioslib.xcode.detect({ bypassCache: true }, function (err, results) {
+				if (err) {
+					return done(err);
 				}
+
+				var xcode27 = Object.keys(results.xcode)
+					.map(function (id) { return results.xcode[id]; })
+					.filter(function (xc) { return /^27\./.test(xc.version); })
+					.shift();
+
+				if (!xcode27) {
+					return done();
+				}
+
+				should(xcode27.simDevicePairs).eql({
+					'26.x': {
+						'26.x': true,
+						'27.x': true
+					},
+					'27.x': {
+						'26.x': true,
+						'27.x': true
+					}
+				});
+				done();
 			});
-			done();
 		});
 	});
 
@@ -191,25 +208,27 @@ describe('xcode', function () {
 		this.timeout(5000);
 		this.slow(2000);
 
-		ioslib.xcode.detect({ bypassCache: true }, function (err, results) {
-			if (err) {
-				return done(err);
-			}
+		skipUnlessSelectedXcode27(this, done, function () {
+			ioslib.xcode.detect({ bypassCache: true }, function (err, results) {
+				if (err) {
+					return done(err);
+				}
 
-			var xcode27 = Object.keys(results.xcode)
-				.map(function (id) { return results.xcode[id]; })
-				.filter(function (xc) { return /^27\./.test(xc.version); })
-				.shift();
+				var xcode27 = Object.keys(results.xcode)
+					.map(function (id) { return results.xcode[id]; })
+					.filter(function (xc) { return /^27\./.test(xc.version); })
+					.shift();
 
-			if (!xcode27) {
-				return done();
-			}
+				if (!xcode27) {
+					return done();
+				}
 
-			var deviceHub = 'DeviceHub.app/Contents/MacOS/DeviceHub';
-			should(xcode27.executables.simulator).not.equal(null);
-			should(xcode27.executables.simulator).endWith(deviceHub);
-			should(xcode27.executables.watchsimulator).equal(xcode27.executables.simulator);
-			done();
+				var deviceHub = 'DeviceHub.app/Contents/MacOS/DeviceHub';
+				should(xcode27.executables.simulator).not.equal(null);
+				should(xcode27.executables.simulator).endWith(deviceHub);
+				should(xcode27.executables.watchsimulator).equal(xcode27.executables.simulator);
+				done();
+			});
 		});
 	});
 });
