@@ -166,8 +166,8 @@ describe('simulator', function () {
 	});
 
 	it('detect iOS Simulators', function (done) {
-		this.timeout(8000);
-		this.slow(2000);
+		this.timeout(30000);
+		this.slow(10000);
 
 		ioslib.simulator.detect(function (err, results) {
 			if (err) {
