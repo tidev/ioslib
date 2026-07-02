@@ -21,15 +21,15 @@
   },
   "dependencies": {
     "always-tail": "0.2.0",
-    "async": "^3.2.6",
+    "async": "3.2.6",
     "bplist-parser": "0.3.2",
-    "debug": "^4.3.4",
-    "node-appc": "^1.1.7",
-    "node-ios-device": "1.13.0"
+    "debug": "4.4.3",
+    "node-appc": "1.1.7",
+    "node-ios-device": "7.0.1"
   },
   "devDependencies": {
-    "mocha": "^8.2.0",
-    "should": "^13.2.3"
+    "mocha": "11.7.6",
+    "should": "13.2.3"
   },
   "scripts": {
     "test": "mocha --require test/init --check-leaks test/",
@@ -44,5 +44,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "allowScripts": {
+    "node-ios-device@7.0.1": true
   }
 }
