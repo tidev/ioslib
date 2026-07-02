@@ -14,8 +14,7 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-const
-	appc = require('node-appc'),
+const appc = require('node-appc'),
 	async = require('async'),
 	env = require('./env'),
 	magik = require('./utilities').magik,
@@ -61,9 +60,9 @@ function detect(options, callback) {
 				var results = {
 					certs: {
 						keychains: {},
-						wwdr: false
+						wwdr: false,
 					},
-					issues: []
+					issues: [],
 				};
 
 				// if we don't have the security executable, we cannot detect certs
@@ -79,13 +78,18 @@ function detect(options, callback) {
 					function parseCerts(src, dest, prefix) {
 						var p = 0,
 							q = src.indexOf('-----END'),
-							pem, cert, validity, expired, invalid, commonName;
+							pem,
+							cert,
+							validity,
+							expired,
+							invalid,
+							commonName;
 
 						while (p !== -1 && q !== -1) {
 							pem = src.substring(p, q + 25);
 							cert = pem2cert(pem);
-							expired = cert.validity.notAfter < now,
-							invalid = expired || cert.validity.notBefore > now;
+							((expired = cert.validity.notAfter < now),
+								(invalid = expired || cert.validity.notBefore > now));
 							commonName = cert.subject.getField('CN').value;
 							let certName;
 
@@ -96,15 +100,19 @@ function detect(options, callback) {
 								} else {
 									const match = fullname.match(certRegExp);
 									if (match) {
-										certName = match[3]
+										certName = match[3];
 									}
 								}
 							} else {
-								certName = appc.encoding.decodeOctalUTF8(commonName.substring(prefix.length)).trim();
+								certName = appc.encoding
+									.decodeOctalUTF8(commonName.substring(prefix.length))
+									.trim();
 							}
 
 							if (!validOnly || !invalid) {
-								const teamId = cert.subject.attributes.find(attr => attr.name === 'organizationalUnitName');
+								const teamId = cert.subject.attributes.find(
+									(attr) => attr.name === 'organizationalUnitName'
+								);
 								dest.push({
 									name: certName,
 									fullname: appc.encoding.decodeOctalUTF8(commonName).trim(),
@@ -113,7 +121,7 @@ function detect(options, callback) {
 									after: cert.validity.notAfter,
 									expired: expired,
 									invalid: invalid,
-									teamId: teamId && teamId.value
+									teamId: teamId && teamId.value,
 								});
 							}
 
@@ -122,7 +130,7 @@ function detect(options, callback) {
 						}
 					}
 
-					var now = new Date,
+					var now = new Date(),
 						tasks = [];
 
 					// parse out the keychains and add tasks to find certs for each keychain
@@ -131,39 +139,51 @@ function detect(options, callback) {
 						if (!m) return;
 
 						var keychain = m[1].trim(),
-							dest = results.certs.keychains[keychain] = {
+							dest = (results.certs.keychains[keychain] = {
 								developer: [],
-								distribution: []
-							};
+								distribution: [],
+							});
 
 						// find all the developer certificates in this keychain
 						tasks.push(function (next) {
-							appc.subprocess.run(env.executables.security, ['find-certificate', '-c', 'iPhone Developer:', '-a', '-p', keychain], function (code, out, err) {
-								if (!code) {
-									parseCerts(out, dest.developer, 'iPhone Developer:');
+							appc.subprocess.run(
+								env.executables.security,
+								['find-certificate', '-c', 'iPhone Developer:', '-a', '-p', keychain],
+								function (code, out, err) {
+									if (!code) {
+										parseCerts(out, dest.developer, 'iPhone Developer:');
+									}
+									next();
 								}
-								next();
-							});
+							);
 						});
 
 						// find all the developer certificates in this keychain
 						tasks.push(function (next) {
-							appc.subprocess.run(env.executables.security, ['find-certificate', '-c', 'Development:', '-a', '-p', keychain], function (code, out, err) {
-								if (!code) {
-									parseCerts(out, dest.developer);
+							appc.subprocess.run(
+								env.executables.security,
+								['find-certificate', '-c', 'Development:', '-a', '-p', keychain],
+								function (code, out, err) {
+									if (!code) {
+										parseCerts(out, dest.developer);
+									}
+									next();
 								}
-								next();
-							});
+							);
 						});
 
 						// find all the distribution certificates in this keychain
 						tasks.push(function (next) {
-							appc.subprocess.run(env.executables.security, ['find-certificate', '-c', 'Distribution:', '-a', '-p', keychain], function (code, out, err) {
-								if (!code) {
-									parseCerts(out, dest.distribution);
+							appc.subprocess.run(
+								env.executables.security,
+								['find-certificate', '-c', 'Distribution:', '-a', '-p', keychain],
+								function (code, out, err) {
+									if (!code) {
+										parseCerts(out, dest.distribution);
+									}
+									next();
 								}
-								next();
-							});
+							);
 						});
 
 						// find all the wwdr certificates in this keychain
@@ -171,14 +191,26 @@ function detect(options, callback) {
 							// if we already found it, then skip the remaining keychains
 							if (results.certs.wwdr) return next();
 
-							appc.subprocess.run(env.executables.security, ['find-certificate', '-c', 'Apple Worldwide Developer Relations Certification Authority', '-a', '-p', keychain], function (code, out, err) {
-								if (!code) {
-									var tmp = [];
-									parseCerts(out, tmp);
-									results.certs.wwdr = results.certs.wwdr || (tmp.length && tmp[0].invalid === false);
+							appc.subprocess.run(
+								env.executables.security,
+								[
+									'find-certificate',
+									'-c',
+									'Apple Worldwide Developer Relations Certification Authority',
+									'-a',
+									'-p',
+									keychain,
+								],
+								function (code, out, err) {
+									if (!code) {
+										var tmp = [];
+										parseCerts(out, tmp);
+										results.certs.wwdr =
+											results.certs.wwdr || (tmp.length && tmp[0].invalid === false);
+									}
+									next();
 								}
-								next();
-							});
+							);
 						});
 					});
 
@@ -198,7 +230,7 @@ function detect(options, callback) {
 			callback(null, results);
 		});
 	});
-};
+}
 
 function detectIssues(dest) {
 	dest.issues = [];
@@ -207,8 +239,12 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_WWDR_CERT_FOUND',
 			type: 'error',
-			message: __('Apple’s World Wide Developer Relations (WWDR) intermediate certificate is not installed.') + '\n' +
-				__('This will prevent you from building apps for iOS devices or package for distribution.')
+			message:
+				__(
+					'Apple’s World Wide Developer Relations (WWDR) intermediate certificate is not installed.'
+				) +
+				'\n' +
+				__('This will prevent you from building apps for iOS devices or package for distribution.'),
 		});
 	}
 
@@ -217,7 +253,7 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_KEYCHAINS_FOUND',
 			type: 'warning',
-			message: __('Unable to find any keychains found.')
+			message: __('Unable to find any keychains found.'),
 		});
 	}
 
@@ -238,8 +274,10 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_VALID_DEV_CERTS_FOUND',
 			type: 'warning',
-			message: __('Unable to find any valid iOS developer certificates.') + '\n' +
-				__('This will prevent you from building apps for iOS devices.')
+			message:
+				__('Unable to find any valid iOS developer certificates.') +
+				'\n' +
+				__('This will prevent you from building apps for iOS devices.'),
 		});
 	}
 
@@ -247,8 +285,10 @@ function detectIssues(dest) {
 		dest.issues.push({
 			id: 'IOS_NO_VALID_DIST_CERTS_FOUND',
 			type: 'warning',
-			message: __('Unable to find any valid iOS production distribution certificates.') + '\n' +
-				__('This will prevent you from packaging apps for distribution.')
+			message:
+				__('Unable to find any valid iOS production distribution certificates.') +
+				'\n' +
+				__('This will prevent you from packaging apps for distribution.'),
 		});
 	}
 }
@@ -293,7 +333,7 @@ function watch(options, callback) {
 	return function () {
 		unwatch(callback);
 	};
-};
+}
 
 /**
  * Stops watching for certificate changes.
@@ -309,7 +349,7 @@ function unwatch(callback) {
 		clearTimeout(watchTimer);
 		watchTimer = null;
 	}
-};
+}
 
 /*
  * Everything from this point onward is from the forge project (aka node-forge).
@@ -343,346 +383,386 @@ function unwatch(callback) {
  */
 
 var typeRegExp = /^(?:X509 |TRUSTED )?CERTIFICATE$/,
-	rMessage = /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+\/=\s]+?)-----END \1-----/g,
+	rMessage =
+		/\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+\/=\s]+?)-----END \1-----/g,
 	rHeader = /([\x21-\x7e]+):\s*([\x21-\x7e\s^:]+)/,
 	rCRLF = /\r?\n/,
 	whitespaceRegExp = /\s/,
 	leadingSpaceRegExp = /^\s+/,
 	asn1Class = {
-		UNIVERSAL:        0x00,
-		APPLICATION:      0x40,
+		UNIVERSAL: 0x00,
+		APPLICATION: 0x40,
 		CONTEXT_SPECIFIC: 0x80,
-		PRIVATE:          0xC0
+		PRIVATE: 0xc0,
 	},
 	asn1Type = {
-		NONE:             0,
-		BOOLEAN:          1,
-		INTEGER:          2,
-		BITSTRING:        3,
-		OCTETSTRING:      4,
-		NULL:             5,
-		OID:              6,
-		ODESC:            7,
-		EXTERNAL:         8,
-		REAL:             9,
-		ENUMERATED:      10,
-		EMBEDDED:        11,
-		UTF8:            12,
-		ROID:            13,
-		SEQUENCE:        16,
-		SET:             17,
+		NONE: 0,
+		BOOLEAN: 1,
+		INTEGER: 2,
+		BITSTRING: 3,
+		OCTETSTRING: 4,
+		NULL: 5,
+		OID: 6,
+		ODESC: 7,
+		EXTERNAL: 8,
+		REAL: 9,
+		ENUMERATED: 10,
+		EMBEDDED: 11,
+		UTF8: 12,
+		ROID: 13,
+		SEQUENCE: 16,
+		SET: 17,
 		PRINTABLESTRING: 19,
-		IA5STRING:       22,
-		UTCTIME:         23,
+		IA5STRING: 22,
+		UTCTIME: 23,
 		GENERALIZEDTIME: 24,
-		BMPSTRING:       30
+		BMPSTRING: 30,
 	},
 	x509CertificateValidator = {
 		name: 'Certificate',
 		tagClass: asn1Class.UNIVERSAL,
 		type: asn1Type.SEQUENCE,
 		constructed: true,
-		value: [ {
-			name: 'Certificate.TBSCertificate',
-			tagClass: asn1Class.UNIVERSAL,
-			type: asn1Type.SEQUENCE,
-			constructed: true,
-			captureAsn1: 'tbsCertificate',
-			value: [ {
-				name: 'Certificate.TBSCertificate.version',
-				tagClass: asn1Class.CONTEXT_SPECIFIC,
-				type: 0,
-				constructed: true,
-				optional: true,
-				value: [ {
-					name: 'Certificate.TBSCertificate.version.integer',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.INTEGER,
-					constructed: false,
-					capture: 'certVersion'
-				} ]
-			}, {
-				name: 'Certificate.TBSCertificate.serialNumber',
-				tagClass: asn1Class.UNIVERSAL,
-				type: asn1Type.INTEGER,
-				constructed: false,
-				capture: 'certSerialNumber'
-			}, {
-				name: 'Certificate.TBSCertificate.signature',
+		value: [
+			{
+				name: 'Certificate.TBSCertificate',
 				tagClass: asn1Class.UNIVERSAL,
 				type: asn1Type.SEQUENCE,
 				constructed: true,
-				value: [ {
-					name: 'Certificate.TBSCertificate.signature.algorithm',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.OID,
-					constructed: false,
-					capture: 'certinfoSignatureOid'
-				}, {
-					name: 'Certificate.TBSCertificate.signature.parameters',
-					tagClass: asn1Class.UNIVERSAL,
-					optional: true,
-					captureAsn1: 'certinfoSignatureParams'
-				} ]
-			}, {
-				name: 'Certificate.TBSCertificate.issuer',
-				tagClass: asn1Class.UNIVERSAL,
-				type: asn1Type.SEQUENCE,
-				constructed: true,
-				captureAsn1: 'certIssuer'
-			}, {
-				name: 'Certificate.TBSCertificate.validity',
-				tagClass: asn1Class.UNIVERSAL,
-				type: asn1Type.SEQUENCE,
-				constructed: true,
-				// Note: UTC and generalized times may both appear so the capture
-				// names are based on their detected order, the names used below
-				// are only for the common case, which validity time really means
-				// "notBefore" and which means "notAfter" will be determined by order
-				value: [ {
-					// notBefore (Time) (UTC time case)
-					name: 'Certificate.TBSCertificate.validity.notBefore (utc)',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.UTCTIME,
-					constructed: false,
-					optional: true,
-					capture: 'certValidity1UTCTime'
-				}, {
-					// notBefore (Time) (generalized time case)
-					name: 'Certificate.TBSCertificate.validity.notBefore (generalized)',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.GENERALIZEDTIME,
-					constructed: false,
-					optional: true,
-					capture: 'certValidity2GeneralizedTime'
-				}, {
-					// notAfter (Time) (only UTC time is supported)
-					name: 'Certificate.TBSCertificate.validity.notAfter (utc)',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.UTCTIME,
-					constructed: false,
-					optional: true,
-					capture: 'certValidity3UTCTime'
-				}, {
-					// notAfter (Time) (only UTC time is supported)
-					name: 'Certificate.TBSCertificate.validity.notAfter (generalized)',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.GENERALIZEDTIME,
-					constructed: false,
-					optional: true,
-					capture: 'certValidity4GeneralizedTime'
-				} ]
-			}, {
-				// Name (subject) (RDNSequence)
-				name: 'Certificate.TBSCertificate.subject',
-				tagClass: asn1Class.UNIVERSAL,
-				type: asn1Type.SEQUENCE,
-				constructed: true,
-				captureAsn1: 'certSubject'
-			}, {
-				name: 'SubjectPublicKeyInfo',
-				tagClass: asn1Class.UNIVERSAL,
-				type: asn1Type.SEQUENCE,
-				constructed: true,
-				captureAsn1: 'subjectPublicKeyInfo',
-				value: [ {
-					name: 'SubjectPublicKeyInfo.AlgorithmIdentifier',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.SEQUENCE,
-					constructed: true,
-					value: [ {
-						name: 'AlgorithmIdentifier.algorithm',
+				captureAsn1: 'tbsCertificate',
+				value: [
+					{
+						name: 'Certificate.TBSCertificate.version',
+						tagClass: asn1Class.CONTEXT_SPECIFIC,
+						type: 0,
+						constructed: true,
+						optional: true,
+						value: [
+							{
+								name: 'Certificate.TBSCertificate.version.integer',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.INTEGER,
+								constructed: false,
+								capture: 'certVersion',
+							},
+						],
+					},
+					{
+						name: 'Certificate.TBSCertificate.serialNumber',
 						tagClass: asn1Class.UNIVERSAL,
-						type: asn1Type.OID,
+						type: asn1Type.INTEGER,
 						constructed: false,
-						capture: 'publicKeyOid'
-					} ]
-				}, {
-					// subjectPublicKey
-					name: 'SubjectPublicKeyInfo.subjectPublicKey',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.BITSTRING,
-					constructed: false,
-					value: [ {
-						// RSAPublicKey
-						name: 'SubjectPublicKeyInfo.subjectPublicKey.RSAPublicKey',
+						capture: 'certSerialNumber',
+					},
+					{
+						name: 'Certificate.TBSCertificate.signature',
 						tagClass: asn1Class.UNIVERSAL,
 						type: asn1Type.SEQUENCE,
 						constructed: true,
+						value: [
+							{
+								name: 'Certificate.TBSCertificate.signature.algorithm',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.OID,
+								constructed: false,
+								capture: 'certinfoSignatureOid',
+							},
+							{
+								name: 'Certificate.TBSCertificate.signature.parameters',
+								tagClass: asn1Class.UNIVERSAL,
+								optional: true,
+								captureAsn1: 'certinfoSignatureParams',
+							},
+						],
+					},
+					{
+						name: 'Certificate.TBSCertificate.issuer',
+						tagClass: asn1Class.UNIVERSAL,
+						type: asn1Type.SEQUENCE,
+						constructed: true,
+						captureAsn1: 'certIssuer',
+					},
+					{
+						name: 'Certificate.TBSCertificate.validity',
+						tagClass: asn1Class.UNIVERSAL,
+						type: asn1Type.SEQUENCE,
+						constructed: true,
+						// Note: UTC and generalized times may both appear so the capture
+						// names are based on their detected order, the names used below
+						// are only for the common case, which validity time really means
+						// "notBefore" and which means "notAfter" will be determined by order
+						value: [
+							{
+								// notBefore (Time) (UTC time case)
+								name: 'Certificate.TBSCertificate.validity.notBefore (utc)',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.UTCTIME,
+								constructed: false,
+								optional: true,
+								capture: 'certValidity1UTCTime',
+							},
+							{
+								// notBefore (Time) (generalized time case)
+								name: 'Certificate.TBSCertificate.validity.notBefore (generalized)',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.GENERALIZEDTIME,
+								constructed: false,
+								optional: true,
+								capture: 'certValidity2GeneralizedTime',
+							},
+							{
+								// notAfter (Time) (only UTC time is supported)
+								name: 'Certificate.TBSCertificate.validity.notAfter (utc)',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.UTCTIME,
+								constructed: false,
+								optional: true,
+								capture: 'certValidity3UTCTime',
+							},
+							{
+								// notAfter (Time) (only UTC time is supported)
+								name: 'Certificate.TBSCertificate.validity.notAfter (generalized)',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.GENERALIZEDTIME,
+								constructed: false,
+								optional: true,
+								capture: 'certValidity4GeneralizedTime',
+							},
+						],
+					},
+					{
+						// Name (subject) (RDNSequence)
+						name: 'Certificate.TBSCertificate.subject',
+						tagClass: asn1Class.UNIVERSAL,
+						type: asn1Type.SEQUENCE,
+						constructed: true,
+						captureAsn1: 'certSubject',
+					},
+					{
+						name: 'SubjectPublicKeyInfo',
+						tagClass: asn1Class.UNIVERSAL,
+						type: asn1Type.SEQUENCE,
+						constructed: true,
+						captureAsn1: 'subjectPublicKeyInfo',
+						value: [
+							{
+								name: 'SubjectPublicKeyInfo.AlgorithmIdentifier',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.SEQUENCE,
+								constructed: true,
+								value: [
+									{
+										name: 'AlgorithmIdentifier.algorithm',
+										tagClass: asn1Class.UNIVERSAL,
+										type: asn1Type.OID,
+										constructed: false,
+										capture: 'publicKeyOid',
+									},
+								],
+							},
+							{
+								// subjectPublicKey
+								name: 'SubjectPublicKeyInfo.subjectPublicKey',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.BITSTRING,
+								constructed: false,
+								value: [
+									{
+										// RSAPublicKey
+										name: 'SubjectPublicKeyInfo.subjectPublicKey.RSAPublicKey',
+										tagClass: asn1Class.UNIVERSAL,
+										type: asn1Type.SEQUENCE,
+										constructed: true,
+										optional: true,
+										captureAsn1: 'rsaPublicKey',
+									},
+								],
+							},
+						],
+					},
+					{
+						// issuerUniqueID (optional)
+						name: 'Certificate.TBSCertificate.issuerUniqueID',
+						tagClass: asn1Class.CONTEXT_SPECIFIC,
+						type: 1,
+						constructed: true,
 						optional: true,
-						captureAsn1: 'rsaPublicKey'
-					} ]
-				} ]
-			}, {
-				// issuerUniqueID (optional)
-				name: 'Certificate.TBSCertificate.issuerUniqueID',
-				tagClass: asn1Class.CONTEXT_SPECIFIC,
-				type: 1,
-				constructed: true,
-				optional: true,
-				value: [ {
-					name: 'Certificate.TBSCertificate.issuerUniqueID.id',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.BITSTRING,
-					constructed: false,
-					capture: 'certIssuerUniqueId'
-				} ]
-			}, {
-				// subjectUniqueID (optional)
-				name: 'Certificate.TBSCertificate.subjectUniqueID',
-				tagClass: asn1Class.CONTEXT_SPECIFIC,
-				type: 2,
-				constructed: true,
-				optional: true,
-				value: [ {
-					name: 'Certificate.TBSCertificate.subjectUniqueID.id',
-					tagClass: asn1Class.UNIVERSAL,
-					type: asn1Type.BITSTRING,
-					constructed: false,
-					capture: 'certSubjectUniqueId'
-				} ]
-			}, {
-				// Extensions (optional)
-				name: 'Certificate.TBSCertificate.extensions',
-				tagClass: asn1Class.CONTEXT_SPECIFIC,
-				type: 3,
-				constructed: true,
-				captureAsn1: 'certExtensions',
-				optional: true
-			} ]
-		}, {
-			// AlgorithmIdentifier (signature algorithm)
-			name: 'Certificate.signatureAlgorithm',
-			tagClass: asn1Class.UNIVERSAL,
-			type: asn1Type.SEQUENCE,
-			constructed: true,
-			value: [ {
-				// algorithm
-				name: 'Certificate.signatureAlgorithm.algorithm',
+						value: [
+							{
+								name: 'Certificate.TBSCertificate.issuerUniqueID.id',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.BITSTRING,
+								constructed: false,
+								capture: 'certIssuerUniqueId',
+							},
+						],
+					},
+					{
+						// subjectUniqueID (optional)
+						name: 'Certificate.TBSCertificate.subjectUniqueID',
+						tagClass: asn1Class.CONTEXT_SPECIFIC,
+						type: 2,
+						constructed: true,
+						optional: true,
+						value: [
+							{
+								name: 'Certificate.TBSCertificate.subjectUniqueID.id',
+								tagClass: asn1Class.UNIVERSAL,
+								type: asn1Type.BITSTRING,
+								constructed: false,
+								capture: 'certSubjectUniqueId',
+							},
+						],
+					},
+					{
+						// Extensions (optional)
+						name: 'Certificate.TBSCertificate.extensions',
+						tagClass: asn1Class.CONTEXT_SPECIFIC,
+						type: 3,
+						constructed: true,
+						captureAsn1: 'certExtensions',
+						optional: true,
+					},
+				],
+			},
+			{
+				// AlgorithmIdentifier (signature algorithm)
+				name: 'Certificate.signatureAlgorithm',
 				tagClass: asn1Class.UNIVERSAL,
-				type: asn1Type.OID,
+				type: asn1Type.SEQUENCE,
+				constructed: true,
+				value: [
+					{
+						// algorithm
+						name: 'Certificate.signatureAlgorithm.algorithm',
+						tagClass: asn1Class.UNIVERSAL,
+						type: asn1Type.OID,
+						constructed: false,
+						capture: 'certSignatureOid',
+					},
+					{
+						name: 'Certificate.TBSCertificate.signature.parameters',
+						tagClass: asn1Class.UNIVERSAL,
+						optional: true,
+						captureAsn1: 'certSignatureParams',
+					},
+				],
+			},
+			{
+				// SignatureValue
+				name: 'Certificate.signatureValue',
+				tagClass: asn1Class.UNIVERSAL,
+				type: asn1Type.BITSTRING,
 				constructed: false,
-				capture: 'certSignatureOid'
-			}, {
-				name: 'Certificate.TBSCertificate.signature.parameters',
-				tagClass: asn1Class.UNIVERSAL,
-				optional: true,
-				captureAsn1: 'certSignatureParams'
-			} ]
-		}, {
-			// SignatureValue
-			name: 'Certificate.signatureValue',
-			tagClass: asn1Class.UNIVERSAL,
-			type: asn1Type.BITSTRING,
-			constructed: false,
-			capture: 'certSignature'
-		} ]
+				capture: 'certSignature',
+			},
+		],
 	},
 	oids = {
 		// algorithm OIDs
 		'1.2.840.113549.1.1.1': 'rsaEncryption',
-		'rsaEncryption': '1.2.840.113549.1.1.1',
+		rsaEncryption: '1.2.840.113549.1.1.1',
 		// Note: md2 & md4 not implemented
 		//'1.2.840.113549.1.1.2': 'md2WithRSAEncryption',
 		//'md2WithRSAEncryption': '1.2.840.113549.1.1.2',
 		//'1.2.840.113549.1.1.3': 'md4WithRSAEncryption',
 		//'md4WithRSAEncryption': '1.2.840.113549.1.1.3',
 		'1.2.840.113549.1.1.4': 'md5WithRSAEncryption',
-		'md5WithRSAEncryption': '1.2.840.113549.1.1.4',
+		md5WithRSAEncryption: '1.2.840.113549.1.1.4',
 		'1.2.840.113549.1.1.5': 'sha1WithRSAEncryption',
-		'sha1WithRSAEncryption': '1.2.840.113549.1.1.5',
+		sha1WithRSAEncryption: '1.2.840.113549.1.1.5',
 		'1.2.840.113549.1.1.7': 'RSAES-OAEP',
 		'RSAES-OAEP': '1.2.840.113549.1.1.7',
 		'1.2.840.113549.1.1.8': 'mgf1',
-		'mgf1': '1.2.840.113549.1.1.8',
+		mgf1: '1.2.840.113549.1.1.8',
 		'1.2.840.113549.1.1.9': 'pSpecified',
-		'pSpecified': '1.2.840.113549.1.1.9',
+		pSpecified: '1.2.840.113549.1.1.9',
 		'1.2.840.113549.1.1.10': 'RSASSA-PSS',
 		'RSASSA-PSS': '1.2.840.113549.1.1.10',
 		'1.2.840.113549.1.1.11': 'sha256WithRSAEncryption',
-		'sha256WithRSAEncryption': '1.2.840.113549.1.1.11',
+		sha256WithRSAEncryption: '1.2.840.113549.1.1.11',
 		'1.2.840.113549.1.1.12': 'sha384WithRSAEncryption',
-		'sha384WithRSAEncryption': '1.2.840.113549.1.1.12',
+		sha384WithRSAEncryption: '1.2.840.113549.1.1.12',
 		'1.2.840.113549.1.1.13': 'sha512WithRSAEncryption',
-		'sha512WithRSAEncryption': '1.2.840.113549.1.1.13',
+		sha512WithRSAEncryption: '1.2.840.113549.1.1.13',
 
 		'1.3.14.3.2.7': 'desCBC',
-		'desCBC': '1.3.14.3.2.7',
+		desCBC: '1.3.14.3.2.7',
 
 		'1.3.14.3.2.26': 'sha1',
-		'sha1': '1.3.14.3.2.26',
+		sha1: '1.3.14.3.2.26',
 		'2.16.840.1.101.3.4.2.1': 'sha256',
-		'sha256': '2.16.840.1.101.3.4.2.1',
+		sha256: '2.16.840.1.101.3.4.2.1',
 		'2.16.840.1.101.3.4.2.2': 'sha384',
-		'sha384': '2.16.840.1.101.3.4.2.2',
+		sha384: '2.16.840.1.101.3.4.2.2',
 		'2.16.840.1.101.3.4.2.3': 'sha512',
-		'sha512': '2.16.840.1.101.3.4.2.3',
+		sha512: '2.16.840.1.101.3.4.2.3',
 		'1.2.840.113549.2.5': 'md5',
-		'md5': '1.2.840.113549.2.5',
+		md5: '1.2.840.113549.2.5',
 
 		// pkcs#7 content types
 		'1.2.840.113549.1.7.1': 'data',
-		'data': '1.2.840.113549.1.7.1',
+		data: '1.2.840.113549.1.7.1',
 		'1.2.840.113549.1.7.2': 'signedData',
-		'signedData': '1.2.840.113549.1.7.2',
+		signedData: '1.2.840.113549.1.7.2',
 		'1.2.840.113549.1.7.3': 'envelopedData',
-		'envelopedData': '1.2.840.113549.1.7.3',
+		envelopedData: '1.2.840.113549.1.7.3',
 		'1.2.840.113549.1.7.4': 'signedAndEnvelopedData',
-		'signedAndEnvelopedData': '1.2.840.113549.1.7.4',
+		signedAndEnvelopedData: '1.2.840.113549.1.7.4',
 		'1.2.840.113549.1.7.5': 'digestedData',
-		'digestedData': '1.2.840.113549.1.7.5',
+		digestedData: '1.2.840.113549.1.7.5',
 		'1.2.840.113549.1.7.6': 'encryptedData',
-		'encryptedData': '1.2.840.113549.1.7.6',
+		encryptedData: '1.2.840.113549.1.7.6',
 
 		// pkcs#9 oids
 		'1.2.840.113549.1.9.1': 'emailAddress',
-		'emailAddress': '1.2.840.113549.1.9.1',
+		emailAddress: '1.2.840.113549.1.9.1',
 		'1.2.840.113549.1.9.2': 'unstructuredName',
-		'unstructuredName': '1.2.840.113549.1.9.2',
+		unstructuredName: '1.2.840.113549.1.9.2',
 		'1.2.840.113549.1.9.3': 'contentType',
-		'contentType': '1.2.840.113549.1.9.3',
+		contentType: '1.2.840.113549.1.9.3',
 		'1.2.840.113549.1.9.4': 'messageDigest',
-		'messageDigest': '1.2.840.113549.1.9.4',
+		messageDigest: '1.2.840.113549.1.9.4',
 		'1.2.840.113549.1.9.5': 'signingTime',
-		'signingTime': '1.2.840.113549.1.9.5',
+		signingTime: '1.2.840.113549.1.9.5',
 		'1.2.840.113549.1.9.6': 'counterSignature',
-		'counterSignature': '1.2.840.113549.1.9.6',
+		counterSignature: '1.2.840.113549.1.9.6',
 		'1.2.840.113549.1.9.7': 'challengePassword',
-		'challengePassword': '1.2.840.113549.1.9.7',
+		challengePassword: '1.2.840.113549.1.9.7',
 		'1.2.840.113549.1.9.8': 'unstructuredAddress',
-		'unstructuredAddress': '1.2.840.113549.1.9.8',
+		unstructuredAddress: '1.2.840.113549.1.9.8',
 
 		'1.2.840.113549.1.9.20': 'friendlyName',
-		'friendlyName': '1.2.840.113549.1.9.20',
+		friendlyName: '1.2.840.113549.1.9.20',
 		'1.2.840.113549.1.9.21': 'localKeyId',
-		'localKeyId': '1.2.840.113549.1.9.21',
+		localKeyId: '1.2.840.113549.1.9.21',
 		'1.2.840.113549.1.9.22.1': 'x509Certificate',
-		'x509Certificate': '1.2.840.113549.1.9.22.1',
+		x509Certificate: '1.2.840.113549.1.9.22.1',
 
 		// pkcs#12 safe bags
 		'1.2.840.113549.1.12.10.1.1': 'keyBag',
-		'keyBag': '1.2.840.113549.1.12.10.1.1',
+		keyBag: '1.2.840.113549.1.12.10.1.1',
 		'1.2.840.113549.1.12.10.1.2': 'pkcs8ShroudedKeyBag',
-		'pkcs8ShroudedKeyBag': '1.2.840.113549.1.12.10.1.2',
+		pkcs8ShroudedKeyBag: '1.2.840.113549.1.12.10.1.2',
 		'1.2.840.113549.1.12.10.1.3': 'certBag',
-		'certBag': '1.2.840.113549.1.12.10.1.3',
+		certBag: '1.2.840.113549.1.12.10.1.3',
 		'1.2.840.113549.1.12.10.1.4': 'crlBag',
-		'crlBag': '1.2.840.113549.1.12.10.1.4',
+		crlBag: '1.2.840.113549.1.12.10.1.4',
 		'1.2.840.113549.1.12.10.1.5': 'secretBag',
-		'secretBag': '1.2.840.113549.1.12.10.1.5',
+		secretBag: '1.2.840.113549.1.12.10.1.5',
 		'1.2.840.113549.1.12.10.1.6': 'safeContentsBag',
-		'safeContentsBag': '1.2.840.113549.1.12.10.1.6',
+		safeContentsBag: '1.2.840.113549.1.12.10.1.6',
 
 		// password-based-encryption for pkcs#12
 		'1.2.840.113549.1.5.13': 'pkcs5PBES2',
-		'pkcs5PBES2': '1.2.840.113549.1.5.13',
+		pkcs5PBES2: '1.2.840.113549.1.5.13',
 		'1.2.840.113549.1.5.12': 'pkcs5PBKDF2',
-		'pkcs5PBKDF2': '1.2.840.113549.1.5.12',
+		pkcs5PBKDF2: '1.2.840.113549.1.5.12',
 
 		'1.2.840.113549.1.12.1.1': 'pbeWithSHAAnd128BitRC4',
-		'pbeWithSHAAnd128BitRC4': '1.2.840.113549.1.12.1.1',
+		pbeWithSHAAnd128BitRC4: '1.2.840.113549.1.12.1.1',
 		'1.2.840.113549.1.12.1.2': 'pbeWithSHAAnd40BitRC4',
-		'pbeWithSHAAnd40BitRC4': '1.2.840.113549.1.12.1.2',
+		pbeWithSHAAnd40BitRC4: '1.2.840.113549.1.12.1.2',
 		'1.2.840.113549.1.12.1.3': 'pbeWithSHAAnd3-KeyTripleDES-CBC',
 		'pbeWithSHAAnd3-KeyTripleDES-CBC': '1.2.840.113549.1.12.1.3',
 		'1.2.840.113549.1.12.1.4': 'pbeWithSHAAnd2-KeyTripleDES-CBC',
@@ -704,23 +784,23 @@ var typeRegExp = /^(?:X509 |TRUSTED )?CERTIFICATE$/,
 
 		// certificate issuer/subject OIDs
 		'2.5.4.3': 'commonName',
-		'commonName': '2.5.4.3',
+		commonName: '2.5.4.3',
 		'2.5.4.5': 'serialName',
-		'serialName': '2.5.4.5',
+		serialName: '2.5.4.5',
 		'2.5.4.6': 'countryName',
-		'countryName': '2.5.4.6',
+		countryName: '2.5.4.6',
 		'2.5.4.7': 'localityName',
-		'localityName': '2.5.4.7',
+		localityName: '2.5.4.7',
 		'2.5.4.8': 'stateOrProvinceName',
-		'stateOrProvinceName': '2.5.4.8',
+		stateOrProvinceName: '2.5.4.8',
 		'2.5.4.10': 'organizationName',
-		'organizationName': '2.5.4.10',
+		organizationName: '2.5.4.10',
 		'2.5.4.11': 'organizationalUnitName',
-		'organizationalUnitName': '2.5.4.11',
+		organizationalUnitName: '2.5.4.11',
 
 		// X.509 extension OIDs
 		'2.16.840.1.113730.1.1': 'nsCertType',
-		'nsCertType': '2.16.840.1.113730.1.1',
+		nsCertType: '2.16.840.1.113730.1.1',
 		'2.5.29.1': 'authorityKeyIdentifier', // deprecated, use .35
 		'2.5.29.2': 'keyAttributes', // obsolete use .37 or .15
 		'2.5.29.3': 'certificatePolicies', // deprecated, use .32
@@ -735,16 +815,16 @@ var typeRegExp = /^(?:X509 |TRUSTED )?CERTIFICATE$/,
 		'2.5.29.12': 'policyConstraints', // deprecated use .36
 		'2.5.29.13': 'basicConstraints', // deprecated use .19
 		'2.5.29.14': 'subjectKeyIdentifier',
-		'subjectKeyIdentifier': '2.5.29.14',
+		subjectKeyIdentifier: '2.5.29.14',
 		'2.5.29.15': 'keyUsage',
-		'keyUsage': '2.5.29.15',
+		keyUsage: '2.5.29.15',
 		'2.5.29.16': 'privateKeyUsagePeriod',
 		'2.5.29.17': 'subjectAltName',
-		'subjectAltName': '2.5.29.17',
+		subjectAltName: '2.5.29.17',
 		'2.5.29.18': 'issuerAltName',
-		'issuerAltName': '2.5.29.18',
+		issuerAltName: '2.5.29.18',
 		'2.5.29.19': 'basicConstraints',
-		'basicConstraints': '2.5.29.19',
+		basicConstraints: '2.5.29.19',
 		'2.5.29.20': 'cRLNumber',
 		'2.5.29.21': 'cRLReason',
 		'2.5.29.22': 'expirationDate',
@@ -763,44 +843,53 @@ var typeRegExp = /^(?:X509 |TRUSTED )?CERTIFICATE$/,
 		'2.5.29.35': 'authorityKeyIdentifier',
 		'2.5.29.36': 'policyConstraints',
 		'2.5.29.37': 'extKeyUsage',
-		'extKeyUsage': '2.5.29.37',
+		extKeyUsage: '2.5.29.37',
 		'2.5.29.46': 'freshestCRL',
 		'2.5.29.54': 'inhibitAnyPolicy',
 
 		// extKeyUsage purposes
 		'1.3.6.1.5.5.7.3.1': 'serverAuth',
-		'serverAuth': '1.3.6.1.5.5.7.3.1',
+		serverAuth: '1.3.6.1.5.5.7.3.1',
 		'1.3.6.1.5.5.7.3.2': 'clientAuth',
-		'clientAuth': '1.3.6.1.5.5.7.3.2',
+		clientAuth: '1.3.6.1.5.5.7.3.2',
 		'1.3.6.1.5.5.7.3.3': 'codeSigning',
-		'codeSigning': '1.3.6.1.5.5.7.3.3',
+		codeSigning: '1.3.6.1.5.5.7.3.3',
 		'1.3.6.1.5.5.7.3.4': 'emailProtection',
-		'emailProtection': '1.3.6.1.5.5.7.3.4',
+		emailProtection: '1.3.6.1.5.5.7.3.4',
 		'1.3.6.1.5.5.7.3.8': 'timeStamping',
-		'timeStamping': '1.3.6.1.5.5.7.3.8'
+		timeStamping: '1.3.6.1.5.5.7.3.8',
 	},
 	shortNames = {
-		'CN': oids['commonName'],
-		'commonName': 'CN',
-		'C': oids['countryName'],
-		'countryName': 'C',
-		'L': oids['localityName'],
-		'localityName': 'L',
-		'ST': oids['stateOrProvinceName'],
-		'stateOrProvinceName': 'ST',
-		'O': oids['organizationName'],
-		'organizationName': 'O',
-		'OU': oids['organizationalUnitName'],
-		'organizationalUnitName': 'OU',
-		'E': oids['emailAddress'],
-		'emailAddress': 'E'
+		CN: oids['commonName'],
+		commonName: 'CN',
+		C: oids['countryName'],
+		countryName: 'C',
+		L: oids['localityName'],
+		localityName: 'L',
+		ST: oids['stateOrProvinceName'],
+		stateOrProvinceName: 'ST',
+		O: oids['organizationName'],
+		organizationName: 'O',
+		OU: oids['organizationalUnitName'],
+		organizationalUnitName: 'OU',
+		E: oids['emailAddress'],
+		emailAddress: 'E',
 	};
 
 function pem2cert(pem) {
 	var msg = decodePem(pem)[0];
 
-	if (msg.type !== 'CERTIFICATE' && msg.type !== 'X509 CERTIFICATE' && msg.type !== 'TRUSTED CERTIFICATE') {
-		throw new Error(__('Could not convert certificate from PEM; PEM header type is "%s", but must be "CERTIFICATE", "X509 CERTIFICATE", or "TRUSTED CERTIFICATE".', msg.type));
+	if (
+		msg.type !== 'CERTIFICATE' &&
+		msg.type !== 'X509 CERTIFICATE' &&
+		msg.type !== 'TRUSTED CERTIFICATE'
+	) {
+		throw new Error(
+			__(
+				'Could not convert certificate from PEM; PEM header type is "%s", but must be "CERTIFICATE", "X509 CERTIFICATE", or "TRUSTED CERTIFICATE".',
+				msg.type
+			)
+		);
 	}
 
 	if (msg.procType && msg.procType.type === 'ENCRYPTED') {
@@ -812,7 +901,16 @@ function pem2cert(pem) {
 
 function decodePem(str) {
 	var rval = [],
-		match, msg, lines, li, line, nl, next, header, values, vi;
+		match,
+		msg,
+		lines,
+		li,
+		line,
+		nl,
+		next,
+		header,
+		values,
+		vi;
 
 	while (true) {
 		match = rMessage.exec(str);
@@ -820,14 +918,16 @@ function decodePem(str) {
 			break;
 		}
 
-		rval.push(msg = {
-			type: match[1],
-			procType: null,
-			contentDomain: null,
-			dekInfo: null,
-			headers: [],
-			body: Buffer.from(match[3], 'base64').toString('binary')
-		});
+		rval.push(
+			(msg = {
+				type: match[1],
+				procType: null,
+				contentDomain: null,
+				dekInfo: null,
+				headers: [],
+				body: Buffer.from(match[3], 'base64').toString('binary'),
+			})
+		);
 
 		// no headers
 		if (!match[2]) {
@@ -853,7 +953,7 @@ function decodePem(str) {
 			// parse header
 			match = line.match(rHeader);
 			if (match) {
-				header = {name: match[1], values: []};
+				header = { name: match[1], values: [] };
 				values = match[2].split(',');
 				for (vi = 0; vi < values.length; ++vi) {
 					header.values.push(values[vi].replace(leadingSpaceRegExp, ''));
@@ -862,20 +962,30 @@ function decodePem(str) {
 				// Proc-Type must be the first header
 				if (!msg.procType) {
 					if (header.name !== 'Proc-Type') {
-						throw new Error(__('Invalid PEM formatted message. The first encapsulated header must be "Proc-Type".'));
+						throw new Error(
+							__(
+								'Invalid PEM formatted message. The first encapsulated header must be "Proc-Type".'
+							)
+						);
 					} else if (header.values.length !== 2) {
-						throw new Error(__('Invalid PEM formatted message. The "Proc-Type" header must have two subfields.'));
+						throw new Error(
+							__('Invalid PEM formatted message. The "Proc-Type" header must have two subfields.')
+						);
 					}
 					msg.procType = { version: values[0], type: values[1] };
 
-				// special-case Content-Domain
+					// special-case Content-Domain
 				} else if (!msg.contentDomain && header.name === 'Content-Domain') {
 					msg.contentDomain = values[0] || '';
 
-				// special-case DEK-Info
+					// special-case DEK-Info
 				} else if (!msg.dekInfo && header.name === 'DEK-Info') {
 					if (header.values.length === 0) {
-						throw new Error(__('Invalid PEM formatted message. The "DEK-Info" header must have at least one subfield.'));
+						throw new Error(
+							__(
+								'Invalid PEM formatted message. The "DEK-Info" header must have at least one subfield.'
+							)
+						);
 					}
 					msg.dekInfo = { algorithm: values[0], parameters: values[1] || null };
 				} else {
@@ -885,7 +995,11 @@ function decodePem(str) {
 		}
 
 		if (msg.procType === 'ENCRYPTED' && !msg.dekInfo) {
-			throw new Error(__('Invalid PEM formatted message. The "DEK-Info" header must be present if "Proc-Type" is "ENCRYPTED".'));
+			throw new Error(
+				__(
+					'Invalid PEM formatted message. The "DEK-Info" header must be present if "Proc-Type" is "ENCRYPTED".'
+				)
+			);
 		}
 	}
 
@@ -919,9 +1033,9 @@ ByteStringBuffer.prototype.getInt = function getInt(n) {
 };
 
 ByteStringBuffer.prototype.bytes = function bytes(count) {
-	return count === undefined ?
-		this.data.slice(this.read) :
-		this.data.slice(this.read, this.read + count);
+	return count === undefined
+		? this.data.slice(this.read)
+		: this.data.slice(this.read, this.read + count);
 };
 
 ByteStringBuffer.prototype.getBytes = function getBytes(count) {
@@ -942,7 +1056,7 @@ ByteStringBuffer.prototype.getBytes = function getBytes(count) {
 };
 
 ByteStringBuffer.prototype.getInt16 = function getInt16() {
-	var rval = (this.data.charCodeAt(this.read) << 8 ^ this.data.charCodeAt(this.read + 1));
+	var rval = (this.data.charCodeAt(this.read) << 8) ^ this.data.charCodeAt(this.read + 1);
 	this.read += 2;
 	return rval;
 };
@@ -962,10 +1076,9 @@ function der2asn(bytes) {
 	// get the first byte
 	var b1 = bytes.getByte(),
 		// get the tag class
-		tagClass = (b1 & 0xC0),
+		tagClass = b1 & 0xc0,
 		// get the type (bits 1-5)
-		type = b1 & 0x1F,
-
+		type = b1 & 0x1f,
 		_getValueLength = function _getValueLength(b) {
 			var b2 = b.getByte();
 			if (b2 === 0x80) {
@@ -975,15 +1088,14 @@ function der2asn(bytes) {
 			// see if the length is "short form" or "long form" (bit 8 set)
 			// if "long form", the number of bytes the length is specified in bits 7 through 1
 			// and each length byte is in big-endian base-256
-			return b2 & 0x80 ? b.getInt((b2 & 0x7F) << 3) : b2;
+			return b2 & 0x80 ? b.getInt((b2 & 0x7f) << 3) : b2;
 		},
-
 		// get the value length
 		length = _getValueLength(bytes),
 		// prepare to get value
 		value,
 		// constructed flag is bit 6 (32 = 0x20) of the first byte
-		constructed = ((b1 & 0x20) === 0x20),
+		constructed = (b1 & 0x20) === 0x20,
 		composed = constructed;
 
 	// ensure there are enough bytes to get the value
@@ -1009,17 +1121,17 @@ function der2asn(bytes) {
 			// if the first byte indicates UNIVERSAL or CONTEXT_SPECIFIC,
 			// and the length is valid, assume we've got an ASN.1 object
 			b1 = bytes.getByte();
-			var tc = (b1 & 0xC0);
+			var tc = b1 & 0xc0;
 			if (tc === asn1Class.UNIVERSAL || tc === asn1Class.CONTEXT_SPECIFIC) {
 				try {
 					var len = _getValueLength(bytes);
-					composed = (len === length - (bytes.read - read));
+					composed = len === length - (bytes.read - read);
 					if (composed) {
 						// adjust read/length to account for unused bits byte
 						++read;
 						--length;
 					}
-				} catch(ex) {}
+				} catch (ex) {}
 			}
 		}
 		// restore read pointer
@@ -1048,8 +1160,8 @@ function der2asn(bytes) {
 			}
 		}
 	} else {
-	    // asn1 not composed, get raw value
-	    // TODO: do DER to OID conversion and vice-versa in .toDer?
+		// asn1 not composed, get raw value
+		// TODO: do DER to OID conversion and vice-versa in .toDer?
 
 		if (length === undefined) {
 			throw new Error(__('Non-constructed ASN.1 object of indefinite length.'));
@@ -1070,7 +1182,11 @@ function der2asn(bytes) {
 		type: type,
 		constructed: constructed,
 		composed: constructed || Array.isArray(value),
-		value: Array.isArray(value) ? value.filter(function (v) { return v !== undefined; }) : value
+		value: Array.isArray(value)
+			? value.filter(function (v) {
+					return v !== undefined;
+				})
+			: value,
 	};
 }
 
@@ -1078,7 +1194,10 @@ function asn1validate(obj, v, capture, errors) {
 	var rval = false;
 
 	// ensure tag class and type are the same if specified
-	if ((obj.tagClass === v.tagClass || v.tagClass === undefined) && (obj.type === v.type || v.type === undefined)) {
+	if (
+		(obj.tagClass === v.tagClass || v.tagClass === undefined) &&
+		(obj.type === v.type || v.type === undefined)
+	) {
 		// ensure constructed flag is the same if specified
 		if (obj.constructed === v.constructed || v.constructed === undefined) {
 			rval = true;
@@ -1097,7 +1216,19 @@ function asn1validate(obj, v, capture, errors) {
 						}
 					}
 					if (!rval && errors) {
-						errors.push('[' + v.name + '] Tag class "' + v.tagClass + '", type "' + v.type + '" expected value length "' + v.value.length + '", got "' + obj.value.length + '"');
+						errors.push(
+							'[' +
+								v.name +
+								'] Tag class "' +
+								v.tagClass +
+								'", type "' +
+								v.type +
+								'" expected value length "' +
+								v.value.length +
+								'", got "' +
+								obj.value.length +
+								'"'
+						);
 					}
 				}
 			}
@@ -1111,11 +1242,21 @@ function asn1validate(obj, v, capture, errors) {
 				}
 			}
 		} else if (errors) {
-			errors.push('[' + v.name + '] Expected constructed "' + v.constructed + '", got "' + obj.constructed + '"');
+			errors.push(
+				'[' +
+					v.name +
+					'] Expected constructed "' +
+					v.constructed +
+					'", got "' +
+					obj.constructed +
+					'"'
+			);
 		}
 	} else if (errors) {
 		if (obj.tagClass !== v.tagClass) {
-			errors.push('[' + v.name + '] Expected tag class "' + v.tagClass + '", got "' + obj.tagClass + '"');
+			errors.push(
+				'[' + v.name + '] Expected tag class "' + v.tagClass + '", got "' + obj.tagClass + '"'
+			);
 		}
 		if (obj.type !== v.type) {
 			errors.push('[' + v.name + '] Expected type "' + v.type + '", got "' + obj.type + '"');
@@ -1157,11 +1298,11 @@ function asn1utcTimeToDate(utc) {
 		mm' is the absolute value of the offset from GMT in minutes
 	*/
 
-	var date = new Date;
+	var date = new Date();
 
 	// if YY >= 50 use 19xx, if YY < 50 use 20xx
 	var year = parseInt(utc.substr(0, 2), 10);
-	year = (year >= 50) ? 1900 + year : 2000 + year;
+	year = year >= 50 ? 1900 + year : 2000 + year;
 	var MM = parseInt(utc.substr(2, 2), 10) - 1; // use 0-11 for month
 	var DD = parseInt(utc.substr(4, 2), 10);
 	var hh = parseInt(utc.substr(6, 2), 10);
@@ -1243,7 +1384,7 @@ function asn1generalizedTimeToDate(gentime) {
 		mm' is the absolute value of the offset from GMT in minutes
 	*/
 
-	var date = new Date,
+	var date = new Date(),
 		YYYY = parseInt(gentime.substr(0, 4), 10),
 		MM = parseInt(gentime.substr(4, 2), 10) - 1, // use 0-11 for month
 		DD = parseInt(gentime.substr(6, 2), 10),
@@ -1271,7 +1412,7 @@ function asn1generalizedTimeToDate(gentime) {
 		offset *= 60000;
 
 		// apply offset
-		if(c === '+') {
+		if (c === '+') {
 			offset *= -1;
 		}
 
@@ -1279,11 +1420,11 @@ function asn1generalizedTimeToDate(gentime) {
 	}
 
 	// check for second fraction
-	if(gentime.charAt(14) === '.') {
+	if (gentime.charAt(14) === '.') {
 		fff = parseFloat(gentime.substr(14), 10) * 1000;
 	}
 
-	if(isUTC) {
+	if (isUTC) {
 		date.setUTCFullYear(YYYY, MM, DD);
 		date.setUTCHours(hh, mm, ss, fff);
 
@@ -1326,7 +1467,7 @@ function asn1derToOid(bytes) {
 		value = value << 7;
 		// not the last byte for the value
 		if (b & 0x80) {
-			value += b & 0x7F;
+			value += b & 0x7f;
 		} else {
 			// last byte
 			oid += '.' + (value + b);
@@ -1347,7 +1488,11 @@ function asn1derToOid(bytes) {
 function pkiRDNAttributesAsArray(rdn, md) {
 	// each value in 'rdn' in is a SET of RelativeDistinguishedName
 	var rval = [],
-		si, i, set, attr, obj;
+		si,
+		i,
+		set,
+		attr,
+		obj;
 	for (si = 0; si < rdn.value.length; ++si) {
 		// get the RelativeDistinguishedName set
 		set = rdn.value[si];
@@ -1385,7 +1530,9 @@ function asn2cert(obj) {
 		errors = [];
 
 	if (!asn1validate(obj, x509CertificateValidator, capture, errors)) {
-		var error = new Error(__('Cannot read X.509 certificate. ASN.1 object is not an X509v3 Certificate.'));
+		var error = new Error(
+			__('Cannot read X.509 certificate. ASN.1 object is not an X509v3 Certificate.')
+		);
 		error.errors = errors;
 		throw error;
 	}
@@ -1413,7 +1560,7 @@ function asn2cert(obj) {
 			attributes: pkiRDNAttributesAsArray(capture.certSubject),
 			getField: function (sn) {
 				return _getAttribute(subject, sn);
-			}
+			},
 		},
 		validity = [];
 
@@ -1430,18 +1577,26 @@ function asn2cert(obj) {
 		validity.push(asn1generalizedTimeToDate(capture.certValidity4GeneralizedTime));
 	}
 	if (validity.length > 2) {
-		throw new Error(__('Cannot read notBefore/notAfter validity times; more than two times were provided in the certificate.'));
+		throw new Error(
+			__(
+				'Cannot read notBefore/notAfter validity times; more than two times were provided in the certificate.'
+			)
+		);
 	}
 	if (validity.length < 2) {
-		throw new Error(__('Cannot read notBefore/notAfter validity times; they were not provided as either UTCTime or GeneralizedTime.'));
+		throw new Error(
+			__(
+				'Cannot read notBefore/notAfter validity times; they were not provided as either UTCTime or GeneralizedTime.'
+			)
+		);
 	}
 
 	return {
 		validity: {
 			notBefore: validity[0],
-			notAfter: validity[1]
+			notAfter: validity[1],
 		},
-		subject: subject
+		subject: subject,
 	};
 }
 

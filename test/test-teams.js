@@ -34,7 +34,8 @@ describe('teams', function () {
 		this.timeout(30000);
 		this.slow(10000);
 
-		ioslib.teams.detect({ bypassCache: true })
+		ioslib.teams
+			.detect({ bypassCache: true })
 			.on('detected', function (results) {
 				validateResults(results);
 				done();

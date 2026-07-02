@@ -28,8 +28,18 @@ describe('ioslib', function () {
 			}
 
 			should(results).be.an.Object;
-			should(results).have.keys('detectVersion', 'issues', 'devices', 'provisioning', 'executables', 'selectedXcode',
-				'xcode', 'certs', 'teams', 'simulators');
+			should(results).have.keys(
+				'detectVersion',
+				'issues',
+				'devices',
+				'provisioning',
+				'executables',
+				'selectedXcode',
+				'xcode',
+				'certs',
+				'teams',
+				'simulators'
+			);
 
 			should(results.detectVersion).be.a.String;
 
@@ -48,8 +58,19 @@ describe('ioslib', function () {
 			should(results.devices).be.an.Array;
 			results.devices.forEach(function (dev) {
 				should(dev).be.an.Object;
-				should(dev).have.keys('udid', 'name', 'buildVersion', 'cpuArchitecture', 'deviceClass', 'deviceColor',
-					'hardwareModel', 'modelNumber', 'productType', 'productVersion', 'serialNumber');
+				should(dev).have.keys(
+					'udid',
+					'name',
+					'buildVersion',
+					'cpuArchitecture',
+					'deviceClass',
+					'deviceColor',
+					'hardwareModel',
+					'modelNumber',
+					'productType',
+					'productVersion',
+					'serialNumber'
+				);
 
 				should(dev.udid).be.a.String;
 				should(dev.udid).not.equal('');
@@ -94,7 +115,21 @@ describe('ioslib', function () {
 			function checkProfiles(list) {
 				list.forEach(function (pp) {
 					should(pp).be.an.Object;
-					should(pp).have.keys('file', 'uuid', 'name', 'appPrefix', 'creationDate', 'expirationDate', 'expired', 'certs', 'devices', 'team', 'appId', 'getTaskAllow', 'apsEnvironment');
+					should(pp).have.keys(
+						'file',
+						'uuid',
+						'name',
+						'appPrefix',
+						'creationDate',
+						'expirationDate',
+						'expired',
+						'certs',
+						'devices',
+						'team',
+						'appId',
+						'getTaskAllow',
+						'apsEnvironment'
+					);
 
 					should(pp.file).be.a.String;
 					should(pp.file).not.equal('');
@@ -162,7 +197,23 @@ describe('ioslib', function () {
 
 			function checkXcode(xcode) {
 				should(xcode).be.an.Object;
-				should(xcode).have.keys('xcodeapp', 'path', 'selected', 'version', 'build', 'supported', 'eulaAccepted', 'sdks', 'sims', 'simDeviceTypes', 'simRuntimes', 'watchos', 'tvos', 'teams', 'executables');
+				should(xcode).have.keys(
+					'xcodeapp',
+					'path',
+					'selected',
+					'version',
+					'build',
+					'supported',
+					'eulaAccepted',
+					'sdks',
+					'sims',
+					'simDeviceTypes',
+					'simRuntimes',
+					'watchos',
+					'tvos',
+					'teams',
+					'executables'
+				);
 
 				should(xcode.xcodeapp).be.a.String;
 				should(xcode.xcodeapp).not.equal('');
@@ -196,7 +247,18 @@ describe('ioslib', function () {
 					should(s).not.equal('');
 				});
 
-				var keys = ['xcodebuild', 'clang', 'clang_xx', 'libtool', 'lipo', 'otool', 'pngcrush', 'simulator', 'watchsimulator', 'simctl'];
+				var keys = [
+					'xcodebuild',
+					'clang',
+					'clang_xx',
+					'libtool',
+					'lipo',
+					'otool',
+					'pngcrush',
+					'simulator',
+					'watchsimulator',
+					'simctl',
+				];
 				should(xcode.executables).be.an.Object;
 				keys.forEach(function (key) {
 					should(xcode.executables).have.property(key);
@@ -256,29 +318,32 @@ describe('ioslib', function () {
 		this.timeout(10000);
 		this.slow(10000);
 
-		ioslib.findValidDeviceCertProfileCombos({
-			appId: 'com.appcelerator.TestApp'
-		}, function (err, results) {
-			if (err) {
-				return done(err);
+		ioslib.findValidDeviceCertProfileCombos(
+			{
+				appId: 'com.appcelerator.TestApp',
+			},
+			function (err, results) {
+				if (err) {
+					return done(err);
+				}
+
+				should(results).be.an.Array;
+				results.forEach(function (combo) {
+					should(combo).be.an.Object;
+					should(combo).have.keys('ppUUID', 'certName', 'deviceUDID');
+
+					should(combo.ppUUID).be.a.String;
+					should(combo.ppUUID).not.equal('');
+
+					should(combo.certName).be.a.String;
+					should(combo.certName).not.equal('');
+
+					should(combo.deviceUDID).be.a.String;
+					should(combo.deviceUDID).not.equal('');
+				});
+
+				done();
 			}
-
-			should(results).be.an.Array;
-			results.forEach(function (combo) {
-				should(combo).be.an.Object;
-				should(combo).have.keys('ppUUID', 'certName', 'deviceUDID');
-
-				should(combo.ppUUID).be.a.String;
-				should(combo.ppUUID).not.equal('');
-
-				should(combo.certName).be.a.String;
-				should(combo.certName).not.equal('');
-
-				should(combo.deviceUDID).be.a.String;
-				should(combo.deviceUDID).not.equal('');
-			});
-
-			done();
-		});
+		);
 	});
 });

@@ -11,8 +11,7 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-const
-	async = require('async'),
+const async = require('async'),
 	magik = require('./utilities').magik,
 	provisioning = require('./provisioning'),
 	xcode = require('./xcode');
@@ -42,58 +41,61 @@ const
  */
 exports.detect = function detect(options, callback) {
 	return magik(options, callback, function (emitter, options, callback) {
-		async.parallel({
-			provisioning: function (next) {
-				provisioning.detect(options, next);
+		async.parallel(
+			{
+				provisioning: function (next) {
+					provisioning.detect(options, next);
+				},
+				xcode: function (next) {
+					xcode.detect(options, next);
+				},
 			},
-			xcode: function (next) {
-				xcode.detect(options, next);
-			}
-		}, function (err, iosInfo) {
-			if (err) {
-				return callback(err);
-			}
+			function (err, iosInfo) {
+				if (err) {
+					return callback(err);
+				}
 
-			var provisioning = iosInfo.provisioning.provisioning;
-			var xcodes = iosInfo.xcode.xcode;
-			var teams = {};
+				var provisioning = iosInfo.provisioning.provisioning;
+				var xcodes = iosInfo.xcode.xcode;
+				var teams = {};
 
-			['development', 'adhoc', 'distribution'].forEach(function (type) {
-				provisioning[type].forEach(function (pp) {
-					if (Array.isArray(pp.team)) {
-						pp.team.forEach(function (id) {
-							teams[id] = id;
-						});
-					}
+				['development', 'adhoc', 'distribution'].forEach(function (type) {
+					provisioning[type].forEach(function (pp) {
+						if (Array.isArray(pp.team)) {
+							pp.team.forEach(function (id) {
+								teams[id] = id;
+							});
+						}
+					});
 				});
-			});
 
-			Object.keys(xcodes).forEach(function (xcodeId) {
-				var t = xcodes[xcodeId].teams;
-				Object.keys(t).forEach(function (id) {
-					teams[id] = t[id];
+				Object.keys(xcodes).forEach(function (xcodeId) {
+					var t = xcodes[xcodeId].teams;
+					Object.keys(t).forEach(function (id) {
+						teams[id] = t[id];
+					});
 				});
-			});
 
-			var results = {
-				teams: Object.keys(teams).map(function (id) {
-					var team = teams[id];
-					if (typeof team === 'string') {
+				var results = {
+					teams: Object.keys(teams).map(function (id) {
+						var team = teams[id];
+						if (typeof team === 'string') {
+							return {
+								id: team,
+								name: 'Unknown',
+							};
+						}
+
 						return {
-							id: team,
-							name: 'Unknown',
+							id: id,
+							name: team.name,
 						};
-					}
+					}),
+				};
 
-					return {
-						id: id,
-						name: team.name
-					};
-				})
-			};
-
-			emitter.emit('detected', results);
-			callback(null, results);
-		});
+				emitter.emit('detected', results);
+				callback(null, results);
+			}
+		);
 	});
 };

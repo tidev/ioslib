@@ -9,13 +9,12 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-const
-	execFile = require('child_process').execFile,
+const execFile = require('child_process').execFile,
 	fs = require('fs'),
 	ioslib = require('..');
 
 function skipUnlessSelectedXcode27(ctx, done, callback) {
-	execFile('xcodebuild', [ '-version' ], function (err, stdout) {
+	execFile('xcodebuild', ['-version'], function (err, stdout) {
 		if (err) {
 			return done(err);
 		}
@@ -30,9 +29,24 @@ function skipUnlessSelectedXcode27(ctx, done, callback) {
 
 function checkXcode(xcode) {
 	should(xcode).be.an.Object;
-	should(xcode).have.keys('xcodeapp', 'path', 'selected', 'version', 'build',
-		'supported', 'eulaAccepted', 'sdks', 'sims', 'simDeviceTypes',
-		'simRuntimes', 'simDevicePairs', 'watchos', 'tvos', 'teams', 'executables');
+	should(xcode).have.keys(
+		'xcodeapp',
+		'path',
+		'selected',
+		'version',
+		'build',
+		'supported',
+		'eulaAccepted',
+		'sdks',
+		'sims',
+		'simDeviceTypes',
+		'simRuntimes',
+		'simDevicePairs',
+		'watchos',
+		'tvos',
+		'teams',
+		'executables'
+	);
 
 	should(xcode.xcodeapp).be.a.String;
 	should(xcode.xcodeapp).not.equal('');
@@ -114,7 +128,18 @@ function checkXcode(xcode) {
 		should(xcode.teams[teamId].type).not.equal('');
 	});
 
-	var keys = ['xcodebuild', 'clang', 'clang_xx', 'libtool', 'lipo', 'otool', 'pngcrush', 'simulator', 'watchsimulator', 'simctl'];
+	var keys = [
+		'xcodebuild',
+		'clang',
+		'clang_xx',
+		'libtool',
+		'lipo',
+		'otool',
+		'pngcrush',
+		'simulator',
+		'watchsimulator',
+		'simctl',
+	];
 	should(xcode.executables).be.an.Object;
 	keys.forEach(function (key) {
 		should(xcode.executables).have.property(key);
@@ -181,8 +206,12 @@ describe('xcode', function () {
 				}
 
 				var xcode27 = Object.keys(results.xcode)
-					.map(function (id) { return results.xcode[id]; })
-					.filter(function (xc) { return /^27\./.test(xc.version); })
+					.map(function (id) {
+						return results.xcode[id];
+					})
+					.filter(function (xc) {
+						return /^27\./.test(xc.version);
+					})
 					.shift();
 
 				if (!xcode27) {
@@ -192,12 +221,12 @@ describe('xcode', function () {
 				should(xcode27.simDevicePairs).eql({
 					'26.x': {
 						'26.x': true,
-						'27.x': true
+						'27.x': true,
 					},
 					'27.x': {
 						'26.x': true,
-						'27.x': true
-					}
+						'27.x': true,
+					},
 				});
 				done();
 			});
@@ -215,8 +244,12 @@ describe('xcode', function () {
 				}
 
 				var xcode27 = Object.keys(results.xcode)
-					.map(function (id) { return results.xcode[id]; })
-					.filter(function (xc) { return /^27\./.test(xc.version); })
+					.map(function (id) {
+						return results.xcode[id];
+					})
+					.filter(function (xc) {
+						return /^27\./.test(xc.version);
+					})
 					.shift();
 
 				if (!xcode27) {

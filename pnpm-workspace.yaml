@@ -1,0 +1,6 @@
+allowBuilds:
+  lefthook: true
+  node-ios-device: true
+minimumReleaseAgeExclude:
+  - node-ios-device@8.0.0
+  - snooplogg@9.0.0

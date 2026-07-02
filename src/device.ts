@@ -11,41 +11,33 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-'use strict';
+import { magik } from './utilities';
+import * as iosDevice from 'node-ios-device';
+import fs from 'node:fs';
 
-const appc = require('node-appc');
-const async = require('async');
-const magik = require('./utilities').magik;
-const fs = require('fs');
-const iosDevice = require('node-ios-device');
-const path = require('path');
-const __ = appc.i18n(__dirname).__;
-
-var cache;
-
-exports.detect = detect;
-exports.install = install;
+let cache;
 
 /**
  * Detects connected iOS devices.
  *
  * @param {Object} [options] - An object containing various settings.
  * @param {Boolean} [options.bypassCache=false] - When true, re-detects all connected iOS devices.
- * @param {Function} [callback(err, results)] - A function to call with the device information.
  *
  * @emits module:device#detected
  * @emits module:device#error
  *
  * @returns {Handle}
  */
-function detect(options, callback) {
-	return magik(options, callback, function (handle, options, callback) {
-		if (cache && !options.bypassCache) {
-			var dupe = JSON.parse(JSON.stringify(cache));
-			handle.emit('detected', dupe);
-			return callback(null, dupe);
-		}
+export async function detect(options) {
+	const handle = new Handle();
 
+	if (cache && !options.bypassCache) {
+		const dupe = JSON.parse(JSON.stringify(cache));
+		handle.emit('detected', dupe);
+		return dupe;
+	}
+
+	return magik(options, callback, function (handle, options, callback) {
 		iosDevice.devices(function (err, devices) {
 			if (err) {
 				handle.emit('error', err);
@@ -54,7 +46,7 @@ function detect(options, callback) {
 
 			var results = {
 				devices: devices,
-				issues: []
+				issues: [],
 			};
 
 			// the cache must be a clean copy that we'll clone for subsequent detect() calls
@@ -65,7 +57,7 @@ function detect(options, callback) {
 			return callback(null, results);
 		});
 	});
-};
+}
 
 /**
  * Installs the specified app to an iOS device.
@@ -86,14 +78,14 @@ function detect(options, callback) {
  *
  * @returns {Handle}
  */
-function install(udid, appPath, options) {
+export function install(udid, appPath, options) {
 	return magik(options, null, function (handle, options) {
 		if (!appPath) {
-			return handle.emit('error', new Error(__('Missing app path argument')));
+			return handle.emit('error', new Error('Missing app path argument'));
 		}
 
 		if (!fs.existsSync(appPath)) {
-			return handle.emit('error', new Error(__('App path does not exist: ' + appPath)));
+			return handle.emit('error', new Error(`App path does not exist: ${appPath}`));
 		}
 
 		handle.stop = function () {}; // for stopping logging

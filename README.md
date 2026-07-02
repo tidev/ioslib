@@ -1,39 +1,27 @@
 # iOS Utility Library
 
-> This is a library of utilities for dealing programmatically with iOS applications,
-used namely for tools like [Hyperloop](https://github.com/tidev/hyperloop)
-and [Titanium SDK](https://github.com/tidev/titanium-sdk).
-
-ioslib supports Xcode 6 and newer.
-
-## Installation
-
-From NPM:
-
-	npm install ioslib
+`ioslib` is a library used to interact with iOS devices and simulators. It was
+designed specifically for use with
+[Titanium SDK](https://github.com/tidev/titanium-sdk).
 
 ## Examples
 
 ### Detect all the connected iOS devices:
 
 ```javascript
-var ioslib = require('ioslib');
+import * as ioslib from 'ioslib';
 
-ioslib.device.detect(function (err, devices) {
-	if (err) {
-		console.error(err);
-	} else {
-		console.log(devices);
-	}
-});
+const devices = await ioslib.device.detect();
+console.log(devices);
 ```
 
 ### Install an application on device
 
 ```javascript
-var deviceUDID = null; // string or null to pick first device
+let deviceUDID = null; // string or null to pick first device
 
-ioslib.device.install(deviceUDID, '/path/to/name.app', 'com.company.appname')
+ioslib.device
+	.install(deviceUDID, '/path/to/name.app', 'com.company.appname')
 	.on('installed', function () {
 		console.log('App successfully installed on device');
 	})
@@ -67,8 +55,9 @@ ioslib.simulator.launch(null, function (err, simHandle) {
 ```javascript
 var simUDID = null; // string or null to pick a simulator
 
-ioslib.simulator.launch(simUDID, {
-		appPath: '/path/to/name.app'
+ioslib.simulator
+	.launch(simUDID, {
+		appPath: '/path/to/name.app',
 	})
 	.on('launched', function (msg) {
 		console.log('Simulator has launched');
@@ -87,8 +76,9 @@ ioslib.simulator.launch(simUDID, {
 ### Force stop an application running on simulator
 
 ```javascript
-ioslib.simulator.launch(simUDID, {
-		appPath: '/path/to/name.app'
+ioslib.simulator
+	.launch(simUDID, {
+		appPath: '/path/to/name.app',
 	})
 	.on('launched', function (simHandle) {
 		console.log('Simulator launched');
@@ -101,15 +91,18 @@ ioslib.simulator.launch(simUDID, {
 ### Find a valid device/cert/provisioning profile combination
 
 ```javascript
-ioslib.findValidDeviceCertProfileCombos({
-	appId: 'com.company.appname'
-}, function (err, results) {
-	if (err) {
-		console.error(err);
-	} else {
-		console.log(results);
+ioslib.findValidDeviceCertProfileCombos(
+	{
+		appId: 'com.company.appname',
+	},
+	function (err, results) {
+		if (err) {
+			console.error(err);
+		} else {
+			console.log(results);
+		}
 	}
-});
+);
 ```
 
 ### Detect everything

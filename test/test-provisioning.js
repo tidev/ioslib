@@ -14,7 +14,21 @@ const ioslib = require('..');
 function checkProfiles(list) {
 	list.forEach(function (pp) {
 		should(pp).be.an.Object;
-		should(pp).have.keys('file', 'uuid', 'name', 'appPrefix', 'creationDate', 'expirationDate', 'expired', 'certs', 'devices', 'team', 'appId', 'getTaskAllow', 'apsEnvironment');
+		should(pp).have.keys(
+			'file',
+			'uuid',
+			'name',
+			'appPrefix',
+			'creationDate',
+			'expirationDate',
+			'expired',
+			'certs',
+			'devices',
+			'team',
+			'appId',
+			'getTaskAllow',
+			'apsEnvironment'
+		);
 
 		should(pp.file).be.a.String;
 		should(pp.file).not.equal('');
@@ -138,7 +152,11 @@ describe('provisioning', function () {
 					done(err);
 				} else {
 					should(found).be.an.Array;
-					should(found).length(all.provisioning.development.length + all.provisioning.distribution.length + all.provisioning.adhoc.length);
+					should(found).length(
+						all.provisioning.development.length +
+							all.provisioning.distribution.length +
+							all.provisioning.adhoc.length
+					);
 					checkProfiles(found);
 					done();
 				}
@@ -146,128 +164,146 @@ describe('provisioning', function () {
 		});
 	});
 
-	(process.env.CI ? it.skip : it)('find best provisioning profiles with a cert, but without a device', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
+	(process.env.CI ? it.skip : it)(
+		'find best provisioning profiles with a cert, but without a device',
+		function (done) {
+			this.timeout(5000);
+			this.slow(2000);
 
-		ioslib.provisioning.detect({ bypassCache: true }, function (err, all) {
-			var pem = null,
-				matches = 0;
+			ioslib.provisioning.detect({ bypassCache: true }, function (err, all) {
+				var pem = null,
+					matches = 0;
 
-			function fn(pp) {
-				if (!pp.expired) {
-					pem || (pem = pp.certs[0]);
-					if (pp.certs.indexOf(pem) !== -1) {
-						matches++;
+				function fn(pp) {
+					if (!pp.expired) {
+						pem || (pem = pp.certs[0]);
+						if (pp.certs.indexOf(pem) !== -1) {
+							matches++;
+						}
 					}
 				}
-			}
 
-			all.provisioning.development.forEach(fn);
-			all.provisioning.distribution.forEach(fn);
-			all.provisioning.adhoc.forEach(fn);
+				all.provisioning.development.forEach(fn);
+				all.provisioning.distribution.forEach(fn);
+				all.provisioning.adhoc.forEach(fn);
 
-			if (pem === null) {
-				return done(new Error('No provisioning profiles found to run this test'));
-			}
-
-			ioslib.provisioning.find({
-				certs: { pem: pem }
-			}, function (err, found) {
-				if (err) {
-					done(err);
-				} else {
-					should(found).be.an.Array;
-					should(found).be.length(matches);
-					checkProfiles(found);
-					done();
+				if (pem === null) {
+					return done(new Error('No provisioning profiles found to run this test'));
 				}
+
+				ioslib.provisioning.find(
+					{
+						certs: { pem: pem },
+					},
+					function (err, found) {
+						if (err) {
+							done(err);
+						} else {
+							should(found).be.an.Array;
+							should(found).be.length(matches);
+							checkProfiles(found);
+							done();
+						}
+					}
+				);
 			});
-		});
-	});
+		}
+	);
 
-	(process.env.CI ? it.skip : it)('find best provisioning profiles without a cert, but with a device', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
+	(process.env.CI ? it.skip : it)(
+		'find best provisioning profiles without a cert, but with a device',
+		function (done) {
+			this.timeout(5000);
+			this.slow(2000);
 
-		ioslib.provisioning.detect({ bypassCache: true }, function (err, all) {
-			var device = null,
-				matches = 0;
+			ioslib.provisioning.detect({ bypassCache: true }, function (err, all) {
+				var device = null,
+					matches = 0;
 
-			function fn(pp) {
-				if (!pp.expired && pp.devices !== null && pp.devices.length) {
-					device || (device = pp.devices[0]);
-					if (pp.devices.indexOf(device) !== -1) {
-						matches++;
+				function fn(pp) {
+					if (!pp.expired && pp.devices !== null && pp.devices.length) {
+						device || (device = pp.devices[0]);
+						if (pp.devices.indexOf(device) !== -1) {
+							matches++;
+						}
 					}
 				}
-			}
 
-			all.provisioning.development.forEach(fn);
-			all.provisioning.distribution.forEach(fn);
-			all.provisioning.adhoc.forEach(fn);
+				all.provisioning.development.forEach(fn);
+				all.provisioning.distribution.forEach(fn);
+				all.provisioning.adhoc.forEach(fn);
 
-			if (device === null) {
-				return done(new Error('No provisioning profiles found to run this test'));
-			}
-
-			ioslib.provisioning.find({
-				deviceUDIDs: device
-			}, function (err, found) {
-				if (err) {
-					done(err);
-				} else {
-					should(found).be.an.Array;
-					should(found).be.length(matches);
-					checkProfiles(found);
-					done();
+				if (device === null) {
+					return done(new Error('No provisioning profiles found to run this test'));
 				}
+
+				ioslib.provisioning.find(
+					{
+						deviceUDIDs: device,
+					},
+					function (err, found) {
+						if (err) {
+							done(err);
+						} else {
+							should(found).be.an.Array;
+							should(found).be.length(matches);
+							checkProfiles(found);
+							done();
+						}
+					}
+				);
 			});
-		});
-	});
+		}
+	);
 
-	(process.env.CI ? it.skip : it)('find best provisioning profiles with a cert and a device', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
+	(process.env.CI ? it.skip : it)(
+		'find best provisioning profiles with a cert and a device',
+		function (done) {
+			this.timeout(5000);
+			this.slow(2000);
 
-		ioslib.provisioning.detect({ bypassCache: true }, function (err, all) {
-			var pem = null,
-				device = null,
-				matches = 0;
+			ioslib.provisioning.detect({ bypassCache: true }, function (err, all) {
+				var pem = null,
+					device = null,
+					matches = 0;
 
-			function fn(pp) {
-				if (!pp.expired && pp.devices !== null && pp.devices.length) {
-					pem || (pem = pp.certs[0]);
-					device || (device = pp.devices[0]);
-					if (pp.devices.indexOf(device) !== -1 && pp.certs.indexOf(pem) !== -1) {
-						matches++;
+				function fn(pp) {
+					if (!pp.expired && pp.devices !== null && pp.devices.length) {
+						pem || (pem = pp.certs[0]);
+						device || (device = pp.devices[0]);
+						if (pp.devices.indexOf(device) !== -1 && pp.certs.indexOf(pem) !== -1) {
+							matches++;
+						}
 					}
 				}
-			}
 
-			all.provisioning.development.forEach(fn);
-			all.provisioning.distribution.forEach(fn);
-			all.provisioning.adhoc.forEach(fn);
+				all.provisioning.development.forEach(fn);
+				all.provisioning.distribution.forEach(fn);
+				all.provisioning.adhoc.forEach(fn);
 
-			if (pem === null || device === null) {
-				return done(new Error('No provisioning profiles found to run this test'));
-			}
-
-			ioslib.provisioning.find({
-				certs: { pem: pem },
-				deviceUDIDs: device
-			}, function (err, found) {
-				if (err) {
-					done(err);
-				} else {
-					should(found).be.an.Array;
-					should(found).be.length(matches);
-					checkProfiles(found);
-					done();
+				if (pem === null || device === null) {
+					return done(new Error('No provisioning profiles found to run this test'));
 				}
+
+				ioslib.provisioning.find(
+					{
+						certs: { pem: pem },
+						deviceUDIDs: device,
+					},
+					function (err, found) {
+						if (err) {
+							done(err);
+						} else {
+							should(found).be.an.Array;
+							should(found).be.length(matches);
+							checkProfiles(found);
+							done();
+						}
+					}
+				);
 			});
-		});
-	});
+		}
+	);
 
 	(process.env.CI ? it.skip : it)('watch for changes for 10 seconds', function (done) {
 		this.timeout(80000);

@@ -13,8 +13,7 @@
  * @requires certs
  */
 
-const
-	appc = require('node-appc'),
+const appc = require('node-appc'),
 	certs = require('./certs'),
 	magik = require('./utilities').magik,
 	fs = require('fs'),
@@ -22,8 +21,8 @@ const
 	__ = appc.i18n(__dirname).__,
 	provisioningProfilesDirectories = [
 		'~/Library/Developer/Xcode/UserData/Provisioning Profiles',
-		'~/Library/MobileDevice/Provisioning Profiles'
-	]
+		'~/Library/MobileDevice/Provisioning Profiles',
+	];
 
 var cache = null,
 	watchers = {};
@@ -74,17 +73,15 @@ function detect(options, callback) {
 					enterprise: [],
 					distribution: [],
 				},
-				issues: []
+				issues: [],
 			},
 			valid = {
 				development: 0,
 				adhoc: 0,
 				enterprise: 0,
-				distribution: 0
+				distribution: 0,
 			},
-
 			ppRegExp = /.*\.(mobileprovision|provisionprofile)$/;
-
 
 		if (options.watch) {
 			var throttleTimer = null;
@@ -97,9 +94,9 @@ function detect(options, callback) {
 								// if it's not a provisioning profile, we don't care about it
 								return;
 							}
-	
+
 							var file = path.join(profileDir, filename);
-	
+
 							if (event === 'rename') {
 								if (files[file]) {
 									if (fs.existsSync(file)) {
@@ -117,18 +114,18 @@ function detect(options, callback) {
 								// updated
 								parseProfile(file);
 							}
-	
+
 							clearTimeout(throttleTimer);
-	
+
 							throttleTimer = setTimeout(function () {
 								detectIssues();
 								emitter.emit('detected', results);
 							}, 250);
 						}),
-						count: 0
+						count: 0,
 					};
 				}
-	
+
 				watchers[profileDir].count++;
 			}
 		}
@@ -145,8 +142,10 @@ function detect(options, callback) {
 				results.issues.push({
 					id: 'IOS_NO_VALID_DEVELOPMENT_PROVISIONING_PROFILES',
 					type: 'warning',
-					message: __('Unable to find any valid iOS development provisioning profiles.') + '\n' +
-						__('This will prevent you from building apps for testing on iOS devices.')
+					message:
+						__('Unable to find any valid iOS development provisioning profiles.') +
+						'\n' +
+						__('This will prevent you from building apps for testing on iOS devices.'),
 				});
 			}
 
@@ -154,8 +153,10 @@ function detect(options, callback) {
 				results.issues.push({
 					id: 'IOS_NO_VALID_ADHOC_PROVISIONING_PROFILES',
 					type: 'warning',
-					message: __('Unable to find any valid iOS adhoc provisioning profiles.') + '\n' +
-						__('This will prevent you from packaging apps for adhoc distribution.')
+					message:
+						__('Unable to find any valid iOS adhoc provisioning profiles.') +
+						'\n' +
+						__('This will prevent you from packaging apps for adhoc distribution.'),
 				});
 			}
 
@@ -163,8 +164,10 @@ function detect(options, callback) {
 				results.issues.push({
 					id: 'IOS_NO_VALID_DISTRIBUTION_PROVISIONING_PROFILES',
 					type: 'warning',
-					message: __('Unable to find any valid iOS distribution provisioning profiles.') + '\n' +
-						__('This will prevent you from packaging apps for AppStore distribution.')
+					message:
+						__('Unable to find any valid iOS distribution provisioning profiles.') +
+						'\n' +
+						__('This will prevent you from packaging apps for AppStore distribution.'),
 				});
 			}
 		}
@@ -211,7 +214,7 @@ function detect(options, callback) {
 
 			try {
 				if (plist.ExpirationDate) {
-					expired = new Date(plist.ExpirationDate) < new Date;
+					expired = new Date(plist.ExpirationDate) < new Date();
 				}
 			} catch (e) {}
 
@@ -236,15 +239,21 @@ function detect(options, callback) {
 					expirationDate: plist.ExpirationDate,
 					expired: expired,
 					certs: Array.isArray(plist.DeveloperCertificates)
-						? plist.DeveloperCertificates.map(function (cert) { return cert.value; })
+						? plist.DeveloperCertificates.map(function (cert) {
+								return cert.value;
+							})
 						: null,
 					devices: plist.ProvisionedDevices || null,
 					team: plist.TeamIdentifier || null,
 					entitlements: entitlements,
 					// TODO: remove all of the entitlements below and just use the `entitlements` property
-					appId: (entitlements['application-identifier'] || entitlements['com.apple.application-identifier'] || '').replace(appPrefix + '.', ''),
+					appId: (
+						entitlements['application-identifier'] ||
+						entitlements['com.apple.application-identifier'] ||
+						''
+					).replace(appPrefix + '.', ''),
 					getTaskAllow: !!entitlements['get-task-allow'],
-					apsEnvironment: entitlements['aps-environment'] || ''
+					apsEnvironment: entitlements['aps-environment'] || '',
 				});
 			}
 		}
@@ -260,7 +269,7 @@ function detect(options, callback) {
 		emitter.emit('detected', results);
 		return callback(null, results);
 	});
-};
+}
 
 /**
  * Finds all provisioning profiles that match the specified developer cert name
@@ -283,8 +292,14 @@ function find(options, callback) {
 	}
 	typeof callback === 'function' || (callback = function () {});
 
-	var deviceUDIDs = (Array.isArray(options.deviceUDIDs) ? options.deviceUDIDs : [ options.deviceUDIDs ]).filter(function (a) { return a; }),
-		certs = (Array.isArray(options.certs) ? options.certs : [ options.certs ]).filter(function (a) { return a; });
+	var deviceUDIDs = (
+			Array.isArray(options.deviceUDIDs) ? options.deviceUDIDs : [options.deviceUDIDs]
+		).filter(function (a) {
+			return a;
+		}),
+		certs = (Array.isArray(options.certs) ? options.certs : [options.certs]).filter(function (a) {
+			return a;
+		});
 
 	options.validOnly = options.validOnly === undefined || options.validOnly === true;
 
@@ -297,7 +312,12 @@ function find(options, callback) {
 			function check(scope) {
 				scope.forEach(function (pp) {
 					// check app id
-					if (options.appId && !(new RegExp('^' + pp.appId.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$')).test(options.appId)) {
+					if (
+						options.appId &&
+						!new RegExp('^' + pp.appId.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$').test(
+							options.appId
+						)
+					) {
 						return;
 					}
 
@@ -305,8 +325,14 @@ function find(options, callback) {
 					if (certs.length) {
 						var match = false;
 						for (var i = 0, l = certs.length; i < l; i++) {
-							var prefix = certs[i].pem.replace(/^-----BEGIN CERTIFICATE-----\n/, '').substring(0, 60);
-							if (pp.certs.some(function (cert) { return cert.indexOf(prefix) === 0; })) {
+							var prefix = certs[i].pem
+								.replace(/^-----BEGIN CERTIFICATE-----\n/, '')
+								.substring(0, 60);
+							if (
+								pp.certs.some(function (cert) {
+									return cert.indexOf(prefix) === 0;
+								})
+							) {
 								match = true;
 								break;
 							}
@@ -315,7 +341,13 @@ function find(options, callback) {
 					}
 
 					// check device uuids
-					if (deviceUDIDs.length && (pp.devices === null || !deviceUDIDs.some(function (d) { return pp.devices.indexOf(d) !== -1; }))) {
+					if (
+						deviceUDIDs.length &&
+						(pp.devices === null ||
+							!deviceUDIDs.some(function (d) {
+								return pp.devices.indexOf(d) !== -1;
+							}))
+					) {
 						return;
 					}
 
@@ -330,7 +362,7 @@ function find(options, callback) {
 			return callback(null, profiles);
 		}
 	});
-};
+}
 
 /**
  * Watches a provisioning profile directory for file changes.
@@ -357,7 +389,7 @@ function watch(options, callback) {
 	return function () {
 		unwatch(options.profileDir);
 	};
-};
+}
 
 /**
  * Stops watching the specified provisioning profile directory.
@@ -375,11 +407,11 @@ function unwatch(profileDir) {
 			delete watchers[profileDir];
 		}
 	}
-};
+}
 
 /**
  * Searches for existing provisioning profile directories.
- * 
+ *
  * @throws
  * @param {string | undefined} profileDir A custom directory set by the developer.
  * @returns {string[]} The directories that exist on the filesystem.
@@ -393,7 +425,7 @@ function getExistingProvisioningProfileDirectories(profileDir) {
 		}
 
 		const resolvedDirectory = appc.fs.resolvePath(directory);
-		
+
 		if (fs.existsSync(resolvedDirectory)) {
 			profileDirectories.push(resolvedDirectory);
 		}

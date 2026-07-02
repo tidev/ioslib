@@ -9,14 +9,13 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-const
-	appc = require('node-appc'),
+const appc = require('node-appc'),
 	exec = require('child_process').exec,
 	fs = require('fs'),
 	ioslib = require('..'),
 	path = require('path');
 
-function build(app, provisioningProfileUUID, certName, defs, done){
+function build(app, provisioningProfileUUID, certName, defs, done) {
 	if (typeof defs === 'function') {
 		done = defs;
 		defs = [];
@@ -33,23 +32,30 @@ function build(app, provisioningProfileUUID, certName, defs, done){
 
 		var cmd = [
 			env.selectedXcode.executables.xcodebuild,
-			'clean', 'build',
-			'-configuration', 'Debug',
-			'-sdk', 'iphoneos' + appc.version.format(env.selectedXcode.sdks[0], 2, 2),
+			'clean',
+			'build',
+			'-configuration',
+			'Debug',
+			'-sdk',
+			'iphoneos' + appc.version.format(env.selectedXcode.sdks[0], 2, 2),
 			'PROVISIONING_PROFILE=' + provisioningProfileUUID,
 			'DEPLOYMENT_POSTPROCESSING=YES',
 			// 'CODE_SIGN_IDENTITY="' + certName + '"',
-			'GCC_PREPROCESSOR_DEFINITIONS="' + defs.join(' ') + '"'
+			'GCC_PREPROCESSOR_DEFINITIONS="' + defs.join(' ') + '"',
 		].join(' ');
 
-		exec(cmd, {
-			cwd: path.join(__dirname, app)
-		}, function (code, out, err) {
-			should(out).match(/BUILD SUCCEEDED/);
-			var appPath = path.join(__dirname, app, 'build', 'Debug-iphoneos', app + '.app');
-			should(fs.existsSync(appPath)).be.true;
-			done(null, appPath);
-		});
+		exec(
+			cmd,
+			{
+				cwd: path.join(__dirname, app),
+			},
+			function (code, out, err) {
+				should(out).match(/BUILD SUCCEEDED/);
+				var appPath = path.join(__dirname, app, 'build', 'Debug-iphoneos', app + '.app');
+				should(fs.existsSync(appPath)).be.true;
+				done(null, appPath);
+			}
+		);
 	});
 }
 
@@ -73,8 +79,19 @@ describe('device', function () {
 			should(results.devices).be.an.Array;
 			results.devices.forEach(function (dev) {
 				should(dev).be.an.Object;
-				should(dev).have.keys('udid', 'name', 'buildVersion', 'cpuArchitecture', 'deviceClass', 'deviceColor',
-					'hardwareModel', 'modelNumber', 'productType', 'productVersion', 'serialNumber');
+				should(dev).have.keys(
+					'udid',
+					'name',
+					'buildVersion',
+					'cpuArchitecture',
+					'deviceClass',
+					'deviceColor',
+					'hardwareModel',
+					'modelNumber',
+					'productType',
+					'productVersion',
+					'serialNumber'
+				);
 
 				should(dev.udid).be.a.String;
 				should(dev.udid).not.equal('');
@@ -145,34 +162,43 @@ describe('device', function () {
 		var appId = 'com.appcelerator.testapp3';
 
 		// find us a device
-		ioslib.findValidDeviceCertProfileCombos({
-			appId: appId,
-			unmanagedProvisioningProfile: true
-		}, function (err, results) {
-			function noop() {}
+		ioslib.findValidDeviceCertProfileCombos(
+			{
+				appId: appId,
+				unmanagedProvisioningProfile: true,
+			},
+			function (err, results) {
+				function noop() {}
 
-			if (err) {
-				return done(err);
+				if (err) {
+					return done(err);
+				}
+
+				if (!results.length) {
+					return done(new Error('No valid device/cert/provisioning profile combos found'));
+				}
+
+				build(
+					'TestApp',
+					results[0].ppUUID,
+					results[0].certName,
+					['TEST_BASIC_LOGGING'],
+					function (err, appPath) {
+						should(err).not.be.ok;
+						should(appPath).be.a.String;
+						should(fs.existsSync(appPath)).be.ok;
+
+						ioslib.device
+							.install(results[0].deviceUDID, appPath, appId)
+							.on('installed', function () {
+								done();
+							})
+							.on('error', function (err) {
+								done(err);
+							});
+					}
+				);
 			}
-
-			if (!results.length) {
-				return done(new Error('No valid device/cert/provisioning profile combos found'));
-			}
-
-			build('TestApp', results[0].ppUUID, results[0].certName, ['TEST_BASIC_LOGGING'], function (err, appPath) {
-				should(err).not.be.ok;
-				should(appPath).be.a.String;
-				should(fs.existsSync(appPath)).be.ok;
-
-				ioslib.device
-					.install(results[0].deviceUDID, appPath, appId)
-					.on('installed', function () {
-						done();
-					})
-					.on('error', function (err) {
-						done(err);
-					});
-			});
-		});
+		);
 	});
 });

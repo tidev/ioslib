@@ -56,7 +56,9 @@ function activatePair(params, callback) {
 
 	trySimctl(params, ['pair_activate', params.udid], function (err) {
 		// code 37 means the pair is already active
-		callback(err && err.code !== 37 ? new Error(__('Failed to activate pair: %s', err.message)) : null);
+		callback(
+			err && err.code !== 37 ? new Error(__('Failed to activate pair: %s', err.message)) : null
+		);
 	});
 }
 
@@ -89,12 +91,16 @@ function create(params, callback) {
 		return callback(new Error(__('Missing "runtime" param')));
 	}
 
-	trySimctl(params, ['create', params.name, params.deviceType, params.runtime], function (err, output) {
-		if (err) {
-			return callback(err);
+	trySimctl(
+		params,
+		['create', params.name, params.deviceType, params.runtime],
+		function (err, output) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, output.split('\n').shift().trim());
 		}
-		callback(null, output.split('\n').shift().trim());
-	});
+	);
 }
 
 /**
@@ -224,8 +230,12 @@ function list(params, callback) {
 					var pair = json.pairs[pairUdid];
 					var m = pair.state.match(/^\(((?:in)?active),/);
 					if (m) {
-						json.iosSimToWatchSimToPair[pair.phone.udid] || (json.iosSimToWatchSimToPair[pair.phone.udid] = {});
-						json.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid] = { udid: pairUdid, active: m[1] === 'active' };
+						json.iosSimToWatchSimToPair[pair.phone.udid] ||
+							(json.iosSimToWatchSimToPair[pair.phone.udid] = {});
+						json.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid] = {
+							udid: pairUdid,
+							active: m[1] === 'active',
+						};
 					}
 				});
 
@@ -246,7 +256,6 @@ function list(params, callback) {
 		}
 	);
 }
-
 
 /**
  * Returns a list of all devices.
@@ -339,7 +348,8 @@ function pair(params, callback) {
 
 	trySimctl(params, ['pair', params.watchSimUdid, params.simUdid], function (err, output) {
 		if (err) {
-			var alreadyPaired = err.message.indexOf('The selected devices are already paired with each other') !== -1;
+			var alreadyPaired =
+				err.message.indexOf('The selected devices are already paired with each other') !== -1;
 			if (err.code !== 161 || !alreadyPaired) {
 				return callback(err);
 			}
@@ -355,12 +365,24 @@ function pair(params, callback) {
 			}
 
 			if (!info.iosSimToWatchSimToPair[params.simUdid]) {
-				return callback(new Error(__('iOS Simulator %s doesn\'t have any paired watchOS Simulators!', params.simUdid)));
+				return callback(
+					new Error(
+						__("iOS Simulator %s doesn't have any paired watchOS Simulators!", params.simUdid)
+					)
+				);
 			}
 
 			var watchSim = info.iosSimToWatchSimToPair[params.simUdid][params.watchSimUdid];
 			if (!watchSim) {
-				return callback(new Error(__('Failed to find device pair for iOS Simulator %s and watchOS Simulator %s.', params.simUdid, params.watchSimUdid)));
+				return callback(
+					new Error(
+						__(
+							'Failed to find device pair for iOS Simulator %s and watchOS Simulator %s.',
+							params.simUdid,
+							params.watchSimUdid
+						)
+					)
+				);
 			}
 
 			var udid = watchSim.udid;
@@ -511,7 +533,10 @@ function unpair(params, callback) {
 					return callback(err);
 				}
 
-				if (info.iosSimToWatchSimToPair[pair.phone.udid] && info.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid]) {
+				if (
+					info.iosSimToWatchSimToPair[pair.phone.udid] &&
+					info.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid]
+				) {
 					log('Unpair failed');
 					err = new Error('Unable to unpair');
 					err.code = 666;
@@ -665,7 +690,18 @@ function trySimctl(params, args, callback) {
 			return cb(null, !done && tries++ < maxTries);
 		},
 		function (cb) {
-			log('Running: ' + params.simctl + (Array.isArray(args) ? ' ' + args.map(function (s) { return s.indexOf(' ') !== -1 ? '"' + s + '"' : s; }).join(' ') : ''));
+			log(
+				'Running: ' +
+					params.simctl +
+					(Array.isArray(args)
+						? ' ' +
+							args
+								.map(function (s) {
+									return s.indexOf(' ') !== -1 ? '"' + s + '"' : s;
+								})
+								.join(' ')
+						: '')
+			);
 			appc.subprocess.run(params.simctl, args, function (code, out, err) {
 				if (!code) {
 					done = true;
@@ -676,7 +712,10 @@ function trySimctl(params, args, callback) {
 				err.code = code;
 
 				// check for pair error
-				if (code === 161 || (code === 37 && err.message.indexOf('This pair is already active') !== -1)) {
+				if (
+					code === 161 ||
+					(code === 37 && err.message.indexOf('This pair is already active') !== -1)
+				) {
 					done = true;
 					return cb(err);
 				}
@@ -687,7 +726,11 @@ function trySimctl(params, args, callback) {
 				}
 
 				if (err.message.indexOf('Failed to load CoreSimulatorService') !== -1) {
-					log('simctl needs to switch the CoreSimulatorService, waiting a couple seconds (code ' + code + ')');
+					log(
+						'simctl needs to switch the CoreSimulatorService, waiting a couple seconds (code ' +
+							code +
+							')'
+					);
 					setTimeout(function () {
 						cb();
 					}, 2000);

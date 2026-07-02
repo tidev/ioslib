@@ -9,18 +9,16 @@
  * Please see the LICENSE included with this distribution for details.
  */
 
-const
-	async = require('async'),
-
-	certs        = exports.certs        = require('./lib/certs'),
-	device       = exports.device       = require('./lib/device'),
-	env          = exports.env          = require('./lib/env'),
-	magik        = exports.magik        = require('./lib/utilities').magik,
-	provisioning = exports.provisioning = require('./lib/provisioning'),
-	simulator    = exports.simulator    = require('./lib/simulator'),
-	teams        = exports.teams        = require('./lib/teams'),
-	utilities    = exports.utilities    = require('./lib/utilities'),
-	xcode        = exports.xcode        = require('./lib/xcode');
+const async = require('async'),
+	certs = (exports.certs = require('./lib/certs')),
+	device = (exports.device = require('./lib/device')),
+	env = (exports.env = require('./lib/env')),
+	magik = (exports.magik = require('./lib/utilities').magik),
+	provisioning = (exports.provisioning = require('./lib/provisioning')),
+	simulator = (exports.simulator = require('./lib/simulator')),
+	teams = (exports.teams = require('./lib/teams')),
+	utilities = (exports.utilities = require('./lib/utilities')),
+	xcode = (exports.xcode = require('./lib/xcode'));
 
 var cache;
 
@@ -51,7 +49,7 @@ function detect(options, callback) {
 
 		var results = {
 			detectVersion: '5.0',
-			issues: []
+			issues: [],
 		};
 
 		function mix(src, dest) {
@@ -73,61 +71,64 @@ function detect(options, callback) {
 			});
 		}
 
-		async.parallel([
-			function detectCertificates(done) {
-				certs.detect(options, function (err, result) {
-					err || mix(result, results);
-					done(err);
-				});
-			},
-			function detectDevices(done) {
-				device.detect(options, function (err, result) {
-					err || mix(result, results);
-					done(err);
-				});
-			},
-			function detectEnvironment(done) {
-				env.detect(options, function (err, result) {
-					err || mix(result, results);
-					done(err);
-				});
-			},
-			function detectProvisioning(done) {
-				provisioning.detect(options, function (err, result) {
-					err || mix(result, results);
-					done(err);
-				});
-			},
-			function detectSimulator(done) {
-				simulator.detect(options, function (err, result) {
-					err || mix(result, results);
-					done(err);
-				});
-			},
-			function detectTeams(done) {
-				teams.detect(options, function (err, result) {
-					err || mix(result, results);
-					done(err);
-				});
-			},
-			function detectXcode(done) {
-				xcode.detect(options, function (err, result) {
-					err || mix(result, results);
-					done(err);
-				});
+		async.parallel(
+			[
+				function detectCertificates(done) {
+					certs.detect(options, function (err, result) {
+						err || mix(result, results);
+						done(err);
+					});
+				},
+				function detectDevices(done) {
+					device.detect(options, function (err, result) {
+						err || mix(result, results);
+						done(err);
+					});
+				},
+				function detectEnvironment(done) {
+					env.detect(options, function (err, result) {
+						err || mix(result, results);
+						done(err);
+					});
+				},
+				function detectProvisioning(done) {
+					provisioning.detect(options, function (err, result) {
+						err || mix(result, results);
+						done(err);
+					});
+				},
+				function detectSimulator(done) {
+					simulator.detect(options, function (err, result) {
+						err || mix(result, results);
+						done(err);
+					});
+				},
+				function detectTeams(done) {
+					teams.detect(options, function (err, result) {
+						err || mix(result, results);
+						done(err);
+					});
+				},
+				function detectXcode(done) {
+					xcode.detect(options, function (err, result) {
+						err || mix(result, results);
+						done(err);
+					});
+				},
+			],
+			function (err) {
+				if (err) {
+					emitter.emit('error', err);
+					return callback(err);
+				} else {
+					cache = results;
+					emitter.emit('detected', results);
+					return callback(null, results);
+				}
 			}
-		], function (err) {
-			if (err) {
-				emitter.emit('error', err);
-				return callback(err);
-			} else {
-				cache = results;
-				emitter.emit('detected', results);
-				return callback(null, results);
-			}
-		});
+		);
 	});
-};
+}
 
 /**
  * Finds all valid device/cert/provisioning profile combinations. This is handy for quickly
@@ -170,39 +171,45 @@ function findValidDeviceCertProfileCombos(options, callback) {
 			}
 
 			// find us a provisioning profile
-			provisioning.find({
-				appId: options.appId,
-				certs: certs,
-				devicesUDIDs: deviceResults.devices.map(function (device) { return device.udid; }),
-				unmanaged: options.unmanagedProvisioningProfile
-			}, function (err, profiles) {
-				if (!profiles.length) {
-					return callback(new Error('No provisioning profiles found'));
+			provisioning.find(
+				{
+					appId: options.appId,
+					certs: certs,
+					devicesUDIDs: deviceResults.devices.map(function (device) {
+						return device.udid;
+					}),
+					unmanaged: options.unmanagedProvisioningProfile,
+				},
+				function (err, profiles) {
+					if (!profiles.length) {
+						return callback(new Error('No provisioning profiles found'));
+					}
 
-				}
-
-				var combos = [];
-				profiles.forEach(function (profile) {
-					deviceResults.devices.forEach(function (device) {
-						if (profile.devices && profile.devices.indexOf(device.udid) !== -1) {
-							certs.forEach(function (cert) {
-								var prefix = cert.pem.replace(/^-----BEGIN CERTIFICATE-----\n/, '').substring(0, 60);
-								profile.certs.forEach(function (pcert) {
-									if (pcert.indexOf(prefix) === 0) {
-										combos.push({
-											ppUUID: profile.uuid,
-											certName: cert.name,
-											deviceUDID: device.udid
-										});
-									}
+					var combos = [];
+					profiles.forEach(function (profile) {
+						deviceResults.devices.forEach(function (device) {
+							if (profile.devices && profile.devices.indexOf(device.udid) !== -1) {
+								certs.forEach(function (cert) {
+									var prefix = cert.pem
+										.replace(/^-----BEGIN CERTIFICATE-----\n/, '')
+										.substring(0, 60);
+									profile.certs.forEach(function (pcert) {
+										if (pcert.indexOf(prefix) === 0) {
+											combos.push({
+												ppUUID: profile.uuid,
+												certName: cert.name,
+												deviceUDID: device.udid,
+											});
+										}
+									});
 								});
-							});
-						}
+							}
+						});
 					});
-				});
 
-				callback(null, combos);
-			});
+					callback(null, combos);
+				}
+			);
 		});
 	});
 }

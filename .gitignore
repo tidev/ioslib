@@ -3,8 +3,8 @@
 dist
 npm-debug.log
 node_modules
-env.properties
-junit_report.xml
+.pnpm-debug.log
+*.tsbuildinfo
 
 test/TestApp/info.plist
 test/TestApp/build
