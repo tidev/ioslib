@@ -43,7 +43,8 @@
     "always-tail": "0.2.0",
     "bplist-parser": "0.3.2",
     "node-ios-device": "8.0.0",
-    "snooplogg": "9.0.0"
+    "snooplogg": "9.0.0",
+    "which": "7.0.0"
   },
   "devDependencies": {
     "@types/node": "26.1.0",

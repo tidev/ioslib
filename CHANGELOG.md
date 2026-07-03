@@ -1,8 +1,22 @@
 # v6.0.0
 
-- BREAKING CHANGE: Require Node.js 22.18.1 or newer
-- Update to `node-ios-device@4` which adds support for Node 24
-- chore: Updated dependencies.
+- BREAKING CHANGE: Require Node.js 22.19.0 or newer
+- BREAKING CHANGE: Drop CommonJS support - ESM only
+- feat: Refactored entire codebase to TypeScript
+- chore: Update to `node-ios-device@8` which supports Node.js 22 and beyond
+- chore: Updated dependencies
+
+# v5.3.0 (Jun 15, 2026)
+
+- feat: support Xcode 27
+
+# v5.2.0 (Jan 16, 2026)
+
+- chore: Update to `node-ios-device@1.13.0` which supports Node.js 24
+
+# v5.1.0 (Sep 10, 2025)
+
+- feat: add support for Xcode 26 default mappings
 
 # v5.0.0 (Apr 3, 2025)
 

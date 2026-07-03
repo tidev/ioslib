@@ -8,7 +8,7 @@ designed specifically for use with
 
 ### Detect all the connected iOS devices:
 
-```javascript
+```typescript
 import * as ioslib from 'ioslib';
 
 const devices = await ioslib.device.detect();
@@ -17,7 +17,7 @@ console.log(devices);
 
 ### Install an application on device
 
-```javascript
+```typescript
 let deviceUDID = null; // string or null to pick first device
 
 ioslib.device
@@ -41,7 +41,7 @@ ioslib.device
 
 ### Launch the iOS Simulator
 
-```javascript
+```typescript
 ioslib.simulator.launch(null, function (err, simHandle) {
 	console.log('Simulator launched');
 	ioslib.simulator.stop(simHandle, function () {
@@ -52,7 +52,7 @@ ioslib.simulator.launch(null, function (err, simHandle) {
 
 ### Launch, install, and run an application on simulator
 
-```javascript
+```typescript
 var simUDID = null; // string or null to pick a simulator
 
 ioslib.simulator
@@ -75,7 +75,7 @@ ioslib.simulator
 
 ### Force stop an application running on simulator
 
-```javascript
+```typescript
 ioslib.simulator
 	.launch(simUDID, {
 		appPath: '/path/to/name.app',
@@ -90,7 +90,7 @@ ioslib.simulator
 
 ### Find a valid device/cert/provisioning profile combination
 
-```javascript
+```typescript
 ioslib.findValidDeviceCertProfileCombos(
 	{
 		appId: 'com.company.appname',
@@ -107,7 +107,7 @@ ioslib.findValidDeviceCertProfileCombos(
 
 ### Detect everything
 
-```javascript
+```typescript
 ioslib.detect(function (err, info) {
 	if (err) {
 		console.error(err);
@@ -119,7 +119,7 @@ ioslib.detect(function (err, info) {
 
 ### Detect iOS certificates
 
-```javascript
+```typescript
 ioslib.certs.detect(function (err, certs) {
 	if (err) {
 		console.error(err);
@@ -131,7 +131,7 @@ ioslib.certs.detect(function (err, certs) {
 
 ### Detect provisioning profiles
 
-```javascript
+```typescript
 ioslib.provisioning.detect(function (err, profiles) {
 	if (err) {
 		console.error(err);
@@ -143,7 +143,7 @@ ioslib.provisioning.detect(function (err, profiles) {
 
 ### Detect Xcode installations
 
-```javascript
+```typescript
 ioslib.xcode.detect(function (err, xcodeInfo) {
 	if (err) {
 		console.error(err);
