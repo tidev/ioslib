@@ -1,755 +1,648 @@
-/**
- * A wrapper around Xcode's `simctl` command line program.
- *
- * @module simctl
- *
- * @copyright
- * Copyright (c) 2016-2017 by Appcelerator, Inc. All Rights Reserved.
- *
- * @license
- * Licensed under the terms of the Apache Public License.
- * Please see the LICENSE included with this distribution for details.
- */
+import { ErrorWithCode } from './util/error.ts';
+import { snooplogg } from 'snooplogg';
 
-'use strict';
+const log = snooplogg('ioslib')('simctl').debug;
 
-const appc = require('node-appc');
-const async = require('async');
-const debug = require('debug');
-const __ = appc.i18n(__dirname).__;
-
-exports.activatePair = activatePair;
-exports.boot = boot;
-exports.create = create;
-exports.getSim = getSim;
-exports.install = install;
-exports.launch = launch;
-exports.list = list;
-exports.listDevices = listDevices;
-exports.pair = pair;
-exports.pairAndActivate = pairAndActivate;
-exports.shutdown = shutdown;
-exports.uninstall = uninstall;
-exports.unpair = unpair;
-exports.waitUntilBooted = waitUntilBooted;
-
-const log = debug('ioslib:simctl');
+type TrySimctlParams = {
+	simctl: string;
+	tries?: number;
+	args: string[];
+};
 
 /**
  * Activates an existing device pair.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.udid - The pair udid to activate.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.udid - The pair udid to activate.
  */
-function activatePair(params, callback) {
-	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
-	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
-	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
-	}
-
-	trySimctl(params, ['pair_activate', params.udid], function (err) {
+export async function activatePair(params: TrySimctlParams & { udid: string }): Promise<void> {
+	try {
+		await trySimctl(params, ['pair_activate', params.udid]);
+	} catch (err) {
 		// code 37 means the pair is already active
-		callback(
-			err && err.code !== 37 ? new Error(__('Failed to activate pair: %s', err.message)) : null
-		);
-	});
+		if (err instanceof ErrorWithCode && err.code !== 37) {
+			throw new Error(`Failed to activate pair: ${err.message}`);
+		}
+	}
 }
 
 /**
  * Creates a new simulator.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.deviceType - The device type to use such as
+ * @param params - Various parameters.
+ * @param params.deviceType - The device type to use such as
  * `com.apple.CoreSimulator.SimDeviceType.iPhone-7-Plus`.
- * @param {String} params.name - The name of the simulator.
- * @param {String} params.runtime - The runtime to use such as
+ * @param params.name - The name of the simulator.
+ * @param params.runtime - The runtime to use such as
  * `com.apple.CoreSimulator.SimRuntime.iOS-10-2`.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {Function} callback(err, udid) - A function to call when finished.
+ * @param params.simctl - The path to the `simctl` executable.
  */
-function create(params, callback) {
+export async function create(
+	params: TrySimctlParams & { name: string; deviceType: string; runtime: string }
+): Promise<string | null> {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.name || typeof params.name !== 'string') {
+		throw new TypeError('Expected name to be a string');
 	}
-	if (!params.name) {
-		return callback(new Error(__('Missing "name" param')));
+	if (!params.deviceType || typeof params.deviceType !== 'string') {
+		throw new TypeError('Expected deviceType to be a string');
 	}
-	if (!params.deviceType) {
-		return callback(new Error(__('Missing "deviceType" param')));
-	}
-	if (!params.runtime) {
-		return callback(new Error(__('Missing "runtime" param')));
+	if (!params.runtime || typeof params.runtime !== 'string') {
+		throw new TypeError('Expected runtime to be a string');
 	}
 
-	trySimctl(
-		params,
-		['create', params.name, params.deviceType, params.runtime],
-		function (err, output) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, output.split('\n').shift().trim());
-		}
-	);
+	const output = await trySimctl(params, [
+		'create',
+		params.name,
+		params.deviceType,
+		params.runtime,
+	]);
+	return output.split('\n').shift()?.trim() ?? null;
 }
 
 /**
  * Installs an app in the specified simulator. Simulator must be running.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.appPath - The full path to the `.app` directory.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.udid - The simulator udid to install the app on.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.appPath - The full path to the `.app` directory.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.udid - The simulator udid to install the app on.
  */
-function install(params, callback) {
+export async function install(
+	params: TrySimctlParams & { appPath: string; udid: string }
+): Promise<void> {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.appPath || typeof params.appPath !== 'string') {
+		throw new TypeError('Expected appPath to be a string');
 	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
-	if (!params.appPath) {
-		return callback(new Error(__('Missing "appPath" param')));
-	}
-
-	trySimctl(params, ['install', params.udid, params.appPath], callback);
+	await trySimctl(params, ['install', params.udid, params.appPath]);
 }
 
 /**
  * Launches an app in the specified simulator. Simulator must be running.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.appId - The id of the app to launch.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.udid - The simulator udid to launch the app on.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.appId - The id of the app to launch.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.udid - The simulator udid to launch the app on.
  */
-function launch(params, callback) {
+export async function launch(
+	params: TrySimctlParams & { appId: string; udid: string }
+): Promise<void> {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.appId || typeof params.appId !== 'string') {
+		throw new TypeError('Expected appId to be a string');
 	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
-	if (!params.appId) {
-		return callback(new Error(__('Missing "appId" param')));
-	}
-
-	trySimctl(params, ['launch', '--terminate-running-process', params.udid, params.appId], callback);
+	await trySimctl(params, ['launch', '--terminate-running-process', params.udid, params.appId]);
 }
 
 /**
  * Boots an simulator runtime. Simulator must be running.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.udid - The simulator udid to launch the app on.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.udid - The simulator udid to launch the app on.
  */
-function boot(params, callback) {
+export async function boot(params: TrySimctlParams & { udid: string }): Promise<void> {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
-	}
-
-	trySimctl(params, ['boot', params.udid], callback);
+	await trySimctl(params, ['boot', params.udid]);
 }
+
+type SimRuntimeName = string;
+type SimUdid = string;
+
+type SimctlDevice = {
+	dataPath: string;
+	dataPathSize: number;
+	logPath: string;
+	udid: string;
+	isAvailable: boolean;
+	availability: string; // legacy
+	deviceTypeIdentifier: string;
+	state: string;
+	name: string;
+};
+
+type SimctlPairDevice = {
+	name: string;
+	state: string;
+	udid: string;
+};
+
+type SimctlPair = {
+	phone: SimctlPairDevice;
+	watch: SimctlPairDevice;
+	state: string;
+};
+
+type SimctlDeviceType = {
+	productFamily: string;
+	bundlePath: string;
+	maxRuntimeVersion: number;
+	maxRuntimeVersionString: string;
+	identifier: string;
+	modelIdentifier: string;
+	minRuntimeVersionString: string;
+	minRuntimeVersion: number;
+	name: string;
+};
+
+type SimctlSupportedDeviceType = {
+	bundlePath: string;
+	name: string;
+	productFamily: string;
+	identifier: string;
+};
+
+type SimctlRuntime = {
+	isAvailable: boolean;
+	version: string;
+	isInternal: boolean;
+	buildversion: string;
+	supportedArchitectures: string[];
+	supportedDeviceTypes: SimctlSupportedDeviceType[];
+	identifier: string;
+	platform: string;
+	bundlePath: string;
+	runtimeRoot: string;
+	lastUsage: Record<string, string>;
+	name: string;
+};
+
+type SimctlListJson = {
+	devices: Record<SimRuntimeName, SimctlDevice[]>;
+	deviceTypes: SimctlDeviceType[];
+	iosSimToWatchSimToPair: Record<string, Record<string, { udid: string; active: boolean }>>;
+	pairs: Record<SimUdid, SimctlPair>;
+	runtimes: SimctlRuntime[];
+};
 
 /**
  * Returns a list of all devices, runtimes, device types, and pairs.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {Function} callback(err, info) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param [params.tries] - The max number of `simctl` tries.
  */
-function list(params, callback) {
-	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
-	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
-	}
-
-	var done = false;
-	var tries = 0;
-	var maxTries = params.tries || 4;
-
-	async.whilst(
-		function (cb) {
-			return cb(null, !done && tries++ < maxTries);
-		},
-		function (cb) {
-			trySimctl(params, ['list', '--json'], function (err, output) {
-				if (err) {
-					return cb(err);
-				}
-
-				output = output.trim();
-				if (!output) {
-					log('simctl list output was empty!');
-					return cb();
-				}
-
-				var json = null;
-				try {
-					json = JSON.parse(output.substring(output.indexOf('{')));
-				} catch (e) {
-					return cb(e);
-				}
-
-				if (!json) {
-					return cb(new Error(__('simctl list: json is null')));
-				}
-
-				// convert the pairs from <pair udid> -> (ios sim + watch sim) to <ios sim> -> <watch sims> -> <pair udid>
-				json.iosSimToWatchSimToPair = {};
-				Object.keys(json.pairs).forEach(function (pairUdid) {
-					var pair = json.pairs[pairUdid];
-					var m = pair.state.match(/^\(((?:in)?active),/);
-					if (m) {
-						json.iosSimToWatchSimToPair[pair.phone.udid] ||
-							(json.iosSimToWatchSimToPair[pair.phone.udid] = {});
-						json.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid] = {
-							udid: pairUdid,
-							active: m[1] === 'active',
-						};
-					}
-				});
-
-				done = true;
-				cb(null, json);
-			});
-		},
-		function (err, info) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!done) {
-				return callback(new Error(__('simctl list failed after %s tries', maxTries)));
-			}
-
-			callback(null, info);
+export async function list(params: TrySimctlParams): Promise<SimctlListJson> {
+	let json: SimctlListJson | null = null;
+	try {
+		const output = await trySimctl(params, ['list', '--json']);
+		json = JSON.parse(output.substring(output.indexOf('{'))) as SimctlListJson;
+		if (!json) {
+			throw new Error('simctl returned invalid JSON');
 		}
-	);
+	} catch (err) {
+		throw new Error(
+			`Failed to parse simctl list JSON: ${err instanceof Error ? err.message : String(err)}`
+		);
+	}
+
+	// convert the pairs from <pair udid> -> (ios sim + watch sim) to <ios sim> -> <watch sims> -> <pair udid>
+	json.iosSimToWatchSimToPair = {};
+	for (const [pairUdid, pair] of Object.entries(json.pairs)) {
+		const m = pair.state.match(/^\(((?:in)?active),/);
+		if (m) {
+			if (!json.iosSimToWatchSimToPair[pair.phone.udid]) {
+				json.iosSimToWatchSimToPair[pair.phone.udid] = {};
+			}
+			json.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid] = {
+				udid: pairUdid,
+				active: m[1] === 'active',
+			};
+		}
+	}
+	return json;
 }
 
 /**
  * Returns a list of all devices.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {Function} callback(err, info) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param [params.tries] - The max number of `simctl` tries.
  */
-function listDevices(params, callback) {
-	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
-	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
-	}
-
-	var done = false;
-	var tries = 0;
-	var maxTries = params.tries || 4;
-
-	async.whilst(
-		function (cb) {
-			return cb(null, !done && tries++ < maxTries);
-		},
-		function (cb) {
-			trySimctl(params, ['list', 'devices', '--json'], function (err, output) {
-				if (err) {
-					return cb(err);
-				}
-
-				output = output.trim();
-				if (!output) {
-					log('simctl list devices output was empty!');
-					return cb();
-				}
-
-				var json = null;
-				try {
-					json = JSON.parse(output.substring(output.indexOf('{')));
-				} catch (e) {
-					return cb(e);
-				}
-
-				if (!json) {
-					return cb(new Error(__('simctl list devices: json is null')));
-				}
-
-				done = true;
-				cb(null, json);
-			});
-		},
-		function (err, info) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!done) {
-				return callback(new Error(__('simctl list devices failed after %s tries', maxTries)));
-			}
-
-			callback(null, info);
+export async function listDevices(
+	params: TrySimctlParams
+): Promise<Record<SimRuntimeName, SimctlDevice[]>> {
+	try {
+		const output = await trySimctl(params, ['list', 'devices', '--json']);
+		const json = JSON.parse(output.substring(output.indexOf('{'))) as SimctlListJson;
+		if (!json) {
+			throw new Error('simctl returned invalid JSON');
 		}
-	);
+		return json.devices;
+	} catch (err) {
+		throw new Error(
+			`Failed to parse simctl list JSON: ${err instanceof Error ? err.message : String(err)}`
+		);
+	}
 }
 
 /**
  * Pairs a iOS Simulator with a watchOS Simulator.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.simUdid - The udid of the iOS Simulator.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {String} params.watchSimUdid - The udid of the watchOS Simulator.
- * @param {Function} callback(err, udid) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.simUdid - The udid of the iOS Simulator.
+ * @param [params.tries] - The max number of `simctl` tries.
+ * @param params.watchSimUdid - The udid of the watchOS Simulator.
  */
-function pair(params, callback) {
+export async function pair(
+	params: TrySimctlParams & { simUdid: string; watchSimUdid: string }
+): Promise<string> {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.simUdid || typeof params.simUdid !== 'string') {
+		throw new TypeError('Expected simUdid to be a string');
 	}
-	if (!params.simUdid) {
-		return callback(new Error(__('Missing "simUdid" param')));
-	}
-	if (!params.watchSimUdid) {
-		return callback(new Error(__('Missing "watchSimUdid" param')));
+	if (!params.watchSimUdid || typeof params.watchSimUdid !== 'string') {
+		throw new TypeError('Expected watchSimUdid to be a string');
 	}
 
-	trySimctl(params, ['pair', params.watchSimUdid, params.simUdid], function (err, output) {
-		if (err) {
-			var alreadyPaired =
-				err.message.indexOf('The selected devices are already paired with each other') !== -1;
-			if (err.code !== 161 || !alreadyPaired) {
-				return callback(err);
-			}
-		} else {
-			return callback(null, output.split('\n').shift().trim());
-		}
+	return 'some udid';
 
-		// already paired, get the udid
-		log('Already paired, getting pair id');
-		list(params, function (err, info) {
-			if (err) {
-				return callback(err);
-			}
+	// await trySimctl(params, ['pair', params.watchSimUdid, params.simUdid], function (err, output) {
+	// 	if (err) {
+	// 		var alreadyPaired =
+	// 			err.message.indexOf('The selected devices are already paired with each other') !== -1;
+	// 		if (err.code !== 161 || !alreadyPaired) {
+	// 			return callback(err);
+	// 		}
+	// 	} else {
+	// 		return callback(null, output.split('\n').shift().trim());
+	// 	}
 
-			if (!info.iosSimToWatchSimToPair[params.simUdid]) {
-				return callback(
-					new Error(
-						__("iOS Simulator %s doesn't have any paired watchOS Simulators!", params.simUdid)
-					)
-				);
-			}
+	// 	// already paired, get the udid
+	// 	log('Already paired, getting pair id');
+	// 	list(params, function (err, info) {
+	// 		if (err) {
+	// 			return callback(err);
+	// 		}
 
-			var watchSim = info.iosSimToWatchSimToPair[params.simUdid][params.watchSimUdid];
-			if (!watchSim) {
-				return callback(
-					new Error(
-						__(
-							'Failed to find device pair for iOS Simulator %s and watchOS Simulator %s.',
-							params.simUdid,
-							params.watchSimUdid
-						)
-					)
-				);
-			}
+	// 		if (!info.iosSimToWatchSimToPair[params.simUdid]) {
+	// 			return callback(
+	// 				new Error(
+	// 					`iOS Simulator ${params.simUdid} doesn't have any paired watchOS Simulators!`
+	// 				)
+	// 			);
+	// 		}
 
-			var udid = watchSim.udid;
-			log('Found pair id: ' + udid);
-			callback(null, udid);
-		});
-	});
+	// 		var watchSim = info.iosSimToWatchSimToPair[params.simUdid][params.watchSimUdid];
+	// 		if (!watchSim) {
+	// 			return callback(
+	// 				new Error(
+	// 					`Failed to find device pair for iOS Simulator ${params.simUdid} and watchOS Simulator ${params.watchSimUdid}.`
+	// 				)
+	// 			);
+	// 		}
+
+	// 		var udid = watchSim.udid;
+	// 		log('Found pair id: ' + udid);
+	// 		callback(null, udid);
+	// 	});
+	// });
 }
 
 /**
  * Pairs a iOS Simulator with a watchOS Simulator, then activates it.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.simUdid - The udid of the iOS Simulator.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {String} params.watchSimUdid - The udid of the watchOS Simulator.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.simUdid - The udid of the iOS Simulator.
+ * @param [params.tries] - The max number of `simctl` tries.
+ * @param params.watchSimUdid - The udid of the watchOS Simulator.
  */
-function pairAndActivate(params, callback) {
-	pair(params, function (err, udid) {
-		if (err) {
-			return callback(err);
-		}
-
-		params.udid = udid;
-		activatePair(params, callback);
+export async function pairAndActivate(
+	params: TrySimctlParams & { simUdid: string; watchSimUdid: string }
+): Promise<void> {
+	await activatePair({
+		...params,
+		udid: await pair(params),
 	});
 }
 
 /**
  * Shuts down the simulator.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.udid - The udid of the simulator to shutdown.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.udid - The udid of the simulator to shutdown.
  */
-function shutdown(params, callback) {
+export async function shutdown(params: TrySimctlParams & { udid: string }): Promise<void> {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
-	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
 
-	getSim(params, function (err, sim) {
-		if (err) {
-			return callback(err);
-		}
+	const sim = await getSim(params);
+	if (!sim) {
+		throw new Error(`Unable to find Simulator ${params.udid}`);
+	}
 
-		if (!sim) {
-			return callback(new Error(__('Unable to find Simulator %s', params.udid)));
-		}
+	if (sim.isAvailable === false && sim.availability !== '(available)') {
+		throw new Error('Simulator is not available');
+	}
 
-		if (sim.isAvailable === false && sim.availability !== '(available)') {
-			return callback(new Error(__('Simulator is not available')));
-		}
+	log(`Sim state: ${sim.state}`);
+	if (/^shutdown|creating$/i.test(sim.state)) {
+		return;
+	}
 
-		log('Sim state: ' + sim.state);
-		if (/^shutdown|creating$/i.test(sim.state)) {
-			return callback();
-		}
-
-		trySimctl(params, ['shutdown', params.udid], callback);
-	});
+	await trySimctl(params, ['shutdown', params.udid]);
 }
 
 /**
  * Uninstalls an app from the specified simulator. Simulator must be running.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {String} params.udid - The udid of the simulator.
- * @param {String} params.appId - The app id to uninstall.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param params.udid - The udid of the simulator.
+ * @param params.appId - The app id to uninstall.
  */
-function uninstall(params, callback) {
+export async function uninstall(params) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.simctl || typeof params.simctl !== 'string') {
+		throw new TypeError('Expected simctl to be a string');
 	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
-	if (!params.appId) {
-		return callback(new Error(__('Missing "appId" param')));
+	if (!params.appId || typeof params.appId !== 'string') {
+		throw new TypeError('Expected appId to be a string');
 	}
 
-	trySimctl(params, ['uninstall', params.udid, params.appId], function (err) {
-		if (err && err.code === 1) {
+	try {
+		await trySimctl(params, ['uninstall', params.udid, params.appId]);
+	} catch (err) {
+		if (err instanceof ErrorWithCode && err.code === 1) {
 			// app wasn't installed
-			return callback();
+			return;
 		}
-
-		if (err) {
-			return callback(new Error('Failed to uninstall app'));
-		}
-
-		callback();
-	});
+		throw new Error('Failed to uninstall app');
+	}
 }
 
 /**
  * Unpairs a iOS Simulator from a watchOS Simulator.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {String} params.udid - The pair udid.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param [params.tries] - The max number of `simctl` tries.
+ * @param params.udid - The pair udid.
  */
-function unpair(params, callback) {
+export async function unpair(params) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.simctl || typeof params.simctl !== 'string') {
+		throw new TypeError('Expected simctl to be a string');
 	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
 
-	list(params, function (err, info) {
-		if (err) {
-			return callback(err);
-		}
+	let info = await list(params);
+	const pair = info.pairs[params.udid];
+	if (!pair) {
+		// already unpaired... or invalid udid
+		return;
+	}
 
-		var pair = info.pairs[params.udid];
-		if (!pair) {
-			// already unpaired... or invalid udid
-			return callback();
-		}
+	await trySimctl(params, ['unpair', params.udid]);
 
-		trySimctl(params, ['unpair', params.udid], function (err) {
-			if (err) {
-				return callback(err);
-			}
+	// check if the unpair was successful
+	info = await list(params);
 
-			// check if the unpair was successful
-			list(params, function (err, info) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (
-					info.iosSimToWatchSimToPair[pair.phone.udid] &&
-					info.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid]
-				) {
-					log('Unpair failed');
-					err = new Error('Unable to unpair');
-					err.code = 666;
-				}
-
-				callback(err);
-			});
-		});
-	});
+	if (
+		info.iosSimToWatchSimToPair[pair.phone.udid] &&
+		info.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid]
+	) {
+		log('Unpair failed');
+		throw new Error('Unable to unpair');
+	}
 }
 
 /**
  * Finds the specified simulator and returns it's state and availability.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {String} params.udid - The pair udid.
- * @param {Function} callback(err, sim) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param [params.tries] - The max number of `simctl` tries.
+ * @param params.udid - The pair udid.
  */
-function getSim(params, callback) {
+export async function getSim(params) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.simctl || typeof params.simctl !== 'string') {
+		throw new TypeError('Expected simctl to be a string');
 	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
 
-	list(params, function (err, info) {
-		if (err) {
-			return callback(err);
+	const info = await list(params);
+
+	for (const sims of Object.values(info.devices)) {
+		const sim = sims.find((sim) => sim.udid === params.udid);
+		if (sim) {
+			return sim;
 		}
-
-		var found = null;
-
-		Object.keys(info.devices).some(function (type) {
-			return info.devices[type].some(function (sim) {
-				if (sim.udid === params.udid) {
-					found = sim;
-					return true;
-				}
-			});
-		});
-
-		callback(null, found);
-	});
+	}
 }
 
 /**
  * Waits for the simulator to boot.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {Number} [params.timeout] - A number of milliseconds to wait before
- * timing out and aborting.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {String} params.udid - The pair udid.
- * @param {Function} callback(err, booted) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param [params.timeout] - A number of milliseconds to wait before timing out
+ * and aborting.
+ * @param [params.tries] - The max number of `simctl` tries.
+ * @param params.udid - The pair udid.
  */
-function waitUntilBooted(params, callback) {
+export async function waitUntilBooted(params) {
 	if (!params || typeof params !== 'object') {
-		return callback(new Error(__('Missing params')));
+		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl) {
-		return callback(new Error(__('Missing "simctl" param')));
+	if (!params.simctl || typeof params.simctl !== 'string') {
+		throw new TypeError('Expected simctl to be a string');
 	}
-	if (!params.udid) {
-		return callback(new Error(__('Missing "udid" param')));
+	if (!params.udid || typeof params.udid !== 'string') {
+		throw new TypeError('Expected udid to be a string');
 	}
-
-	var booted = false;
-	var timedOut = false;
-	var tries = 0;
-	var maxTries = params.tries || 4;
-	var timer = null;
-
-	log('Waiting for simulator ' + params.udid + ' to boot');
-
-	if (params.timeout) {
-		timer = setTimeout(function () {
-			timedOut = true;
-			log('Timed out waiting for the Simulator to boot');
-		}, params.timeout);
-	}
-
-	async.whilst(
-		function (cb) {
-			return cb(null, !booted && !timedOut);
-		},
-		function (cb) {
-			getSim(params, function (err, sim) {
-				if (err) {
-					return cb(err);
-				}
-
-				if (!sim) {
-					return cb(new Error(__('Unable to find Simulator %s', params.udid)));
-				}
-
-				if (sim.isAvailable === false && sim.availability !== '(available)') {
-					return cb(new Error(__('Simulator is not available')));
-				}
-
-				log('Sim state: ' + sim.state);
-				if (/^booted$/i.test(sim.state)) {
-					booted = true;
-					clearTimeout(timer);
-					return cb();
-				}
-
-				setTimeout(function () {
-					cb();
-				}, 500);
-			});
-		},
-		function (err) {
-			if (err) {
-				return callback(err);
-			}
-			if (timedOut) {
-				err = new Error(__('Timed out waiting for simulator to boot'));
-				err.code = 666;
-				return callback(err);
-			}
-			callback(null, booted);
+	if (params.tries !== undefined) {
+		if (typeof params.tries !== 'number') {
+			throw new TypeError('Expected tries to be a number');
 		}
+		if (params.tries < 1) {
+			throw new RangeError('Expected tries to be a positive number');
+		}
+	}
+
+	let timer: NodeJS.Timeout | undefined;
+	const tasks: Promise<void>[] = [];
+
+	if (params.timeout !== undefined) {
+		if (typeof params.timeout !== 'number') {
+			throw new TypeError('Expected timeout to be a number');
+		}
+		if (params.timeout < 1) {
+			throw new RangeError('Expected timeout to be a positive number');
+		}
+		tasks.push(
+			new Promise((_resolve, reject) => {
+				timer = setTimeout(() => {
+					log('Timed out waiting for the Simulator to boot');
+					reject(new Error('Timed out waiting for the Simulator to boot'));
+				}, params.timeout).unref();
+			})
+		);
+	}
+
+	let booted = false;
+	log(`Waiting for simulator ${params.udid} to boot`);
+
+	tasks.push(
+		getSim(params).then((sim) => {
+			if (!sim) {
+				throw new Error(`Unable to find Simulator ${params.udid}`);
+			}
+			if (sim.isAvailable === false && sim.availability !== '(available)') {
+				throw new Error('Simulator is not available');
+			}
+			log(`Sim state: ${sim.state}`);
+			booted = /^booted$/i.test(sim.state);
+		})
 	);
+
+	try {
+		await Promise.race(tasks);
+		return booted;
+	} finally {
+		clearTimeout(timer);
+	}
 }
 
 /**
  * Calls `simctl` in an async loop until it succeeds or hits the max number of
  * tries.
  *
- * @param {Object} params - Various parameters.
- * @param {String} params.simctl - The path to the `simctl` executable.
- * @param {Number} [params.tries] - The max number of `simctl` tries.
- * @param {Array} args - The args to pass directly into `simctl`.
- * @param {Function} callback(err) - A function to call when finished.
+ * @param params - Various parameters.
+ * @param params.simctl - The path to the `simctl` executable.
+ * @param [params.tries] - The max number of `simctl` tries.
+ * @param args - The args to pass directly into `simctl`.
  */
-function trySimctl(params, args, callback) {
-	var done = false;
-	var tries = 0;
-	var maxTries = params.tries || 4;
-	var timeout = 100;
+export async function trySimctl(params: TrySimctlParams, args: string[]): Promise<string> {
+	if (!params || typeof params !== 'object') {
+		throw new TypeError('Expected params to be an object');
+	}
+	if (!params.simctl || typeof params.simctl !== 'string') {
+		throw new TypeError('Expected simctl to be a string');
+	}
+	if (params.tries !== undefined) {
+		if (typeof params.tries !== 'number') {
+			throw new TypeError('Expected tries to be a number');
+		}
+		if (params.tries < 1) {
+			throw new RangeError('Expected tries to be a positive number');
+		}
+	}
 
-	async.whilst(
-		function (cb) {
-			return cb(null, !done && tries++ < maxTries);
-		},
-		function (cb) {
+	const maxTries = params.tries ?? 4;
+	let timeout = 100;
+
+	for (let i = 0; i < maxTries; i++) {
+		try {
 			log(
-				'Running: ' +
-					params.simctl +
-					(Array.isArray(args)
-						? ' ' +
-							args
-								.map(function (s) {
-									return s.indexOf(' ') !== -1 ? '"' + s + '"' : s;
-								})
-								.join(' ')
-						: '')
+				`Running: ${params.simctl} ${
+					Array.isArray(args)
+						? ` ${args.map((s) => (s.includes(' ') ? `"${s}"` : s)).join(' ')}`
+						: ''
+				} (attempt ${i + 1} of ${maxTries})`
 			);
-			appc.subprocess.run(params.simctl, args, function (code, out, err) {
-				if (!code) {
-					done = true;
-					return cb(null, out);
-				}
 
-				err = new Error(err.trim());
-				err.code = code;
-
-				// check for pair error
-				if (
-					code === 161 ||
-					(code === 37 && err.message.indexOf('This pair is already active') !== -1)
-				) {
-					done = true;
-					return cb(err);
-				}
-
-				if (code === 3 && err.message.indexOf('did not return a valid pid') !== -1) {
-					done = true;
-					return cb(err);
-				}
-
-				if (err.message.indexOf('Failed to load CoreSimulatorService') !== -1) {
-					log(
-						'simctl needs to switch the CoreSimulatorService, waiting a couple seconds (code ' +
-							code +
-							')'
-					);
-					setTimeout(function () {
-						cb();
-					}, 2000);
-					return;
-				}
-
-				if (tries < maxTries) {
-					log('simctl failed: ' + err.message);
-					setTimeout(function () {
-						timeout *= 2;
-						log('Retrying...');
-						cb();
-					}, timeout);
-				} else {
-					log('Giving up');
-					cb(err);
-				}
+			let stdout = '';
+			let stderr = '';
+			return await new Promise((resolve, reject) => {
+				const child = spawn(params.simctl, args, { stdio: 'pipe' });
+				child.stdout.on('data', (data) => {
+					stdout += data.toString();
+				});
+				child.stderr.on('data', (data) => {
+					stderr += data.toString();
+				});
+				child.on('error', reject);
+				child.on('close', (code: number) => {
+					if (code === 0) {
+						resolve(stdout.trim());
+					} else {
+						reject(new ErrorWithCode(`simctl failed: ${stderr.trim()}`, code));
+					}
+				});
 			});
-		},
-		callback
-	);
+		} catch (err) {
+			if (i >= maxTries) {
+				break;
+			}
+
+			const isPairError =
+				(err instanceof ErrorWithCode &&
+					(err.code === 161 ||
+						(err.code === 37 && err.message.includes('This pair is already active')))) ||
+				(err instanceof ErrorWithCode &&
+					err.code === 3 &&
+					err.message.includes('did not return a valid pid'));
+			const isPidError =
+				err instanceof ErrorWithCode &&
+				err.code === 3 &&
+				err.message.includes('did not return a valid pid');
+
+			if (isPairError || isPidError) {
+				// no need to retry
+				throw err;
+			}
+
+			if (
+				err instanceof ErrorWithCode &&
+				err.message.includes('Failed to load CoreSimulatorService')
+			) {
+				log(
+					`simctl needs to switch the CoreSimulatorService, waiting a couple seconds (code ${err.code})`
+				);
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+				continue;
+			}
+
+			// other error, retry
+			await new Promise((resolve) => setTimeout(resolve, timeout));
+			timeout *= 2;
+		}
+	}
+
+	throw new Error(`simctl failed after ${maxTries} tries`);
 }
