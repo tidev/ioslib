@@ -1,12 +1,12 @@
 import { ErrorWithCode } from './util/error.ts';
+import { spawn } from 'node:child_process';
 import { snooplogg } from 'snooplogg';
 
-const log = snooplogg('ioslib')('simctl').debug;
+const logger = snooplogg('ioslib')('simctl');
 
 type TrySimctlParams = {
 	simctl: string;
 	tries?: number;
-	args: string[];
 };
 
 /**
@@ -241,7 +241,7 @@ export async function list(params: TrySimctlParams): Promise<SimctlListJson> {
  * @param [params.tries] - The max number of `simctl` tries.
  */
 export async function listDevices(
-	params: TrySimctlParams
+	params?: TrySimctlParams
 ): Promise<Record<SimRuntimeName, SimctlDevice[]>> {
 	try {
 		const output = await trySimctl(params, ['list', 'devices', '--json']);
@@ -365,7 +365,7 @@ export async function shutdown(params: TrySimctlParams & { udid: string }): Prom
 		throw new Error('Simulator is not available');
 	}
 
-	log(`Sim state: ${sim.state}`);
+	logger.debug(`Sim state: ${sim.state}`);
 	if (/^shutdown|creating$/i.test(sim.state)) {
 		return;
 	}
@@ -381,7 +381,7 @@ export async function shutdown(params: TrySimctlParams & { udid: string }): Prom
  * @param params.udid - The udid of the simulator.
  * @param params.appId - The app id to uninstall.
  */
-export async function uninstall(params) {
+export async function uninstall(params: TrySimctlParams & { udid: string; appId: string }) {
 	if (!params || typeof params !== 'object') {
 		throw new TypeError('Expected params to be an object');
 	}
@@ -414,12 +414,9 @@ export async function uninstall(params) {
  * @param [params.tries] - The max number of `simctl` tries.
  * @param params.udid - The pair udid.
  */
-export async function unpair(params) {
+export async function unpair(params: TrySimctlParams & { udid: string }) {
 	if (!params || typeof params !== 'object') {
 		throw new TypeError('Expected params to be an object');
-	}
-	if (!params.simctl || typeof params.simctl !== 'string') {
-		throw new TypeError('Expected simctl to be a string');
 	}
 	if (!params.udid || typeof params.udid !== 'string') {
 		throw new TypeError('Expected udid to be a string');
@@ -441,7 +438,7 @@ export async function unpair(params) {
 		info.iosSimToWatchSimToPair[pair.phone.udid] &&
 		info.iosSimToWatchSimToPair[pair.phone.udid][pair.watch.udid]
 	) {
-		log('Unpair failed');
+		logger.error('Unpair failed');
 		throw new Error('Unable to unpair');
 	}
 }
@@ -454,12 +451,9 @@ export async function unpair(params) {
  * @param [params.tries] - The max number of `simctl` tries.
  * @param params.udid - The pair udid.
  */
-export async function getSim(params) {
+export async function getSim(params: TrySimctlParams & { udid: string }) {
 	if (!params || typeof params !== 'object') {
 		throw new TypeError('Expected params to be an object');
-	}
-	if (!params.simctl || typeof params.simctl !== 'string') {
-		throw new TypeError('Expected simctl to be a string');
 	}
 	if (!params.udid || typeof params.udid !== 'string') {
 		throw new TypeError('Expected udid to be a string');
@@ -485,12 +479,11 @@ export async function getSim(params) {
  * @param [params.tries] - The max number of `simctl` tries.
  * @param params.udid - The pair udid.
  */
-export async function waitUntilBooted(params) {
+export async function waitUntilBooted(
+	params: TrySimctlParams & { timeout?: number; udid: string }
+) {
 	if (!params || typeof params !== 'object') {
 		throw new TypeError('Expected params to be an object');
-	}
-	if (!params.simctl || typeof params.simctl !== 'string') {
-		throw new TypeError('Expected simctl to be a string');
 	}
 	if (!params.udid || typeof params.udid !== 'string') {
 		throw new TypeError('Expected udid to be a string');
@@ -517,7 +510,7 @@ export async function waitUntilBooted(params) {
 		tasks.push(
 			new Promise((_resolve, reject) => {
 				timer = setTimeout(() => {
-					log('Timed out waiting for the Simulator to boot');
+					logger.error('Timed out waiting for the Simulator to boot');
 					reject(new Error('Timed out waiting for the Simulator to boot'));
 				}, params.timeout).unref();
 			})
@@ -525,7 +518,7 @@ export async function waitUntilBooted(params) {
 	}
 
 	let booted = false;
-	log(`Waiting for simulator ${params.udid} to boot`);
+	logger.debug(`Waiting for simulator ${params.udid} to boot`);
 
 	tasks.push(
 		getSim(params).then((sim) => {
@@ -535,7 +528,7 @@ export async function waitUntilBooted(params) {
 			if (sim.isAvailable === false && sim.availability !== '(available)') {
 				throw new Error('Simulator is not available');
 			}
-			log(`Sim state: ${sim.state}`);
+			logger.debug(`Sim state: ${sim.state}`);
 			booted = /^booted$/i.test(sim.state);
 		})
 	);
@@ -557,14 +550,17 @@ export async function waitUntilBooted(params) {
  * @param [params.tries] - The max number of `simctl` tries.
  * @param args - The args to pass directly into `simctl`.
  */
-export async function trySimctl(params: TrySimctlParams, args: string[]): Promise<string> {
-	if (!params || typeof params !== 'object') {
+export async function trySimctl(params?: TrySimctlParams, args?: string[]): Promise<string> {
+	if (args === undefined) {
+		args = [];
+	}
+	if (params !== undefined && typeof params !== 'object') {
 		throw new TypeError('Expected params to be an object');
 	}
-	if (!params.simctl || typeof params.simctl !== 'string') {
+	if (params?.simctl !== undefined && typeof params.simctl !== 'string') {
 		throw new TypeError('Expected simctl to be a string');
 	}
-	if (params.tries !== undefined) {
+	if (params?.tries !== undefined) {
 		if (typeof params.tries !== 'number') {
 			throw new TypeError('Expected tries to be a number');
 		}
@@ -573,23 +569,26 @@ export async function trySimctl(params: TrySimctlParams, args: string[]): Promis
 		}
 	}
 
-	const maxTries = params.tries ?? 4;
+	const command = params?.simctl ?? 'xcrun';
+	const maxTries = params?.tries ?? 4;
 	let timeout = 100;
+
+	if (command === 'xcrun' && args[0] !== 'simctl') {
+		args.unshift('simctl');
+	}
 
 	for (let i = 0; i < maxTries; i++) {
 		try {
-			log(
-				`Running: ${params.simctl} ${
-					Array.isArray(args)
-						? ` ${args.map((s) => (s.includes(' ') ? `"${s}"` : s)).join(' ')}`
-						: ''
+			logger.debug(
+				`Running: ${command} ${
+					Array.isArray(args) ? args.map((s) => (s.includes(' ') ? `"${s}"` : s)).join(' ') : ''
 				} (attempt ${i + 1} of ${maxTries})`
 			);
 
 			let stdout = '';
 			let stderr = '';
 			return await new Promise((resolve, reject) => {
-				const child = spawn(params.simctl, args, { stdio: 'pipe' });
+				const child = spawn(command, args, { stdio: 'pipe' });
 				child.stdout.on('data', (data) => {
 					stdout += data.toString();
 				});
@@ -598,14 +597,17 @@ export async function trySimctl(params: TrySimctlParams, args: string[]): Promis
 				});
 				child.on('error', reject);
 				child.on('close', (code: number) => {
-					if (code === 0) {
+					if (code === 0 || (command === 'xcrun' && args.length === 1 && args[0] === 'simctl')) {
+						logger.debug(`simctl exited with code ${code}`);
 						resolve(stdout.trim());
 					} else {
+						logger.error(`simctl exited with code ${code}`);
 						reject(new ErrorWithCode(`simctl failed: ${stderr.trim()}`, code));
 					}
 				});
 			});
 		} catch (err) {
+			logger.error(`simctl failed: ${err instanceof Error ? err.message : String(err)}`);
 			if (i >= maxTries) {
 				break;
 			}
@@ -631,7 +633,7 @@ export async function trySimctl(params: TrySimctlParams, args: string[]): Promis
 				err instanceof ErrorWithCode &&
 				err.message.includes('Failed to load CoreSimulatorService')
 			) {
-				log(
+				logger.debug(
 					`simctl needs to switch the CoreSimulatorService, waiting a couple seconds (code ${err.code})`
 				);
 				await new Promise((resolve) => setTimeout(resolve, 2000));
