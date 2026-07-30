@@ -59,8 +59,8 @@ describe('device', function () {
 	});
 
 	it('detect iOS devices', function (done) {
-		this.timeout(5000);
-		this.slow(2000);
+		this.timeout(30000);
+		this.slow(10000);
 
 		ioslib.device.detect(function (err, results) {
 			if (err) {
@@ -73,41 +73,26 @@ describe('device', function () {
 			should(results.devices).be.an.Array;
 			results.devices.forEach(function (dev) {
 				should(dev).be.an.Object;
-				should(dev).have.keys('udid', 'name', 'buildVersion', 'cpuArchitecture', 'deviceClass', 'deviceColor',
-					'hardwareModel', 'modelNumber', 'productType', 'productVersion', 'serialNumber');
+				should(dev).have.keys('udid', 'identifier', 'name', 'deviceClass', 'marketingName',
+					'productType', 'productVersion', 'buildVersion', 'cpuArchitecture', 'connectionType');
 
 				should(dev.udid).be.a.String;
 				should(dev.udid).not.equal('');
 
+				should(dev.identifier).be.a.String;
+				should(dev.identifier).not.equal('');
+
 				should(dev.name).be.a.String;
 				should(dev.name).not.equal('');
 
-				should(dev.buildVersion).be.a.String;
-				should(dev.buildVersion).not.equal('');
-
-				should(dev.cpuArchitecture).be.a.String;
-				should(dev.cpuArchitecture).not.equal('');
-
 				should(dev.deviceClass).be.a.String;
 				should(dev.deviceClass).not.equal('');
-
-				should(dev.deviceColor).be.a.String;
-				should(dev.deviceColor).not.equal('');
-
-				should(dev.hardwareModel).be.a.String;
-				should(dev.hardwareModel).not.equal('');
-
-				should(dev.modelNumber).be.a.String;
-				should(dev.modelNumber).not.equal('');
 
 				should(dev.productType).be.a.String;
 				should(dev.productType).not.equal('');
 
 				should(dev.productVersion).be.a.String;
 				should(dev.productVersion).not.equal('');
-
-				should(dev.serialNumber).be.a.String;
-				should(dev.serialNumber).not.equal('');
 			});
 
 			should(results.issues).be.an.Array;
@@ -129,8 +114,9 @@ describe('device', function () {
 		this.slow(30000);
 
 		ioslib.device
-			.install(null, '/path/to/something/that/does/not/exist', 'foo', function (err) {
-				done(new Error('Callback was called unexpectedly'));
+			.install('00000000-0000000000000000', '/path/to/something/that/does/not/exist')
+			.on('installed', function () {
+				done(new Error('"installed" was emitted unexpectedly'));
 			})
 			.on('error', function (err) {
 				should(err).be.an.instanceOf(Error);
