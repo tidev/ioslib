@@ -12,17 +12,21 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [paths objectAtIndex:0];
-	NSString *logPath = [documentsDirectory stringByAppendingPathComponent:@"TestApp.log"];
-	freopen([logPath cStringUsingEncoding:NSUTF8StringEncoding], "w+", stderr);
+	// note: stderr must not be redirected to a file here; the devicectl-based
+	// launch console captures the process' stdout/stderr directly
 	fprintf(stderr, "[INFO] Application started\n");
 
 #ifdef TEST_BASIC_LOGGING
 	NSLog(@"[INFO] info test");
 	NSLog(@"[DEBUG] debug test");
 	NSLog(@"[DEBUG] line 1 test\n[DEBUG] line 2 test");
+	printf("[INFO] stdout test\n");
+	fflush(stdout);
 	NSLog(@"[DEBUG] AUTO_EXIT");
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+		NSLog(@"[INFO] exiting");
+		exit(0);
+	});
 #endif
 
 #ifdef TEST_TIMOCHA
