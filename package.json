@@ -1,6 +1,6 @@
 {
   "name": "ioslib",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "iOS Utility Library",
   "keywords": [
     "appcelerator",
@@ -43,5 +43,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "allowScripts": {
+    "fsevents@2.3.2": true
   }
 }
